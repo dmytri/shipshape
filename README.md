@@ -34,13 +34,14 @@ Human ↔ Captain → specs/instructions → Quartermaster → tests → Crew Ma
 ## Core Workflow
 
 1. **Captain** collaborates with the human and updates durable specs/instructions.
-2. Captain deletes artifacts that may have been invalidated by spec changes.
-3. The user clears the Captain session or starts a new agent session, then starts the **Quartermaster**. QM must not inherit Captain chat context; if it detects that context, it refuses to continue.
-4. Quartermaster writes missing tests, fixtures, step definitions, and harnesses.
-5. Failing tests are assigned to **Crew Mates**.
-6. Crew Mates implement the smallest production change needed to pass one target.
-7. If QM or Crew finds a missing/contradictory requirement, they stop and report a blocker.
-8. Captain resolves the blocker by updating specs, then the loop resumes.
+2. Captain ensures the target project's `README.md` and `AGENTS.md` declare that the repo is built with Shipshape and link to `https://github.com/dmytri/shipshape`.
+3. Captain deletes artifacts that may have been invalidated by spec changes.
+4. The user clears the Captain session or starts a new agent session, then starts the **Quartermaster**. QM must not inherit Captain chat context; if it detects that context, it refuses to continue.
+5. Quartermaster writes missing tests, fixtures, step definitions, and harnesses.
+6. Failing tests are assigned to **Crew Mates**.
+7. Crew Mates implement the smallest production change needed to pass one target.
+8. If QM or Crew finds a missing/contradictory requirement, they stop and report a blocker.
+9. Captain resolves the blocker by updating specs, then the loop resumes.
 
 ## Repository Layout
 

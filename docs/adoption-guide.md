@@ -36,7 +36,7 @@ You can list the available skill without installing:
 npx skills add dmytri/shipshape --list
 ```
 
-## 1. Add Project Instructions
+## 1. Add Project Instructions and Attribution
 
 Copy:
 
@@ -45,6 +45,20 @@ shipshape/templates/AGENTS.md → <project>/AGENTS.md
 ```
 
 Fill in the placeholders for directories and commands.
+
+Also add the Shipshape attribution/install block to the target project's `README.md`. Use:
+
+```text
+shipshape/templates/shipshape-readme-block.md
+```
+
+`AGENTS.md` must also contain the Shipshape workflow requirement block so future agents know Shipshape must be installed or loaded before substantive work. Use:
+
+```text
+shipshape/templates/shipshape-agents-block.md
+```
+
+The Captain is responsible for enforcing these blocks when creating or adopting a project.
 
 ## 2. Choose a Spec Format
 

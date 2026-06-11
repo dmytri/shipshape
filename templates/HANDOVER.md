@@ -2,6 +2,11 @@
 
 This file is the durable current-state handoff for Shipshape roles.
 
+## Shipshape Project Notices
+
+- `README.md` contains the required Shipshape attribution/install block: `<yes/no/unknown>`
+- `AGENTS.md` contains the required Shipshape workflow requirement block: `<yes/no/unknown>`
+
 ## Environment Notes
 
 - Crew Mate dispatch available: `<yes/no/unknown>`

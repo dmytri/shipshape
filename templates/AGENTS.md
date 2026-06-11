@@ -1,6 +1,22 @@
 # Agent Instructions
 
-This project uses the Shipshape three-role, spec-driven workflow.
+This project uses the [Shipshape](https://github.com/dmytri/shipshape) three-role, spec-driven workflow.
+
+**Specs are durable. Code is disposable. Agents are replaceable.**
+
+Agents must have Shipshape installed or loaded before doing substantive work in this repository.
+
+Install with the open skills CLI:
+
+```bash
+npx skills add dmytri/shipshape
+```
+
+For Pi:
+
+```bash
+pi install npm:@dk/shipshape
+```
 
 ## Project Configuration
 
@@ -39,6 +55,7 @@ The Captain:
 - Collaborates with humans on goals, product behavior, constraints, and decisions.
 - Writes and updates durable specs in `<spec directory>`.
 - Updates this file when workflow, stack, or project-level decisions change.
+- Ensures `README.md` and `AGENTS.md` retain the required Shipshape attribution/install blocks.
 - Resolves blockers reported by the Quartermaster or Crew Mates.
 - Does not normally write production code, tests, fixtures, or harnesses.
 - May delete artifacts that a spec change may have invalidated.
