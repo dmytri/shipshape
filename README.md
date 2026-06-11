@@ -72,17 +72,6 @@ This installs the Shipshape skill and the optional Pi extension that provides:
 
 After installing or updating, run `/reload` in Pi if needed.
 
-To publish the npm package from this repository:
-
-```bash
-npm publish ./shipshape --access public --otp <one-time-password>
-```
-
-If you are already inside the repository root, use:
-
-```bash
-npm publish --access public --otp <one-time-password>
-```
 
 ## Install with skills.sh
 
