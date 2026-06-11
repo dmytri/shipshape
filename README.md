@@ -57,9 +57,7 @@ shipshape/
 
 ## Install with Pi
 
-Shipshape includes Pi package metadata for npm package `@dk/shipshape`.
-
-After the package is published to npm, install it in Pi with:
+Install Shipshape in Pi:
 
 ```bash
 pi install npm:@dk/shipshape
