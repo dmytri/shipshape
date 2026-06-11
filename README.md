@@ -81,6 +81,20 @@ Preview/use without installing:
 npx skills use dmytri/shipshape
 ```
 
+List the skill discovered by the CLI:
+
+```bash
+npx skills add dmytri/shipshape --list
+```
+
+The public skills.sh page is:
+
+```text
+https://skills.sh/dmytri/shipshape
+```
+
+skills.sh discovers public GitHub skill repositories after they are seen by the `skills` CLI. If the page or badge has not appeared yet, run a normal install once and allow time for the skills.sh cache to refresh.
+
 ## Quick Adoption
 
 1. Install with `npx skills add dmytri/shipshape` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
