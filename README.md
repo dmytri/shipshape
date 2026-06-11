@@ -73,6 +73,22 @@ Human ↔ Captain → specs/instructions + assets/ → Quartermaster → tests �
 9. If QM or Crew finds a missing/contradictory requirement, they stop and report a blocker.
 10. Captain resolves the blocker by updating specs, then the loop resumes.
 
+## Durable `assets/`
+
+Shipshape treats a project-root `assets/` directory as durable human/Captain-authored source material, not generated implementation output.
+
+Use `assets/` for things specs depend on but agents should not casually rewrite, such as:
+
+- approved copy or content,
+- brand files and design references,
+- images, mockups, diagrams, or screenshots,
+- reference data,
+- fixture-like examples explicitly approved as source material.
+
+Captain may create or update `assets/**` while clarifying product intent with the human. Quartermaster and Crew Mate may read `assets/**`, but must treat it as read-only: QM can derive tests from assets, and Crew can implement behavior that consumes them, but neither role should edit or delete them.
+
+This keeps durable authored material separate from generated tests, fixtures, harnesses, and implementation code. See `templates/assets-policy.md` for a reusable project policy.
+
 ## Repository Layout
 
 ```text
