@@ -4,6 +4,8 @@
 
 Shipshape is a portable three-role, spec-driven workflow for coding agents.
 
+**Specs are durable. Code is disposable. Agents are replaceable.**
+
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
 
 ## The Idea
