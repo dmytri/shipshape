@@ -16,7 +16,7 @@ Shipshape reduces those risks by assigning each role a narrow charter and making
 
 Durable artifacts include:
 
-- specs and feature files,
+- Gherkin feature files (`.feature`) — the canonical spec format,
 - project instructions,
 - tests and fixtures,
 - handover files,
@@ -35,7 +35,7 @@ Non-durable artifacts include:
 
 ```text
 Human ↔ Captain
-Captain → specs/instructions + assets/
+Captain → Gherkin .feature files + assets/
 clear session / start fresh agent
 Quartermaster → tests/harness/coverage
 Crew Mate → minimal implementation
@@ -52,7 +52,7 @@ Use the Captain when:
 - making product or architectural decisions,
 - updating agent instructions.
 
-The Captain writes durable specs and may create/edit durable assets under root `assets/`. These assets can include content, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
+The Captain writes durable Gherkin feature files and may create/edit durable assets under root `assets/`. These assets can include content, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
 
 The Captain may delete stale generated/derived artifacts, but must not delete `assets/**` unless the human explicitly asks, committed specs retire the asset, or the asset was created by mistake in the same Captain session.
 

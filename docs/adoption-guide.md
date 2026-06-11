@@ -68,17 +68,19 @@ assets/
 
 Use `templates/assets-policy.md` for the project asset policy. Specs should reference approved assets directly, for example `assets/content/homepage.md` or `assets/brand/logo.svg`.
 
-## 2. Choose a Spec Format
+## 2. Spec Format: Gherkin Feature Files
 
-Shipshape works with many spec formats:
+Shipshape uses **Gherkin `.feature` files** as the canonical spec format. The Captain writes durable behavior as `Feature`, `Rule`, and `Scenario` blocks; the Quartermaster turns them into executable step definitions and tests; Crew Mates implement code to pass the scenarios.
 
-- Gherkin `.feature` files,
-- markdown requirements,
-- ADRs,
-- test plans,
-- issue files committed to the repo.
+A feature file template is provided:
 
-The format matters less than durability and clarity. Put specs in `<spec directory>`.
+```text
+shipshape/templates/feature-template.feature
+```
+
+Put feature files in `<spec directory>`.
+
+Other spec formats (markdown requirements, ADRs, test plans, committed issue files) can supplement Gherkin, but Gherkin `.feature` files should be the primary durable specification.
 
 ## 3. Configure Verification
 

@@ -1,3 +1,7 @@
+# Gherkin feature file template for Shipshape
+# This is the canonical spec format. Captain writes these files.
+# Quartermaster turns them into step definitions and tests.
+#
 Feature: <feature name>
   As a <user or system>
   I want <capability>

@@ -56,7 +56,7 @@ Most agent failures come from hidden context:
 Shipshape fixes that by making repository artifacts the source of truth.
 
 ```text
-Human ↔ Captain → specs/instructions + assets/ → Quartermaster → tests → Crew Mate → code
+Human ↔ Captain → Gherkin .feature files + assets/ → Quartermaster → tests → Crew Mate → code
 ```
 
 ## Roles
@@ -69,7 +69,7 @@ Human ↔ Captain → specs/instructions + assets/ → Quartermaster → tests �
 
 ## Core Workflow
 
-1. **Captain** collaborates with the human and updates durable specs/instructions.
+1. **Captain** collaborates with the human and writes durable Gherkin feature files (`.feature`) in `<spec directory>`.
 2. Captain may create/edit durable human-authored assets under root `assets/` when specs reference content, brand files, images, mockups, reference data, or approved fixture-like examples.
 3. Captain ensures the target project's `README.md` and `AGENTS.md` declare that the repo is built with Shipshape and link to `https://github.com/dmytri/shipshape`.
 4. Captain deletes generated/derived artifacts that may have been invalidated by spec changes, but does not delete `assets/**` unless explicitly instructed or specs retire the asset.

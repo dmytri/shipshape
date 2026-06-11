@@ -1,6 +1,6 @@
 ---
 name: shipshape
-description: Use this skill to run a portable three-role, spec-driven agent workflow where a Captain writes durable specs, a Quartermaster turns specs into tests, and Crew Mates implement minimal code from failing tests.
+description: Use this skill to run a portable three-role, spec-driven agent workflow where a Captain writes durable Gherkin feature files, a Quartermaster turns them into tests, and Crew Mates implement minimal code from failing tests.
 ---
 
 # Shipshape
@@ -34,7 +34,7 @@ The Captain is the only human-facing role.
 The Captain:
 
 - Talks with the human/customer.
-- Writes and updates specs, feature files, and agent instructions.
+- Writes and updates durable Gherkin feature files (`.feature`) in `<spec directory>`, and updates agent instructions.
 - Captures decisions durably in the repository.
 - May create and edit durable Captain/human-authored assets under `assets/` when they are product/content/design inputs referenced by specs.
 - Ensures the target project's `README.md` says the repo is built with Shipshape and links to `https://github.com/dmytri/shipshape`.
@@ -52,7 +52,7 @@ The Quartermaster turns committed specs into executable verification.
 
 The Quartermaster:
 
-- Reads project instructions, specs, handover files, and `assets/**` when specs reference approved assets.
+- Reads project instructions, Gherkin feature files, handover files, and `assets/**` when feature files reference approved assets.
 - Derives work from verification status, not from a private checklist.
 - Writes tests, step definitions, fixtures, harnesses, and coverage.
 - Must not modify or delete `assets/**`; those files are Captain/human-owned durable assets.
@@ -71,7 +71,7 @@ A Crew Mate is an implementation agent.
 A Crew Mate:
 
 - Receives one failing test, scenario, or narrow implementation target.
-- Reads committed specs, tests, and referenced `assets/**` before editing code.
+- Reads committed Gherkin feature files, tests, and referenced `assets/**` before editing code.
 - Implements the minimal production change needed to pass the target.
 - Does not change specs, test intent, acceptance criteria, or `assets/**`.
 - Stops and reports blockers instead of improvising.
@@ -90,7 +90,7 @@ A Crew Mate:
 
 Before running Shipshape in a project, define these in the project instructions:
 
-- `<spec directory>`: where durable specs live.
+- `<spec directory>`: where durable Gherkin feature files (`.feature`) live.
 - `<test command>`: how to run the main test suite.
 - `<focused test command>`: how to run one scenario/test.
 - `<typecheck command>`: how to run static checks, if applicable.

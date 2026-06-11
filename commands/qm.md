@@ -19,7 +19,7 @@ Read, in order:
 
 1. `AGENTS.md` or equivalent project workflow instructions.
 2. `<handover file>` if present.
-3. Relevant specs/tests for: $ARGUMENTS
+3. Relevant Gherkin feature files and tests for: $ARGUMENTS
 
 Derive work from verification status:
 

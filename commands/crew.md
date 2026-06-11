@@ -12,8 +12,8 @@ $ARGUMENTS
 Rules:
 
 - Read `AGENTS.md` or equivalent project instructions.
-- Read the relevant specs and tests before changing code.
-- Use committed specs/tests as the source of product behavior.
+- Read the relevant Gherkin feature files and tests before changing code.
+- Use committed Gherkin feature files and tests as the source of product behavior.
 - Implement the minimal production change needed.
 - Do not change specs, acceptance criteria, or test intent.
 - Do not broaden scope or refactor unrelated code.

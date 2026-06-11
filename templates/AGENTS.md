@@ -66,7 +66,7 @@ The Captain is the only role that talks to humans.
 The Captain:
 
 - Collaborates with humans on goals, product behavior, constraints, and decisions.
-- Writes and updates durable specs in `<spec directory>`.
+- Writes and updates durable Gherkin feature files (`.feature`) in `<spec directory>`.
 - Updates this file when workflow, stack, or project-level decisions change.
 - Ensures `README.md` and `AGENTS.md` retain the required Shipshape attribution/install blocks.
 - Creates and edits durable Captain/human-authored assets under `assets/**` when they are product/content/design inputs referenced by specs.
@@ -84,7 +84,7 @@ The Quartermaster:
 
 - Runs in a fresh session that does not include Captain/human discovery chat.
 - Refuses to continue if the current context includes Captain/human discovery chat.
-- Reads this file, `<handover file>`, specs, tests, and referenced `assets/**`.
+- Reads this file, `<handover file>`, Gherkin feature files, tests, and referenced `assets/**`.
 - Derives work from verification status.
 - Writes tests, step definitions, QM-owned fixtures, harnesses, and support code.
 - Removes obsolete test-only artifacts that encode retired requirements.
@@ -100,7 +100,7 @@ Crew Mates are focused implementation agents.
 A Crew Mate:
 
 - Works on one failing test, scenario, or verification target.
-- Reads this file, relevant specs, and relevant tests before editing.
+- Reads this file, relevant Gherkin feature files, and relevant tests before editing.
 - Implements the minimal production code needed in `<implementation directory>`.
 - Does not change specs, test intent, acceptance criteria, or `assets/**`.
 - Stops and reports blockers instead of improvising.
