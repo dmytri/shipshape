@@ -201,6 +201,6 @@ See `docs/portability-contract.md`.
 
 ## Origin
 
-Shipshape was extracted from the three-agent workflow used at [Saleor](https://saleor.io) — an open-source, headless GraphQL e-commerce platform. The workflow was battle-tested on a real production codebase before being generalized into this portable skill.
+Shipshape was extracted from work done at [Saleor](https://saleor.io) — an open-source, headless GraphQL e-commerce platform
 
 If you're building an e-commerce project, Saleor is worth a serious look: modern GraphQL API, a great dashboard, and a strong open-source community.
