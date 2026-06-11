@@ -44,6 +44,7 @@ Any adapter must preserve these rules:
 7. Work is derived from verification status.
 8. Fresh sessions must be able to continue from repository files alone.
 9. Quartermaster must be invoked in a fresh/cleared context after Captain; it must never inherit Captain chat context.
+10. Quartermaster must enforce a context firewall: if it detects Captain/human discovery context in the current session, it refuses to continue.
 
 ## May Adapt
 

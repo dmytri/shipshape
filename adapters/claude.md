@@ -23,7 +23,11 @@ Claude-style agents can use Shipshape as repository instructions, slash commands
 ## Usage
 
 - `/captain <topic>` for discovery/spec updates.
-- Start a new/cleared session, then `/qm <optional focus>` for verification work. Do not run `/qm` in the Captain conversation.
+- Start a new/cleared session, then `/qm <optional focus>` for verification work. Do not run `/qm` in the Captain conversation. The QM command prompt includes a context-firewall refusal if it detects Captain/human discovery context.
 - `/crew <failing target>` for manual Crew Mate implementation.
+
+## Quartermaster Context Firewall
+
+Claude command prompts cannot reliably prevent a user from typing `/qm` in the wrong chat, so enforcement is prompt-level: `.claude/commands/qm.md` instructs QM to inspect visible conversation context first and refuse if Captain/human discovery context is present.
 
 If subagents are unavailable, document that in `HANDOVER.md` and let the Quartermaster use the fallback rule.

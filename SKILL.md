@@ -23,6 +23,8 @@ Every role must be able to start in a fresh session and continue from committed 
 
 When moving from Captain to Quartermaster, the user must clear the current agent session or start a new agent session before invoking the Quartermaster. The Quartermaster must never inherit Captain chat context; it may only use committed repository artifacts and explicit durable handoff files.
 
+The Quartermaster must enforce a context firewall. If invoked in a session containing Captain/human discovery context, it must refuse to continue and ask for a fresh/cleared session.
+
 ## Roles
 
 ### Captain
@@ -98,6 +100,7 @@ Recommended supporting docs in this repository:
 - `docs/workflow.md` — full workflow description.
 - `docs/adoption-guide.md` — how to add Shipshape to a project.
 - `docs/portability-contract.md` — runtime-neutral rules.
+- `docs/context-firewall.md` — Quartermaster fresh-context refusal behavior.
 - `agents/*.md` — role charters.
 - `commands/*.md` — command-style entrypoints.
 - `templates/*` — project bootstrap templates.

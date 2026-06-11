@@ -39,6 +39,8 @@ Before starting Quartermaster, clear the Captain chat or open a new Cursor chat/
 
 This is mandatory: the Quartermaster must not inherit Captain/human discovery context. It should read only committed specs, tests, instructions, and explicit durable handoff files.
 
+The Quartermaster prompt includes a context-firewall refusal. If it can see Captain/human discovery context, it must stop and ask you to start a fresh/cleared chat.
+
 Start the new chat with the Quartermaster prompt from `agents/quartermaster.md`.
 
 ### Crew Mate
@@ -65,7 +67,7 @@ If you keep a Cursor rules file, use language like:
 This project uses Shipshape.
 Read AGENTS.md before substantive work.
 Use Captain for human-facing spec work.
-Use Quartermaster only in a fresh/cleared chat after Captain.
+Use Quartermaster only in a fresh/cleared chat after Captain. If Quartermaster detects Captain/human discovery context, it must refuse to continue.
 Use Crew Mate for one failing test/scenario at a time.
 Do not rely on prior chat for product requirements.
 ```

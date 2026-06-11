@@ -12,7 +12,7 @@ Hermes integration details are intentionally treated as runtime-specific. Shipsh
 ## Role Mapping
 
 - Human-facing planning session → Captain.
-- Fresh/cleared test/harness/coverage session → Quartermaster.
+- Fresh/cleared test/harness/coverage session → Quartermaster. If Quartermaster detects Captain/human discovery context, it refuses to continue.
 - Focused implementation session → Crew Mate.
 
 ## Dispatch

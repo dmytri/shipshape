@@ -26,7 +26,7 @@ For a project using Shipshape:
 2. Fill in the project-specific placeholders.
 3. Optionally copy `templates/HANDOVER.md`.
 4. Ask the Zed agent to use the Shipshape skill and run the Captain role first.
-5. Before running Quartermaster, clear the session or start a fresh agent session so QM does not inherit Captain chat context.
+5. Before running Quartermaster, clear the session or start a fresh agent session so QM does not inherit Captain chat context. The Quartermaster prompt includes a context-firewall refusal if it detects Captain/human discovery context.
 
 ## Subagents
 

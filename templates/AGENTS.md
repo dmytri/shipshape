@@ -26,6 +26,8 @@ New agent sessions must be able to continue from repository documents alone.
 
 Before invoking the Quartermaster after a Captain session, clear the current conversation or start a new agent session. The Quartermaster must never inherit Captain/human chat context; it may only use committed specs, tests, instructions, and explicit durable handoff files.
 
+Quartermaster context firewall: if Quartermaster is invoked in a session containing Captain/human discovery context, it must refuse to continue and ask the user to clear the session or start a new agent session.
+
 ## Three-Role Workflow
 
 ### Captain
@@ -50,6 +52,7 @@ The Quartermaster converts committed specs into executable verification.
 The Quartermaster:
 
 - Runs in a fresh session that does not include Captain/human discovery chat.
+- Refuses to continue if the current context includes Captain/human discovery chat.
 - Reads this file, `<handover file>`, specs, and tests.
 - Derives work from verification status.
 - Writes tests, step definitions, fixtures, harnesses, and support code.

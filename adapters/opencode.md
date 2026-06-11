@@ -11,7 +11,7 @@ Use Shipshape as plain repository instructions:
 3. Keep role prompts from `agents/` accessible in the repository.
 4. Start sessions by pasting or referencing the desired role prompt:
    - Captain for human-facing specification work.
-   - Quartermaster for tests/harness/verification, only after clearing Captain context or starting a fresh session.
+   - Quartermaster for tests/harness/verification, only after clearing Captain context or starting a fresh session. The Quartermaster prompt must refuse if it detects Captain/human discovery context.
    - Crew Mate for one failing implementation target.
 
 ## If OpenCode Supports Commands

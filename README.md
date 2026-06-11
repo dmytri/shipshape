@@ -33,7 +33,7 @@ Human ↔ Captain → specs/instructions → Quartermaster → tests → Crew Ma
 
 1. **Captain** collaborates with the human and updates durable specs/instructions.
 2. Captain deletes artifacts that may have been invalidated by spec changes.
-3. The user clears the Captain session or starts a new agent session, then starts the **Quartermaster**. QM must not inherit Captain chat context.
+3. The user clears the Captain session or starts a new agent session, then starts the **Quartermaster**. QM must not inherit Captain chat context; if it detects that context, it refuses to continue.
 4. Quartermaster writes missing tests, fixtures, step definitions, and harnesses.
 5. Failing tests are assigned to **Crew Mates**.
 6. Crew Mates implement the smallest production change needed to pass one target.
@@ -107,7 +107,7 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
    - `<spec directory>`
    - `<implementation directory>`
 5. Start with the Captain.
-6. Before invoking Quartermaster, clear the session or start a fresh agent so QM only sees committed artifacts.
+6. Before invoking Quartermaster, clear the session or start a fresh agent so QM only sees committed artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
 
 See `docs/adoption-guide.md` for details.
 

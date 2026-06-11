@@ -61,6 +61,8 @@ Use the Quartermaster when specs need executable coverage.
 
 The Quartermaster must start from a fresh context. If the current session contains Captain discussion, stop and restart/clear before continuing.
 
+This is the Quartermaster context firewall: QM's first action is to check whether it can see Captain/human discovery context. If it can, it refuses to continue. See `docs/context-firewall.md`.
+
 The Quartermaster discovers work by running verification. Examples:
 
 - missing scenario definitions,

@@ -82,6 +82,8 @@ For an existing codebase, do not immediately delete code. First identify which a
 
 Before invoking Quartermaster, clear the Captain session or start a new agent session. This is mandatory: QM should never receive Captain/human chat context.
 
+Quartermaster prompts include a context-firewall refusal: if QM detects Captain/human discovery context in the current session, it must stop and ask for a fresh/cleared session.
+
 The Quartermaster should:
 
 1. run verification,

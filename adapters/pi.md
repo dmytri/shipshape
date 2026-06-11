@@ -29,7 +29,7 @@ The extension provides:
 - `/crew <failing target>`
 - `/clearrole`
 
-The `/qm` command includes a best-effort guard: if `/captain` was used earlier in the same Pi session, `/qm` refuses to start and tells the user to open a fresh session.
+The `/qm` command includes a programmatic best-effort guard: if `/captain` was used earlier in the same Pi session, `/qm` refuses to start and tells the user to open a fresh session. The QM prompt also includes the general context-firewall refusal for cases the extension cannot detect.
 
 ## Recommended Use
 
