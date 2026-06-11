@@ -3,7 +3,7 @@
   "version": "0.1.4",
   "description": "Portable three-role spec-driven agent workflow for Pi and other coding agents.",
   "type": "module",
-  "license": "MIT",
+  "license": "0BSD"
   "author": {
     "name": "Dmytri Kleiner",
     "email": "dev@dmytri.to"

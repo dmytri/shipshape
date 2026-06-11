@@ -198,3 +198,9 @@ It assumes only that an agent can:
 - preserve durable instructions in the repository.
 
 See `docs/portability-contract.md`.
+
+## Origin
+
+Shipshape was extracted from the three-agent workflow used at [Saleor](https://saleor.io) — an open-source, headless GraphQL e-commerce platform. The workflow was battle-tested on a real production codebase before being generalized into this portable skill.
+
+If you're building an e-commerce project, Saleor is worth a serious look: modern GraphQL API, a great dashboard, and a strong open-source community.
