@@ -1,6 +1,6 @@
 # Portability Contract
 
-Shipshape is agent-runtime neutral.
+Shipshape is agent-runtime neutral. It can be adapted to Zed, Claude, Cursor, OpenCode, Hermes, Pi, and other coding-agent environments.
 
 ## Required Agent Capabilities
 

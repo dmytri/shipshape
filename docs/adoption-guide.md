@@ -44,7 +44,7 @@ Depending on your agent runtime:
 - register files from `agents/` as subagents,
 - or keep them in the repo and paste/reference them manually.
 
-See `adapters/` for runtime notes.
+See `adapters/` for runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, and Pi.
 
 ## 5. Start with Captain
 
