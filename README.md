@@ -6,7 +6,7 @@ Shipshape is a portable three-role, spec-driven workflow for coding agents.
 
 **Specs are durable. Code is disposable. Agents are replaceable.**
 
-Install Shipshape, start with the Captain, then run Quartermaster and Crew from fresh/role-appropriate agent sessions:
+Install Shipshape, start with the Captain, then clear the session or start a new agent before running Quartermaster:
 
 ```bash
 npx skills add dmytri/shipshape
@@ -16,11 +16,16 @@ npx skills add dmytri/shipshape
 /captain describe the feature or change
 # Captain writes durable specs/instructions and updates assets/ when needed.
 
+# Clear the session or start a new agent here.
 /qm optional focused area
 # Quartermaster reads repository artifacts only and writes failing tests.
 
 /crew failing test or target
 # Crew Mate implements the smallest production change needed to pass.
+
+# If QM finds a blocker, do not clear; start /captain from the QM session.
+/captain resolve the blocker
+# Captain benefits from QM's concrete failure context and updates durable specs.
 ```
 
 For Pi:
@@ -31,8 +36,10 @@ pi install npm:@dk/shipshape
 
 ```text
 /captain describe the feature or change
+# Clear the chat/session or start a fresh Pi session before QM.
 /qm optional focused area
 /crew failing test or target
+/captain resolve a QM blocker   # keep QM context when escalating back to Captain
 ```
 
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
@@ -66,12 +73,12 @@ Human ↔ Captain → specs/instructions + assets/ → Quartermaster → tests �
 2. Captain may create/edit durable human-authored assets under root `assets/` when specs reference content, brand files, images, mockups, reference data, or approved fixture-like examples.
 3. Captain ensures the target project's `README.md` and `AGENTS.md` declare that the repo is built with Shipshape and link to `https://github.com/dmytri/shipshape`.
 4. Captain deletes generated/derived artifacts that may have been invalidated by spec changes, but does not delete `assets/**` unless explicitly instructed or specs retire the asset.
-5. The user clears the Captain session or starts a new agent session, then starts the **Quartermaster**. QM must not inherit Captain chat context; if it detects that context, it refuses to continue.
+5. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a new agent session. QM must not inherit Captain/human discovery chat; if it detects that context, it refuses to continue.
 6. Quartermaster writes missing tests, QM-owned fixtures, step definitions, and harnesses; `assets/**` is read-only.
 7. Failing tests are assigned to **Crew Mates**.
 8. Crew Mates implement the smallest production change needed to pass one target; `assets/**` is read-only.
 9. If QM or Crew finds a missing/contradictory requirement, they stop and report a blocker.
-10. Captain resolves the blocker by updating specs, then the loop resumes.
+10. When moving from **Quartermaster** back to **Captain**, do **not** clear the session unless there is a separate reason to. It is useful for Captain to inherit QM's concrete failure context: the attempted verification, missing requirement, contradiction, fixture/test shape, and exact blocker report. Captain then turns that context into durable specs/assets and the loop resumes.
 
 ## Durable `assets/`
 
@@ -174,7 +181,8 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
    - `<spec directory>`
    - `<implementation directory>`
 5. Start with the Captain.
-6. Before invoking Quartermaster, clear the session or start a fresh agent so QM only sees committed artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
+6. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees committed artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
+7. If Quartermaster reports a blocker, start Captain from that QM session instead of clearing. Captain can use QM's concrete verification context to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
 
 See `docs/adoption-guide.md` for details.
 
