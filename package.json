@@ -1,6 +1,6 @@
 {
   "name": "@dk/shipshape",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Portable three-role spec-driven agent workflow for Pi and other coding agents.",
   "type": "module",
   "license": "MIT",
