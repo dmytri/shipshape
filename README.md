@@ -55,7 +55,9 @@ shipshape/
 
 ## Install with Pi
 
-Shipshape is packaged for Pi as `@dk/shipshape`.
+Shipshape includes Pi package metadata for npm package `@dk/shipshape`.
+
+After the package is published to npm, install it in Pi with:
 
 ```bash
 pi install npm:@dk/shipshape
@@ -69,6 +71,18 @@ This installs the Shipshape skill and the optional Pi extension that provides:
 - `/clearrole`
 
 After installing or updating, run `/reload` in Pi if needed.
+
+To publish the npm package from this repository:
+
+```bash
+npm publish ./shipshape --access public --otp <one-time-password>
+```
+
+If you are already inside the repository root, use:
+
+```bash
+npm publish --access public --otp <one-time-password>
+```
 
 ## Install with skills.sh
 
