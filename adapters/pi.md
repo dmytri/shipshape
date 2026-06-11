@@ -21,14 +21,23 @@ Pi agent environments can also use Shipshape manually as plain text workflow ins
 
 When installed with `pi install npm:@dk/shipshape`, the package exposes `adapters/pi-extension.ts` through its `package.json` `pi.extensions` field.
 
+The installed Pi extension resolves role prompts in this order:
+
+1. Project-local overrides in `commands/*.md`, `.claude/commands/*.md`, or `.agents/commands/*.md`
+2. The packaged Shipshape prompts bundled with the installed npm package
+
+For `/crew`, it resolves the Crew Mate definition in this order:
+
+1. Project-local overrides in `agents/crew-mate.md`, `.claude/agents/crew-mate.md`, or `.agents/crew-mate.md`
+2. The packaged Shipshape `agents/crew-mate.md` bundled with the installed npm package
+
+So `pi install npm:@dk/shipshape` works out of the box, while still allowing project-local overrides when a project needs them.
+
 For optional manual project-local installation:
 
 1. Copy `adapters/pi-extension.ts` to the target project as `.pi/extensions/shipshape-roles.ts`.
-2. Keep command prompts available at either:
-   - `commands/captain.md`, `commands/qm.md`, `commands/crew.md`, or
-   - `.claude/commands/captain.md`, `.claude/commands/qm.md`, `.claude/commands/crew.md`.
-3. Optionally keep `agents/crew-mate.md` available for richer `/crew` instructions.
-4. Run `/reload` in Pi.
+2. Optionally add project-local overrides in `commands/*.md` / `agents/crew-mate.md` (or the `.claude` / `.agents` equivalents).
+3. Run `/reload` in Pi.
 
 The extension provides:
 
