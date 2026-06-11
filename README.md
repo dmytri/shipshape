@@ -63,7 +63,7 @@ Install Shipshape in Pi:
 pi install npm:@dk/shipshape
 ```
 
-This installs the Shipshape skill and the optional Pi extension that provides:
+This installs the Shipshape skill and Pi extension, which provides:
 
 - `/captain [topic]`
 - `/qm [optional focus]`
