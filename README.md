@@ -6,6 +6,35 @@ Shipshape is a portable three-role, spec-driven workflow for coding agents.
 
 **Specs are durable. Code is disposable. Agents are replaceable.**
 
+Install Shipshape, start with the Captain, then run Quartermaster and Crew from fresh/role-appropriate agent sessions:
+
+```bash
+npx skills add dmytri/shipshape
+```
+
+```text
+/captain describe the feature or change
+# Captain writes durable specs/instructions and updates assets/ when needed.
+
+/qm optional focused area
+# Quartermaster reads repository artifacts only and writes failing tests.
+
+/crew failing test or target
+# Crew Mate implements the smallest production change needed to pass.
+```
+
+For Pi:
+
+```bash
+pi install npm:@dk/shipshape
+```
+
+```text
+/captain describe the feature or change
+/qm optional focused area
+/crew failing test or target
+```
+
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
 
 ## The Idea
