@@ -1,9 +1,9 @@
 {
   "name": "@dk/shipshape",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Portable three-role spec-driven agent workflow for Pi and other coding agents.",
   "type": "module",
-  "license": "0BSD"
+  "license": "0BSD",
   "author": {
     "name": "Dmytri Kleiner",
     "email": "dev@dmytri.to"
