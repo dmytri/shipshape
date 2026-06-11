@@ -53,6 +53,23 @@ shipshape/
 └── docs/
 ```
 
+## Install with Pi
+
+Shipshape is packaged for Pi as `@dk/shipshape`.
+
+```bash
+pi install npm:@dk/shipshape
+```
+
+This installs the Shipshape skill and the optional Pi extension that provides:
+
+- `/captain [topic]`
+- `/qm [optional focus]`
+- `/crew <failing target>`
+- `/clearrole`
+
+After installing or updating, run `/reload` in Pi if needed.
+
 ## Install with skills.sh
 
 Install with the open skills CLI:

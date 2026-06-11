@@ -1,0 +1,65 @@
+{
+  "name": "@dk/shipshape",
+  "version": "0.1.0",
+  "description": "Portable three-role spec-driven agent workflow for Pi and other coding agents.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Dmytri Kleiner",
+    "email": "dev@dmytri.to"
+  },
+  "homepage": "https://github.com/dmytri/shipshape#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmytri/shipshape.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dmytri/shipshape/issues"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-skill",
+    "shipshape",
+    "agent-workflows",
+    "multi-agent",
+    "spec-driven-development",
+    "skills"
+  ],
+  "pi": {
+    "extensions": [
+      "./adapters/pi-extension.ts"
+    ],
+    "skills": [
+      "./"
+    ]
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "agents/",
+    "commands/",
+    "adapters/",
+    "templates/",
+    "docs/",
+    "skills.sh.json"
+  ],
+  "scripts": {
+    "pack:check": "npm pack --dry-run"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=20.6.0"
+  }
+}

@@ -1,6 +1,12 @@
 # Pi Adapter
 
-Pi agent environments can use Shipshape as plain text workflow instructions plus role prompts.
+Shipshape is installable as a Pi package:
+
+```bash
+pi install npm:@dk/shipshape
+```
+
+Pi agent environments can also use Shipshape as plain text workflow instructions plus role prompts.
 
 Shipshape also includes an optional Pi extension template at `adapters/pi-extension.ts`. The extension registers `/captain`, `/qm`, `/crew`, and `/clearrole` commands and injects the selected role instructions into the session prompt.
 
@@ -13,7 +19,9 @@ Shipshape also includes an optional Pi extension template at `adapters/pi-extens
 
 ## Optional Pi Slash Commands
 
-To enable slash commands in Pi:
+If installed with `pi install npm:@dk/shipshape`, the package exposes `adapters/pi-extension.ts` through its `package.json` `pi.extensions` field.
+
+For manual project-local installation:
 
 1. Copy `adapters/pi-extension.ts` to the target project as `.pi/extensions/shipshape-roles.ts`.
 2. Keep command prompts available at either:
