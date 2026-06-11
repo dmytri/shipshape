@@ -2,6 +2,32 @@
 
 Use this guide to add Shipshape to an existing project.
 
+## Install with skills.sh
+
+```bash
+npx skills add dmytri/shipshape
+```
+
+For a global install:
+
+```bash
+npx skills add dmytri/shipshape --global
+```
+
+For a specific agent:
+
+```bash
+npx skills add dmytri/shipshape --agent cursor
+npx skills add dmytri/shipshape --agent claude-code
+npx skills add dmytri/shipshape --agent zed
+```
+
+You can list the available skill without installing:
+
+```bash
+npx skills add dmytri/shipshape --list
+```
+
 ## 1. Add Project Instructions
 
 Copy:

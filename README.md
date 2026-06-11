@@ -1,5 +1,7 @@
 # Shipshape
 
+[![skills.sh](https://skills.sh/b/dmytri/shipshape)](https://skills.sh/dmytri/shipshape)
+
 Shipshape is a portable three-role, spec-driven workflow for coding agents.
 
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
@@ -51,9 +53,37 @@ shipshape/
 └── docs/
 ```
 
+## Install with skills.sh
+
+Install with the open skills CLI:
+
+```bash
+npx skills add dmytri/shipshape
+```
+
+Install globally:
+
+```bash
+npx skills add dmytri/shipshape --global
+```
+
+Install for a specific supported agent:
+
+```bash
+npx skills add dmytri/shipshape --agent cursor
+npx skills add dmytri/shipshape --agent claude-code
+npx skills add dmytri/shipshape --agent zed
+```
+
+Preview/use without installing:
+
+```bash
+npx skills use dmytri/shipshape
+```
+
 ## Quick Adoption
 
-1. Copy `templates/AGENTS.md` into your project and fill in the placeholders.
+1. Install with `npx skills add dmytri/shipshape` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
 2. Copy `templates/HANDOVER.md` if you want a durable current-state handoff.
 3. Copy role prompts from `agents/` or command entrypoints from `commands/` into your agent runtime.
 4. Configure your project-specific commands:
