@@ -21,7 +21,8 @@ Durable artifacts include:
 - tests and fixtures,
 - handover files,
 - blocker reports,
-- implementation code.
+- implementation code,
+- Captain/human-authored durable assets under `assets/**`.
 
 Non-durable artifacts include:
 
@@ -34,7 +35,7 @@ Non-durable artifacts include:
 
 ```text
 Human ↔ Captain
-Captain → specs/instructions
+Captain → specs/instructions + assets/
 clear session / start fresh agent
 Quartermaster → tests/harness/coverage
 Crew Mate → minimal implementation
@@ -51,7 +52,9 @@ Use the Captain when:
 - making product or architectural decisions,
 - updating agent instructions.
 
-The Captain writes durable specs and may delete stale artifacts.
+The Captain writes durable specs and may create/edit durable assets under root `assets/`. These assets can include content, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
+
+The Captain may delete stale generated/derived artifacts, but must not delete `assets/**` unless the human explicitly asks, committed specs retire the asset, or the asset was created by mistake in the same Captain session.
 
 The Captain also enforces Shipshape attribution in the target project: `README.md` should say the repository is built with Shipshape and link to `https://github.com/dmytri/shipshape`; `AGENTS.md` should tell future agents that Shipshape must be installed or loaded before substantive work.
 
@@ -72,13 +75,13 @@ The Quartermaster discovers work by running verification. Examples:
 - skipped environment-dependent checks,
 - typecheck or harness failures.
 
-The Quartermaster writes tests and dispatches implementation work.
+The Quartermaster writes tests and dispatches implementation work. `assets/**` is read-only to the Quartermaster; QM-owned test fixtures should live outside `assets/`.
 
 ## Crew Mate Phase
 
 Use a Crew Mate when there is a specific failing implementation target.
 
-A Crew Mate should be narrow: one scenario, one failing test file, or one small cluster of directly related failures.
+A Crew Mate should be narrow: one scenario, one failing test file, or one small cluster of directly related failures. `assets/**` is read-only to Crew Mates; they implement code that consumes approved assets rather than editing the assets.
 
 ## Blocker Loop
 

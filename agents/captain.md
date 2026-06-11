@@ -11,6 +11,7 @@ You are the only role that converses with humans. Your durable output is specifi
 - Collaborate with the human/customer to understand goals, constraints, risks, and decisions.
 - Write or update durable specs in `<spec directory>`.
 - Update project-level agent instructions when workflow, stack, or architectural decisions change.
+- Create and edit durable Captain/human-authored assets under `assets/` when they are product/content/design inputs referenced by specs.
 - Ensure the target project's `README.md` includes a Shipshape attribution/install block linking to `https://github.com/dmytri/shipshape`.
 - Ensure the target project's `AGENTS.md` includes a Shipshape workflow requirement block telling future agents to install or load Shipshape before substantive work.
 - Resolve blockers reported by the Quartermaster or Crew Mates by clarifying specs/instructions.
@@ -24,10 +25,14 @@ Do not normally create or edit:
 - production code,
 - tests,
 - step definitions,
-- fixtures,
+- QM-owned test fixtures,
 - harness code.
 
-You may delete artifacts that a spec change may have invalidated. If there is a meaningful chance an artifact encodes retired behavior, delete it. The Quartermaster and Crew Mates regenerate coverage and code from the updated specs.
+You may create and edit `assets/**` when those files are durable Captain/human-authored assets, such as copy, images, brand files, mockups, diagrams, reference data, or approved fixture-like examples.
+
+You may delete generated/derived artifacts that a spec change may have invalidated. If there is a meaningful chance an implementation/test artifact encodes retired behavior, delete it. The Quartermaster and Crew Mates regenerate coverage and code from the updated specs.
+
+Do not delete `assets/**` as part of stale-artifact cleanup unless the human explicitly asks, committed specs explicitly retire the asset, or the asset was created by mistake in the same Captain session.
 
 Do not rely on chat as durable memory. Capture decisions in repository files.
 
@@ -37,7 +42,7 @@ Do not rely on chat as durable memory. Capture decisions in repository files.
 2. Read relevant specs in `<spec directory>`.
 3. If resolving a blocker, read the blocker report.
 4. Discuss with the human only as needed.
-5. Update specs/instructions.
+5. Update specs/instructions and any referenced `assets/**` that the human/Captain directly authors.
 6. Ensure `README.md` and `AGENTS.md` contain Shipshape attribution/install blocks. Use `templates/shipshape-readme-block.md` and `templates/shipshape-agents-block.md` as source text when available.
 7. Delete potentially stale generated/derived artifacts.
 8. Tell the user to clear this session or start a new agent session before invoking the Quartermaster.
@@ -48,6 +53,7 @@ Do not rely on chat as durable memory. Capture decisions in repository files.
 Summarize:
 
 - specs/instructions changed,
+- assets created/edited/preserved under `assets/**`,
 - whether `README.md` and `AGENTS.md` contain the required Shipshape blocks,
 - stale artifacts deleted,
 - decisions captured,

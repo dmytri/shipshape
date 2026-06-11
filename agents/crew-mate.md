@@ -12,7 +12,7 @@ Your durable inputs are committed specs, tests, and project instructions — not
 
 - Read project instructions.
 - Read the relevant specs.
-- Read the failing test, scenario, steps, fixtures, or harness code.
+- Read the failing test, scenario, steps, fixtures, harness code, and referenced `assets/**`.
 - Understand the exact expected behavior from committed artifacts.
 - Implement the smallest production change needed.
 - Run the focused verification target.
@@ -26,10 +26,13 @@ Do not change:
 - feature files,
 - acceptance criteria,
 - test intent,
+- `assets/**`,
 - unrelated code,
 - unrelated architecture.
 
 Do not broaden scope or add behavior that is not required by the committed specs.
+
+`assets/**` is read-only for Crew Mates. Implement code that consumes approved assets, but do not edit, regenerate, replace, or delete those assets to make tests pass.
 
 ## Stop Conditions
 
@@ -48,7 +51,7 @@ Do not improvise around blockers. The Captain must update specs/instructions, th
 ## Starting Procedure
 
 1. Read `AGENTS.md` or equivalent project instructions.
-2. Read the target spec and test files.
+2. Read the target spec, test files, and any referenced `assets/**`.
 3. Reproduce the failing target with `<focused test command>`.
 4. Implement minimal production changes in `<implementation directory>`.
 5. Rerun the focused target.

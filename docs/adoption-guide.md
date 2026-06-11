@@ -44,7 +44,7 @@ Copy:
 shipshape/templates/AGENTS.md → <project>/AGENTS.md
 ```
 
-Fill in the placeholders for directories and commands.
+Fill in the placeholders for directories and commands. Use `assets/` as the default `<asset directory>` for durable Captain/human-authored assets.
 
 Also add the Shipshape attribution/install block to the target project's `README.md`. Use:
 
@@ -59,6 +59,14 @@ shipshape/templates/shipshape-agents-block.md
 ```
 
 The Captain is responsible for enforcing these blocks when creating or adopting a project.
+
+If the project needs human/Captain-authored copy, images, brand files, mockups, reference data, or approved fixture-like examples, create them under:
+
+```text
+assets/
+```
+
+Use `templates/assets-policy.md` for the project asset policy. Specs should reference approved assets directly, for example `assets/content/homepage.md` or `assets/brand/logo.svg`.
 
 ## 2. Choose a Spec Format
 

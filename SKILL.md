@@ -36,13 +36,15 @@ The Captain:
 - Talks with the human/customer.
 - Writes and updates specs, feature files, and agent instructions.
 - Captures decisions durably in the repository.
+- May create and edit durable Captain/human-authored assets under `assets/` when they are product/content/design inputs referenced by specs.
 - Ensures the target project's `README.md` says the repo is built with Shipshape and links to `https://github.com/dmytri/shipshape`.
 - Ensures the target project's `AGENTS.md` tells future agents to install or load Shipshape before substantive work.
 - Resolves blockers reported by Quartermasters or Crew Mates.
 - Avoids implementation work unless the user explicitly overrides the workflow.
 - May delete stale tests, fixtures, generated code, or implementation artifacts when a spec change may have invalidated them.
+- Must not delete `assets/**` during stale-artifact cleanup unless the human explicitly asks, committed specs retire the asset, or the asset was created by mistake in the same Captain session.
 
-The Captain does not normally write production code, tests, fixtures, or step definitions.
+The Captain does not normally write production code, tests, fixtures, or step definitions. The Captain may write durable assets under `assets/` such as copy, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples.
 
 ### Quartermaster
 
@@ -50,9 +52,10 @@ The Quartermaster turns committed specs into executable verification.
 
 The Quartermaster:
 
-- Reads project instructions, specs, and handover files.
+- Reads project instructions, specs, handover files, and `assets/**` when specs reference approved assets.
 - Derives work from verification status, not from a private checklist.
 - Writes tests, step definitions, fixtures, harnesses, and coverage.
+- Must not modify or delete `assets/**`; those files are Captain/human-owned durable assets.
 - Runs the project verification commands.
 - Dispatches Crew Mates for failing implementation tests.
 - Stops on missing, contradictory, or untestable requirements.
@@ -68,9 +71,9 @@ A Crew Mate is an implementation agent.
 A Crew Mate:
 
 - Receives one failing test, scenario, or narrow implementation target.
-- Reads committed specs and tests before editing code.
+- Reads committed specs, tests, and referenced `assets/**` before editing code.
 - Implements the minimal production change needed to pass the target.
-- Does not change specs, test intent, or acceptance criteria.
+- Does not change specs, test intent, acceptance criteria, or `assets/**`.
 - Stops and reports blockers instead of improvising.
 
 ## Workflow
@@ -94,6 +97,7 @@ Before running Shipshape in a project, define these in the project instructions:
 - `<implementation directory>`: where production code lives.
 - `<test directory>`: where tests/fixtures/harness files live.
 - `<handover file>`: optional current-state handoff, such as `HANDOVER.md`.
+- `<asset directory>`: protected Captain/human-authored assets, usually `assets/`.
 
 ## Supporting Files
 
@@ -105,4 +109,4 @@ Recommended supporting docs in this repository:
 - `docs/context-firewall.md` — Quartermaster fresh-context refusal behavior.
 - `agents/*.md` — role charters.
 - `commands/*.md` — command-style entrypoints.
-- `templates/*` — project bootstrap templates, including required target-project Shipshape attribution blocks.
+- `templates/*` — project bootstrap templates, including required target-project Shipshape attribution blocks and the `assets/` policy.

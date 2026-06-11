@@ -6,6 +6,8 @@ This repository is built with [Shipshape](https://github.com/dmytri/shipshape), 
 
 Agents must have Shipshape installed or loaded before doing substantive work in this repository.
 
+Durable Captain/human-authored assets live under root `assets/`. Quartermaster and Crew Mates may read `assets/**` but must not modify or delete it.
+
 Install with the open skills CLI:
 
 ```bash

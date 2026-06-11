@@ -27,6 +27,7 @@ Fill in these values before running the workflow:
 | `<spec directory>` | `<path>` |
 | `<test directory>` | `<path>` |
 | `<implementation directory>` | `<path>` |
+| `<asset directory>` | `assets/` |
 | `<handover file>` | `HANDOVER.md` |
 | `<verification discovery command>` | `<command or N/A>` |
 | `<test command>` | `<command>` |
@@ -44,6 +45,18 @@ Before invoking the Quartermaster after a Captain session, clear the current con
 
 Quartermaster context firewall: if Quartermaster is invoked in a session containing Captain/human discovery context, it must refuse to continue and ask the user to clear the session or start a new agent session.
 
+## Durable Assets
+
+Durable Captain/human-authored assets live in `<asset directory>`, usually `assets/`.
+
+`assets/**` may contain content, brand files, images, media, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
+
+Captain and humans may create/edit `assets/**`. Quartermaster and Crew Mates may read `assets/**`, write tests against it, and implement code that consumes it, but must not modify, rewrite, regenerate, or delete it.
+
+Captain must not delete `assets/**` during stale-artifact cleanup unless the human explicitly asks, committed specs explicitly retire the asset, or the asset was created by mistake in the same Captain session.
+
+QM-owned test fixtures live outside `assets/`, usually under `<test directory>`.
+
 ## Three-Role Workflow
 
 ### Captain
@@ -56,9 +69,10 @@ The Captain:
 - Writes and updates durable specs in `<spec directory>`.
 - Updates this file when workflow, stack, or project-level decisions change.
 - Ensures `README.md` and `AGENTS.md` retain the required Shipshape attribution/install blocks.
+- Creates and edits durable Captain/human-authored assets under `assets/**` when they are product/content/design inputs referenced by specs.
 - Resolves blockers reported by the Quartermaster or Crew Mates.
 - Does not normally write production code, tests, fixtures, or harnesses.
-- May delete artifacts that a spec change may have invalidated.
+- May delete generated/derived artifacts that a spec change may have invalidated, but does not delete `assets/**` except by explicit human instruction or committed spec retirement.
 
 If there is a meaningful chance a generated/derived artifact encodes retired behavior, the Captain should delete it. The Quartermaster and Crew Mates regenerate from current specs.
 
@@ -70,9 +84,9 @@ The Quartermaster:
 
 - Runs in a fresh session that does not include Captain/human discovery chat.
 - Refuses to continue if the current context includes Captain/human discovery chat.
-- Reads this file, `<handover file>`, specs, and tests.
+- Reads this file, `<handover file>`, specs, tests, and referenced `assets/**`.
 - Derives work from verification status.
-- Writes tests, step definitions, fixtures, harnesses, and support code.
+- Writes tests, step definitions, QM-owned fixtures, harnesses, and support code.
 - Removes obsolete test-only artifacts that encode retired requirements.
 - Dispatches Crew Mates for failing implementation tests.
 - Does not normally write production code.
@@ -88,7 +102,7 @@ A Crew Mate:
 - Works on one failing test, scenario, or verification target.
 - Reads this file, relevant specs, and relevant tests before editing.
 - Implements the minimal production code needed in `<implementation directory>`.
-- Does not change specs, test intent, or acceptance criteria.
+- Does not change specs, test intent, acceptance criteria, or `assets/**`.
 - Stops and reports blockers instead of improvising.
 
 ## Blocker Policy

@@ -20,10 +20,10 @@ I cannot continue as Quartermaster in this session because it contains Captain/h
 
 ## Responsibilities
 
-- Read project instructions, specs, and the handover file.
+- Read project instructions, specs, the handover file, and referenced `assets/**`.
 - Run verification discovery commands, such as `<dry-run command>` or `<test command>`.
 - Identify missing executable coverage.
-- Write tests, fixtures, step definitions, harness code, and test support files.
+- Write tests, QM-owned fixtures, step definitions, harness code, and test support files.
 - Keep tests aligned with specs.
 - Remove obsolete test-only artifacts that encode retired requirements.
 - Dispatch Crew Mates for failing implementation tests.
@@ -34,7 +34,9 @@ Do not normally write production implementation code.
 
 Fallback exception: if the runtime has no Crew Mate dispatch mechanism, you may implement after writing failing tests. Use this only when explicitly documented in the environment or handover.
 
-Do not change product specs, test intent, or acceptance criteria.
+Do not change product specs, test intent, acceptance criteria, or `assets/**`.
+
+`assets/**` is read-only for Quartermaster. It may include approved fixture-like files, but QM-owned test fixtures must live outside `assets/`, usually under `<test directory>`.
 
 ## Work Loop
 
@@ -57,7 +59,7 @@ Stop and report if you find:
 - impossible-to-test behavior,
 - missing harness conventions,
 - external dependency failure that cannot be safely skipped,
-- unclear ownership between spec/test/implementation.
+- unclear ownership between spec/test/implementation/assets.
 
 Do not accept ad hoc chat workarounds. The Captain must update specs/instructions first, then you can be rerun.
 
@@ -75,6 +77,7 @@ Read the committed specs and tests for behavior. Do not change specs or test int
 Summarize:
 
 - coverage written or updated,
+- referenced assets read from `assets/**`,
 - verification commands run,
 - Crew Mate targets dispatched,
 - green/failing/skipped status,

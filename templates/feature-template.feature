@@ -11,6 +11,7 @@ Feature: <feature name>
 
     Scenario: <expected behavior>
       Given <initial state>
+      And the approved asset "assets/<path-to-asset>" if this behavior depends on Captain/human-authored content, media, design, data, or fixture-like examples
       When <action>
       Then <observable result>
 

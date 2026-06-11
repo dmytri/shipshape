@@ -6,6 +6,7 @@ This file is the durable current-state handoff for Shipshape roles.
 
 - `README.md` contains the required Shipshape attribution/install block: `<yes/no/unknown>`
 - `AGENTS.md` contains the required Shipshape workflow requirement block: `<yes/no/unknown>`
+- `assets/` policy is documented and protected: `<yes/no/unknown>`
 
 ## Environment Notes
 
