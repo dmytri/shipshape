@@ -1,7 +1,7 @@
 {
-  "name": "@dk/shipshape",
-  "version": "0.1.6",
-  "description": "Portable three-role spec-driven agent workflow for Pi and other coding agents.",
+  "name": "pi-shipshape",
+  "version": "0.1.7",
+  "description": "Pi package for the Shipshape three-role spec-driven agent workflow.",
   "type": "module",
   "license": "0BSD",
   "author": {
@@ -11,7 +11,8 @@
   "homepage": "https://github.com/dmytri/shipshape#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dmytri/shipshape.git"
+    "url": "git+https://github.com/dmytri/shipshape.git",
+    "directory": "packages/pi-shipshape"
   },
   "bugs": {
     "url": "https://github.com/dmytri/shipshape/issues"
@@ -23,8 +24,7 @@
     "shipshape",
     "agent-workflows",
     "multi-agent",
-    "spec-driven-development",
-    "skills"
+    "spec-driven-development"
   ],
   "pi": {
     "extensions": [
@@ -45,9 +45,6 @@
     "docs/",
     "skills.sh.json"
   ],
-  "scripts": {
-    "pack:check": "npm pack --dry-run"
-  },
   "publishConfig": {
     "access": "public"
   },

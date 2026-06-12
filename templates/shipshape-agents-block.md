@@ -17,7 +17,7 @@ npx skills add dmytri/shipshape
 For Pi:
 
 ```bash
-pi install npm:@dk/shipshape
+pi install npm:pi-shipshape
 ```
 
 Follow the Shipshape role boundaries:

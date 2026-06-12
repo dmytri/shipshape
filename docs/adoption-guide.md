@@ -5,7 +5,7 @@ Use this guide to add Shipshape to an existing project.
 ## Install with Pi
 
 ```bash
-pi install npm:@dk/shipshape
+pi install npm:pi-shipshape
 ```
 
 This installs the Shipshape skill and Pi role extension. The extension provides `/captain`, `/qm`, `/crew`, and `/clearrole`.

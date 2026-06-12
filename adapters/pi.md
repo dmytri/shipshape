@@ -3,7 +3,7 @@
 Shipshape is installable as a Pi package:
 
 ```bash
-pi install npm:@dk/shipshape
+pi install npm:pi-shipshape
 ```
 
 Pi package installation includes both the Shipshape skill and the Pi extension at `adapters/pi-extension.ts`. The extension registers `/captain`, `/qm`, `/crew`, and `/clearrole` commands and injects the selected role instructions into the session prompt.
@@ -19,7 +19,7 @@ Pi agent environments can also use Shipshape manually as plain text workflow ins
 
 ## Pi Slash Commands
 
-When installed with `pi install npm:@dk/shipshape`, the package exposes `adapters/pi-extension.ts` through its `package.json` `pi.extensions` field.
+When installed with `pi install npm:pi-shipshape`, the package exposes `adapters/pi-extension.ts` through its `package.json` `pi.extensions` field.
 
 The installed Pi extension resolves role prompts in this order:
 
@@ -31,7 +31,7 @@ For `/crew`, it resolves the Crew Mate definition in this order:
 1. Project-local overrides in `agents/crew-mate.md`, `.claude/agents/crew-mate.md`, or `.agents/crew-mate.md`
 2. The packaged Shipshape `agents/crew-mate.md` bundled with the installed npm package
 
-So `pi install npm:@dk/shipshape` works out of the box, while still allowing project-local overrides when a project needs them.
+So `pi install npm:pi-shipshape` works out of the box, while still allowing project-local overrides when a project needs them.
 
 For optional manual project-local installation:
 

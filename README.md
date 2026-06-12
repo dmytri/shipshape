@@ -31,7 +31,7 @@ npx skills add dmytri/shipshape
 For Pi:
 
 ```bash
-pi install npm:@dk/shipshape
+pi install npm:pi-shipshape
 ```
 
 ```text
@@ -109,27 +109,11 @@ shipshape/
 └── docs/
 ```
 
-## Install with Pi
+## Distribution channels
 
-Install Shipshape in Pi:
+Shipshape is stack-agnostic. It is not an npm-first dependency model, and projects do not need JavaScript tooling to adopt it.
 
-```bash
-pi install npm:@dk/shipshape
-```
-
-This installs the Shipshape skill and Pi extension, which provides:
-
-- `/captain [topic]`
-- `/qm [optional focus]`
-- `/crew <failing target>`
-- `/clearrole`
-
-After installing or updating, run `/reload` in Pi if needed.
-
-
-## Install with skills.sh
-
-Install with the open skills CLI:
+For most agent runtimes, install Shipshape with the open skills CLI:
 
 ```bash
 npx skills add dmytri/shipshape
@@ -166,6 +150,23 @@ The public skills.sh page is:
 ```text
 https://skills.sh/dmytri/shipshape
 ```
+
+For Pi, install the Pi-specific package:
+
+```bash
+pi install npm:pi-shipshape
+```
+
+`pi-shipshape` exists to distribute the Pi extension and bundled Shipshape prompts through Pi's npm-based package system. Do not add `pi-shipshape` as a normal project dependency unless you specifically need Pi packaging behavior.
+
+The Pi package installs the Shipshape skill and Pi extension, which provides:
+
+- `/captain [topic]`
+- `/qm [optional focus]`
+- `/crew <failing target>`
+- `/clearrole`
+
+After installing or updating, run `/reload` in Pi if needed.
 
 skills.sh discovers public GitHub skill repositories after they are seen by the `skills` CLI. If the page or badge has not appeared yet, run a normal install once and allow time for the skills.sh cache to refresh.
 
