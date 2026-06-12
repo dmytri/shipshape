@@ -1,6 +1,6 @@
 {
   "name": "pi-shipshape",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Pi package for the Shipshape three-role spec-driven agent workflow.",
   "type": "module",
   "license": "0BSD",
@@ -31,13 +31,19 @@
       "./adapters/pi-extension.ts"
     ],
     "skills": [
-      "./"
+      "./shipshape",
+      "./captain",
+      "./qm",
+      "./crew"
     ]
   },
   "files": [
-    "SKILL.md",
     "README.md",
     "LICENSE",
+    "shipshape/",
+    "captain/",
+    "qm/",
+    "crew/",
     "agents/",
     "commands/",
     "adapters/",

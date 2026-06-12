@@ -6,10 +6,10 @@ Shipshape is a portable three-role, spec-driven workflow for coding agents.
 
 **Specs are durable. Code is disposable. Agents are replaceable.**
 
-Install Shipshape, start with the Captain, then clear the session or start a new agent before running Quartermaster:
+Install all Shipshape skills, start with the Captain, then clear the session or start a new agent before running Quartermaster:
 
 ```bash
-npx skills add dmytri/shipshape
+npx skills add dmytri/shipshape --skill '*'
 ```
 
 ```text
@@ -100,10 +100,13 @@ This keeps durable authored material separate from generated tests, fixtures, ha
 
 ```text
 shipshape/
-├── SKILL.md
+├── shipshape/SKILL.md          # orientation/router skill: /shipshape
+├── captain/SKILL.md            # role skill: /captain
+├── qm/SKILL.md                 # role skill: /qm
+├── crew/SKILL.md               # role skill: /crew
 ├── README.md
-├── agents/
-├── commands/
+├── agents/                     # portable role charters
+├── commands/                   # legacy/custom command entrypoints
 ├── adapters/
 ├── templates/
 └── docs/
@@ -113,33 +116,33 @@ shipshape/
 
 Shipshape is stack-agnostic. It is not an npm-first dependency model, and projects do not need JavaScript tooling to adopt it.
 
-For most agent runtimes, install Shipshape with the open skills CLI:
+For most agent runtimes, install all Shipshape skills with the open skills CLI:
 
 ```bash
-npx skills add dmytri/shipshape
+npx skills add dmytri/shipshape --skill '*'
 ```
 
 Install globally:
 
 ```bash
-npx skills add dmytri/shipshape --global
+npx skills add dmytri/shipshape --global --skill '*'
 ```
 
 Install for a specific supported agent:
 
 ```bash
-npx skills add dmytri/shipshape --agent cursor
-npx skills add dmytri/shipshape --agent claude-code
-npx skills add dmytri/shipshape --agent zed
+npx skills add dmytri/shipshape --agent cursor --skill '*'
+npx skills add dmytri/shipshape --agent claude-code --skill '*'
+npx skills add dmytri/shipshape --agent zed --skill '*'
 ```
 
 Preview/use without installing:
 
 ```bash
-npx skills use dmytri/shipshape
+npx skills use dmytri/shipshape --skill captain
 ```
 
-List the skill discovered by the CLI:
+List the skills discovered by the CLI:
 
 ```bash
 npx skills add dmytri/shipshape --list
@@ -159,7 +162,9 @@ pi install npm:pi-shipshape
 
 `pi-shipshape` exists to distribute the Pi extension and bundled Shipshape prompts through Pi's npm-based package system. Do not add `pi-shipshape` as a normal project dependency unless you specifically need Pi packaging behavior.
 
-The Pi package installs the Shipshape skill and Pi extension, which provides:
+The open skills install exposes `/shipshape` as an orientation/router skill and the role skills `/captain`, `/qm`, and `/crew` when installed with `--skill '*'`.
+
+The Pi package installs the bundled Shipshape prompts and Pi extension, which provides:
 
 - `/captain [topic]`
 - `/qm [optional focus]`
@@ -172,9 +177,9 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
 
 ## Quick Adoption
 
-1. Install with `npx skills add dmytri/shipshape` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
+1. Install with `npx skills add dmytri/shipshape --skill '*'` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
 2. Copy `templates/HANDOVER.md` if you want a durable current-state handoff.
-3. Copy role prompts from `agents/` or command entrypoints from `commands/` into your agent runtime.
+3. Use the role skills in `captain/`, `qm/`, and `crew/`; for runtimes without multi-skill support, copy role prompts from `agents/` or command entrypoints from `commands/` into your agent runtime.
 4. Configure your project-specific commands:
    - `<test command>`
    - `<focused test command>`

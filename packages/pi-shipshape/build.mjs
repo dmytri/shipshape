@@ -7,9 +7,12 @@ const repoRoot = resolve(packageDir, "../..");
 const outDir = join(repoRoot, "dist/pi-shipshape");
 
 const entries = [
-  "SKILL.md",
   "README.md",
   "LICENSE",
+  "shipshape",
+  "captain",
+  "qm",
+  "crew",
   "agents",
   "commands",
   "adapters",
