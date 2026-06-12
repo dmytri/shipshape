@@ -6,7 +6,7 @@ Shipshape is installable as a Pi package:
 pi install npm:pi-shipshape
 ```
 
-Pi package installation includes both the Shipshape skill and the Pi extension at `adapters/pi-extension.ts`. The extension registers `/captain`, `/qm`, `/crew`, and `/clearrole` commands and injects the selected role instructions into the session prompt.
+Pi package installation includes the bundled Shipshape prompts, four Shipshape skill directories, and the Pi extension at `adapters/pi-extension.ts`. The extension registers `/captain`, `/qm`, `/crew`, and `/clearrole` commands and injects the selected role instructions into the session prompt.
 
 Pi agent environments can also use Shipshape manually as plain text workflow instructions plus role prompts, without installing the package.
 
@@ -14,8 +14,8 @@ Pi agent environments can also use Shipshape manually as plain text workflow ins
 
 1. Add `AGENTS.md` from `templates/AGENTS.md` to the project.
 2. Fill in the placeholders for commands and directories.
-3. Keep `agents/captain.md`, `agents/quartermaster.md`, and `agents/crew-mate.md` available.
-4. Start the correct role by loading or pasting the matching role prompt.
+3. Prefer the installed role skills (`captain`, `qm`, `crew`) where available, or keep `agents/captain.md`, `agents/quartermaster.md`, and `agents/crew-mate.md` available as manual fallback prompts.
+4. Start the correct role with `/captain`, `/qm`, or `/crew`, or by loading the matching fallback prompt.
 
 ## Pi Slash Commands
 

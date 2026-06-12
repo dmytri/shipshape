@@ -9,7 +9,7 @@ Agents must have Shipshape installed or loaded before doing substantive work in 
 Install with the open skills CLI:
 
 ```bash
-npx skills add dmytri/shipshape
+npx skills add dmytri/shipshape --skill '*'
 ```
 
 For Pi:

@@ -1,30 +1,46 @@
 # Cursor Adapter
 
-Cursor can use Shipshape as repository instructions plus reusable role prompts. Exact Cursor features may vary by version and workspace configuration, so this adapter avoids depending on a specific extension API.
+Cursor can use Shipshape as repository instructions plus reusable skills/role prompts. Exact Cursor features vary by version and workspace configuration, so this adapter keeps a skills-first path with manual fallbacks.
 
-## Recommended Project Layout
+## Preferred skills.sh install
+
+```bash
+npx skills add dmytri/shipshape --agent cursor --skill '*'
+```
+
+Expected project-local skill layout from the skills CLI:
+
+```text
+<project>/.agents/skills/shipshape/SKILL.md
+<project>/.agents/skills/captain/SKILL.md
+<project>/.agents/skills/qm/SKILL.md
+<project>/.agents/skills/crew/SKILL.md
+```
+
+Use the installed skills by name if your Cursor setup exposes skills to the agent. Otherwise, keep the role prompts available and reference them manually.
+
+## Recommended Project Files
 
 ```text
 <project>/AGENTS.md
-<project>/HANDOVER.md
+<project>/HANDOVER.md                         # optional
 <project>/.cursor/rules/shipshape.md          # optional, if your Cursor setup uses rules
-<project>/shipshape/agents/captain.md         # optional copied role prompt
-<project>/shipshape/agents/quartermaster.md   # optional copied role prompt
-<project>/shipshape/agents/crew-mate.md       # optional copied role prompt
+<project>/.agents/skills/*/SKILL.md           # preferred skills install
+<project>/shipshape/agents/*.md               # optional manual fallback prompts
 ```
 
 ## Minimal Setup
 
-1. Copy `templates/AGENTS.md` to `<project>/AGENTS.md` and fill in the placeholders.
-2. Copy `templates/HANDOVER.md` if you want durable current-state handoff.
-3. Keep the role prompts from `agents/` available in the repository or paste/reference them in Cursor chats.
-4. If your Cursor setup uses project rules, add a rule that points agents to `AGENTS.md` and the Shipshape role prompts.
+1. Install all Shipshape skills with `npx skills add dmytri/shipshape --agent cursor --skill '*'`.
+2. Copy `templates/AGENTS.md` to `<project>/AGENTS.md` and fill in the placeholders.
+3. Copy `templates/HANDOVER.md` if you want durable current-state handoff.
+4. If your Cursor setup uses project rules, add a rule that points agents to `AGENTS.md` and the Shipshape role skills.
 
 ## Using Roles in Cursor
 
 ### Captain
 
-Start a Cursor chat with the Captain prompt from `agents/captain.md`.
+Use the `captain` skill or `agents/captain.md` fallback prompt.
 
 Use this for:
 
@@ -39,13 +55,11 @@ Before starting Quartermaster, clear the Captain chat or open a new Cursor chat/
 
 This is mandatory: the Quartermaster must not inherit Captain/human discovery context. It should read only committed specs, tests, instructions, and explicit durable handoff files.
 
-The Quartermaster prompt includes a context-firewall refusal. If it can see Captain/human discovery context, it must stop and ask you to start a fresh/cleared chat.
-
-Start the new chat with the Quartermaster prompt from `agents/quartermaster.md`.
+Use the `qm` skill or `agents/quartermaster.md` fallback prompt. The QM prompt includes a context-firewall refusal. If it can see Captain/human discovery context, it must stop and ask you to start a fresh/cleared chat.
 
 ### Crew Mate
 
-Use a separate focused chat with `agents/crew-mate.md` for one failing verification target.
+Use the `crew` skill or `agents/crew-mate.md` fallback prompt for one failing verification target.
 
 Good target:
 
@@ -66,9 +80,9 @@ If you keep a Cursor rules file, use language like:
 ```md
 This project uses Shipshape.
 Read AGENTS.md before substantive work.
-Use Captain for human-facing spec work.
-Use Quartermaster only in a fresh/cleared chat after Captain. If Quartermaster detects Captain/human discovery context, it must refuse to continue.
-Use Crew Mate for one failing test/scenario at a time.
+Use the captain skill for human-facing spec work.
+Use the qm skill only in a fresh/cleared chat after Captain. If Quartermaster detects Captain/human discovery context, it must refuse to continue.
+Use the crew skill for one failing test/scenario at a time.
 Do not rely on prior chat for product requirements.
 ```
 

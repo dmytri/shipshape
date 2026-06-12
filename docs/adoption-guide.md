@@ -8,29 +8,29 @@ Use this guide to add Shipshape to an existing project.
 pi install npm:pi-shipshape
 ```
 
-This installs the Shipshape skill and Pi role extension. The extension provides `/captain`, `/qm`, `/crew`, and `/clearrole`.
+This installs the bundled Shipshape prompts and Pi role extension. The extension provides `/captain`, `/qm`, `/crew`, and `/clearrole`.
 
 ## Install with skills.sh
 
 ```bash
-npx skills add dmytri/shipshape
+npx skills add dmytri/shipshape --skill '*'
 ```
 
 For a global install:
 
 ```bash
-npx skills add dmytri/shipshape --global
+npx skills add dmytri/shipshape --global --skill '*'
 ```
 
 For a specific agent:
 
 ```bash
-npx skills add dmytri/shipshape --agent cursor
-npx skills add dmytri/shipshape --agent claude-code
-npx skills add dmytri/shipshape --agent zed
+npx skills add dmytri/shipshape --agent cursor --skill '*'
+npx skills add dmytri/shipshape --agent claude-code --skill '*'
+npx skills add dmytri/shipshape --agent zed --skill '*'
 ```
 
-You can list the available skill without installing:
+You can list the available skills without installing:
 
 ```bash
 npx skills add dmytri/shipshape --list
@@ -94,13 +94,16 @@ Define:
 
 If a command does not exist, mark it `N/A`.
 
-## 4. Install Role Prompts
+## 4. Install Role Entrypoints
 
-Depending on your agent runtime:
+Preferred runtimes install the four sibling skills directly:
 
-- copy files from `commands/` into the runtime's command mechanism,
-- register files from `agents/` as subagents,
-- or keep them in the repo and paste/reference them manually.
+- `shipshape` — workflow orientation/router.
+- `captain` — human-facing discovery and specs.
+- `qm` — fresh-context verification and test coverage.
+- `crew` — focused implementation for one failing target.
+
+For runtimes without native skill support, use the portable role charters in `agents/` or legacy command prompts in `commands/`.
 
 See `adapters/` for runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, and Pi.
 

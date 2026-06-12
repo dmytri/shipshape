@@ -11,7 +11,7 @@ Durable Captain/human-authored assets live under root `assets/`; implementation 
 Install Shipshape:
 
 ```bash
-npx skills add dmytri/shipshape
+npx skills add dmytri/shipshape --skill '*'
 ```
 
 For Pi:

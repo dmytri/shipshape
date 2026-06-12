@@ -2,9 +2,28 @@
 
 Exact OpenCode integration details may vary by version and configuration. Shipshape does not require OpenCode-specific APIs.
 
+## Preferred skills.sh install
+
+If your OpenCode setup consumes `.agents/skills`, install all Shipshape skills into the project:
+
+```bash
+npx skills add dmytri/shipshape --skill '*'
+```
+
+This provides sibling skills:
+
+```text
+.agents/skills/shipshape/SKILL.md
+.agents/skills/captain/SKILL.md
+.agents/skills/qm/SKILL.md
+.agents/skills/crew/SKILL.md
+```
+
+Use `shipshape` for workflow orientation, `captain` for specs, `qm` for verification, and `crew` for focused implementation.
+
 ## Generic Pattern
 
-Use Shipshape as plain repository instructions:
+If OpenCode does not consume skills directly, use Shipshape as plain repository instructions:
 
 1. Add `AGENTS.md` from `templates/AGENTS.md` to the project root.
 2. Fill in command and directory placeholders.
@@ -24,4 +43,4 @@ Register `agents/crew-mate.md` as the implementation subagent. The Quartermaster
 
 ## If Not
 
-Run Crew Mate sessions manually, or allow the Quartermaster fallback after it has written failing tests.
+Run Crew Mate sessions manually, or allow the Quartermaster fallback after it has written failing tests and the fallback is documented in `HANDOVER.md`.
