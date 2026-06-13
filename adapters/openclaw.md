@@ -1,33 +1,12 @@
 # OpenClaw Adapter
 
-OpenClaw is supported directly by the `skills` CLI using the `openclaw` agent alias.
-
-## Install
-
-Project-local install:
+OpenClaw is supported directly by the `skills` CLI using the `openclaw` alias.
 
 ```bash
 npx skills add dmytri/shipshape --agent openclaw --skill '*'
 ```
 
-Expected project layout:
-
-```text
-<project>/skills/shipshape/SKILL.md
-<project>/skills/captain/SKILL.md
-<project>/skills/qm/SKILL.md
-<project>/skills/crew/SKILL.md
-```
-
-Global install:
-
-```bash
-npx skills add dmytri/shipshape --agent openclaw --global --skill '*'
-```
-
-The CLI installs global OpenClaw skills under `~/.openclaw/skills/`.
-
-## Usage
+Project-local installs go under `skills/`. See [`README.md`](README.md) for the full support matrix and expected sibling skill layout.
 
 Use the installed role skills by name:
 

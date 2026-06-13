@@ -149,6 +149,8 @@ npx skills add dmytri/shipshape --agent hermes-agent --skill '*'
 npx skills add dmytri/shipshape --agent aider-desk --skill '*'
 ```
 
+See `adapters/README.md` for the canonical support matrix, verified project-local install paths, and runtime-specific notes.
+
 Notes:
 
 - `nanobot` is not currently a valid `skills` CLI agent alias; use the manual fallback in `adapters/nanobot.md`.
@@ -221,7 +223,7 @@ It assumes only that an agent can:
 - run or request verification commands,
 - preserve durable instructions in the repository.
 
-See `docs/portability-contract.md` and the adapter notes in `adapters/` for runtime-specific install paths.
+See `docs/portability-contract.md` and `adapters/README.md` for runtime-specific install paths.
 
 ## Origin
 

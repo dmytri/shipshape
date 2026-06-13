@@ -10,9 +10,13 @@ npx skills add dmytri/shipshape --agent nanobot --skill '*'
 
 The CLI rejects `nanobot` and lists supported aliases such as `codex`, `github-copilot`, `openclaw`, `goose`, `hermes-agent`, `opencode`, `cursor`, `claude-code`, and `zed`.
 
-## Manual Fallback
+See [`README.md`](README.md) for the supported alias matrix.
 
-Until Nanobot is added to the `skills` CLI, use Shipshape as portable repository instructions:
+## Manual fallback
+
+Until Nanobot is added to the `skills` CLI, use Shipshape as portable repository instructions. The general fallback is documented in [`generic.md`](generic.md).
+
+Minimal Nanobot setup:
 
 1. Add `templates/AGENTS.md` to the project root and fill in placeholders.
 2. Keep role prompts from `agents/` available to Nanobot.

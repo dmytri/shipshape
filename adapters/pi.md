@@ -1,6 +1,6 @@
 # Pi Adapter
 
-Shipshape is installable as a Pi package:
+Pi uses its own package and extension mechanism. Install Shipshape for Pi with:
 
 ```bash
 pi install npm:pi-shipshape
@@ -8,16 +8,16 @@ pi install npm:pi-shipshape
 
 Pi package installation includes the bundled Shipshape prompts, four Shipshape skill directories, and the Pi extension at `adapters/pi-extension.ts`. The extension registers `/captain`, `/qm`, `/crew`, and `/clearrole` commands and injects the selected role instructions into the session prompt.
 
-Pi agent environments can also use Shipshape manually as plain text workflow instructions plus role prompts, without installing the package.
+Pi agent environments can also use Shipshape manually as plain text workflow instructions plus role prompts, without installing the package. For non-Pi generic fallback guidance, see [`generic.md`](generic.md).
 
-## Minimal Setup
+## Minimal setup
 
 1. Add `AGENTS.md` from `templates/AGENTS.md` to the project.
 2. Fill in the placeholders for commands and directories.
 3. Prefer the installed role skills (`captain`, `qm`, `crew`) where available, or keep `agents/captain.md`, `agents/quartermaster.md`, and `agents/crew-mate.md` available as manual fallback prompts.
 4. Start the correct role with `/captain`, `/qm`, or `/crew`, or by loading the matching fallback prompt.
 
-## Pi Slash Commands
+## Pi slash commands
 
 When installed with `pi install npm:pi-shipshape`, the package exposes `adapters/pi-extension.ts` through its `package.json` `pi.extensions` field.
 
@@ -48,13 +48,11 @@ The extension provides:
 
 The `/qm` command includes a programmatic best-effort guard: if `/captain` was used earlier in the same Pi session, `/qm` refuses to start and tells the user to open a fresh session. The QM prompt also includes the general context-firewall refusal for cases the extension cannot detect.
 
-## Recommended Use
+## Recommended use
 
 - Use Captain sessions for all human discussion and spec changes.
 - Use fresh/cleared Quartermaster sessions to generate and maintain tests. Do not run Quartermaster in a Captain conversation.
 - Use Crew Mate sessions to make a single failing target pass.
-
-## No Subagent Dispatch
 
 If Pi cannot dispatch subagents, either run Crew Mates manually or allow the documented Quartermaster fallback.
 

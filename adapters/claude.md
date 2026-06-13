@@ -1,12 +1,12 @@
-# Claude Adapter
+# Claude Code Adapter
 
-Claude Code can use Shipshape as first-class skills. The preferred Claude layout is multiple sibling skills: `/shipshape` explains the workflow while `/captain`, `/qm`, and `/crew` are the working role entrypoints.
-
-## Preferred skills.sh install
+Claude Code is supported by the `skills` CLI using the `claude-code` alias.
 
 ```bash
 npx skills add dmytri/shipshape --agent claude-code --skill '*'
 ```
+
+Project-local installs go under `.claude/skills/`. See [`README.md`](README.md) for the full support matrix and expected sibling skill layout.
 
 Expected Claude skill entrypoints when installed with `--skill '*'`:
 
@@ -14,14 +14,6 @@ Expected Claude skill entrypoints when installed with `--skill '*'`:
 - `/captain <topic>` — discovery/spec updates and blocker resolution.
 - `/qm <optional focus>` — fresh-context verification work.
 - `/crew <failing target>` — focused implementation.
-
-The role skills live in this repository at:
-
-```text
-captain/SKILL.md
-qm/SKILL.md
-crew/SKILL.md
-```
 
 ## Project files
 

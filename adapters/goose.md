@@ -1,33 +1,12 @@
 # Goose Adapter
 
-Goose is supported directly by the `skills` CLI using the `goose` agent alias.
-
-## Install
-
-Project-local install:
+Goose is supported directly by the `skills` CLI using the `goose` alias.
 
 ```bash
 npx skills add dmytri/shipshape --agent goose --skill '*'
 ```
 
-Expected project layout:
-
-```text
-<project>/.goose/skills/shipshape/SKILL.md
-<project>/.goose/skills/captain/SKILL.md
-<project>/.goose/skills/qm/SKILL.md
-<project>/.goose/skills/crew/SKILL.md
-```
-
-Global install:
-
-```bash
-npx skills add dmytri/shipshape --agent goose --global --skill '*'
-```
-
-The CLI installs global Goose skills under `~/.config/goose/skills/`.
-
-## Usage
+Project-local installs go under `.goose/skills/`. See [`README.md`](README.md) for the full support matrix and expected sibling skill layout.
 
 Use the installed skills by name:
 
