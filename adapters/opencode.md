@@ -4,10 +4,10 @@ Exact OpenCode integration details may vary by version and configuration. Shipsh
 
 ## Preferred skills.sh install
 
-If your OpenCode setup consumes `.agents/skills`, install all Shipshape skills into the project:
+Install all Shipshape skills with the `opencode` alias:
 
 ```bash
-npx skills add dmytri/shipshape --skill '*'
+npx skills add dmytri/shipshape --agent opencode --skill '*'
 ```
 
 This provides sibling skills:
@@ -17,6 +17,12 @@ This provides sibling skills:
 .agents/skills/captain/SKILL.md
 .agents/skills/qm/SKILL.md
 .agents/skills/crew/SKILL.md
+```
+
+Global install uses `~/.config/opencode/skills/`:
+
+```bash
+npx skills add dmytri/shipshape --agent opencode --global --skill '*'
 ```
 
 Use `shipshape` for workflow orientation, `captain` for specs, `qm` for verification, and `crew` for focused implementation.

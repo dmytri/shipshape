@@ -22,13 +22,31 @@ For a global install:
 npx skills add dmytri/shipshape --global --skill '*'
 ```
 
-For a specific agent:
+For every skills.sh-supported agent in the project:
 
 ```bash
-npx skills add dmytri/shipshape --agent cursor --skill '*'
+npx skills add dmytri/shipshape --agent '*' --skill '*'
+```
+
+For a specific supported agent:
+
+```bash
 npx skills add dmytri/shipshape --agent claude-code --skill '*'
 npx skills add dmytri/shipshape --agent zed --skill '*'
+npx skills add dmytri/shipshape --agent cursor --skill '*'
+npx skills add dmytri/shipshape --agent codex --skill '*'
+npx skills add dmytri/shipshape --agent github-copilot --skill '*'
+npx skills add dmytri/shipshape --agent opencode --skill '*'
+npx skills add dmytri/shipshape --agent openclaw --skill '*'
+npx skills add dmytri/shipshape --agent goose --skill '*'
+npx skills add dmytri/shipshape --agent hermes-agent --skill '*'
+npx skills add dmytri/shipshape --agent aider-desk --skill '*'
 ```
+
+Notes:
+
+- `nanobot` is not currently a valid `skills` CLI agent alias; use `adapters/nanobot.md` as a manual fallback.
+- Plain `aider` is not currently a valid alias; use `aider-desk` for AiderDesk.
 
 You can list the available skills without installing:
 
@@ -105,7 +123,7 @@ Preferred runtimes install the four sibling skills directly:
 
 For runtimes without native skill support, use the portable role charters in `agents/` or legacy command prompts in `commands/`.
 
-See `adapters/` for runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, and Pi.
+See `adapters/` for runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Nanobot fallback, and Pi.
 
 ## 5. Start with Captain
 

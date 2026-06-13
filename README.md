@@ -128,13 +128,31 @@ Install globally:
 npx skills add dmytri/shipshape --global --skill '*'
 ```
 
+Install for every skills.sh-supported agent in the project:
+
+```bash
+npx skills add dmytri/shipshape --agent '*' --skill '*'
+```
+
 Install for a specific supported agent:
 
 ```bash
-npx skills add dmytri/shipshape --agent cursor --skill '*'
 npx skills add dmytri/shipshape --agent claude-code --skill '*'
 npx skills add dmytri/shipshape --agent zed --skill '*'
+npx skills add dmytri/shipshape --agent cursor --skill '*'
+npx skills add dmytri/shipshape --agent codex --skill '*'
+npx skills add dmytri/shipshape --agent github-copilot --skill '*'
+npx skills add dmytri/shipshape --agent opencode --skill '*'
+npx skills add dmytri/shipshape --agent openclaw --skill '*'
+npx skills add dmytri/shipshape --agent goose --skill '*'
+npx skills add dmytri/shipshape --agent hermes-agent --skill '*'
+npx skills add dmytri/shipshape --agent aider-desk --skill '*'
 ```
+
+Notes:
+
+- `nanobot` is not currently a valid `skills` CLI agent alias; use the manual fallback in `adapters/nanobot.md`.
+- Plain `aider` is not currently a valid alias; use `aider-desk` for AiderDesk.
 
 Preview/use without installing:
 
@@ -203,7 +221,7 @@ It assumes only that an agent can:
 - run or request verification commands,
 - preserve durable instructions in the repository.
 
-See `docs/portability-contract.md`.
+See `docs/portability-contract.md` and the adapter notes in `adapters/` for runtime-specific install paths.
 
 ## Origin
 

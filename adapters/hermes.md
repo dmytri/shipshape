@@ -4,19 +4,25 @@ Hermes integration details are intentionally treated as runtime-specific. Shipsh
 
 ## Preferred skills.sh install
 
-If your Hermes setup consumes `.agents/skills`, install all Shipshape skills into the project:
+Install all Shipshape skills with the `hermes-agent` alias:
 
 ```bash
-npx skills add dmytri/shipshape --skill '*'
+npx skills add dmytri/shipshape --agent hermes-agent --skill '*'
 ```
 
 This provides sibling skills:
 
 ```text
-.agents/skills/shipshape/SKILL.md
-.agents/skills/captain/SKILL.md
-.agents/skills/qm/SKILL.md
-.agents/skills/crew/SKILL.md
+.hermes/skills/shipshape/SKILL.md
+.hermes/skills/captain/SKILL.md
+.hermes/skills/qm/SKILL.md
+.hermes/skills/crew/SKILL.md
+```
+
+Global install uses `~/.hermes/skills/`:
+
+```bash
+npx skills add dmytri/shipshape --agent hermes-agent --global --skill '*'
 ```
 
 ## Generic Adoption
