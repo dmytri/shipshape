@@ -75,6 +75,7 @@ The Captain is the only role that talks to humans.
 
 The Captain:
 
+- Checks whether the repo is ready for Captain attention; if hygiene, stale artifacts, verification recheck, or local commit custody is pending, hands off to Bosun and stops until the deck is clean.
 - Collaborates with humans on goals, product behavior, constraints, and decisions.
 - Writes and updates durable Gherkin feature files (`.feature`) in `<spec directory>`.
 - Updates this file when workflow, stack, or project-level decisions change.
@@ -133,7 +134,7 @@ Bosun:
 - Updates `HANDOVER.md` only to remove stale/misleading notes or reflect the clean final state.
 - Does not push, tag, publish, release, change product intent, add scenarios/tests, implement new product behavior, or weaken verification.
 
-No new Captain voyage from a dirty deck.
+No new Captain voyage from a dirty deck. Captain may discover the dirty deck and route to Bosun; Bosun cleans it.
 
 Bosun handles local repo hygiene and local commits only. Bosun does not push, tag, publish, or release.
 

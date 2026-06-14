@@ -64,6 +64,8 @@ Use the Captain when:
 - making product or architectural decisions,
 - updating agent instructions.
 
+The Captain first checks whether the repo is ready for Captain attention. If hygiene, stale artifacts, verification recheck, or local commit custody is pending, Captain hands off to Bosun and stops until Bosun leaves a clean deck.
+
 The Captain writes durable intent artifacts, not implementation code. Today the primary intent format is valid Gherkin feature files. Captain may also create/edit durable assets under root `assets/`. These assets can include content, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
 
 The Captain may note stale generated/derived artifacts in `HANDOVER.md`, but does not normally delete implementation, test, fixture, harness, snapshot, or generated verification artifacts. QM and Bosun handle cleanup in their phases.
@@ -103,7 +105,7 @@ Bosun (boatswain) owns repo hygiene and local commit custody. Bosun checks for o
 
 Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification. Bosun leaves the deck clean and the work committed, but does not send the ship out.
 
-No new Captain voyage from a dirty deck.
+No new Captain voyage from a dirty deck. Captain may discover the dirty deck and route to Bosun; Bosun cleans it.
 
 Bosun handles local repo hygiene and local commit custody only. Bosun must not push, tag, publish, or release.
 

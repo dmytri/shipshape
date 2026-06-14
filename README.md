@@ -95,17 +95,18 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 
 ## Core Workflow
 
-1. **Captain** collaborates with the human and writes durable Gherkin feature files (`.feature`) in `<spec directory>`.
-2. Captain may create/edit durable human-authored assets under root `assets/` when specs reference content, brand files, images, mockups, reference data, or approved fixture-like examples.
-3. Captain updates durable intent artifacts, including project instructions when workflow or product intent changes.
-4. Captain notes generated/derived artifacts that may have been invalidated by spec changes; QM or Bosun handles cleanup in later phases.
-5. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a new agent session. QM must not inherit Captain/human discovery chat; if it detects that context, it refuses to continue.
-6. Quartermaster writes missing tests, QM-owned fixtures, step definitions, and harnesses; `assets/**` is read-only.
-7. Failing tests are assigned to **Crew Mates**.
-8. Crew Mates implement the smallest production change needed to pass one target; `assets/**` is read-only.
-9. **Bosun** checks repo hygiene, removes obsolete artifacts, reruns verification, stages intended changes, and creates a local commit. Bosun does not push, tag, publish, release, change product intent, add scenarios/tests, or implement new behavior.
-10. If QM, Crew, or Bosun finds a missing/contradictory requirement, they stop and report a blocker.
-11. When moving from **Quartermaster**, **Crew Mate**, or **Bosun** back to **Captain**, do **not** clear the concrete blocker context unless there is a separate reason to. Captain then turns that context into durable specs/assets and the loop resumes.
+1. **Captain** first confirms the deck is ready for Captain attention. If hygiene, stale artifacts, verification recheck, or local commit custody is pending, Captain hands off to **Bosun** and stops.
+2. When the deck is ready, Captain collaborates with the human and writes durable Gherkin feature files (`.feature`) in `<spec directory>`.
+3. Captain may create/edit durable human-authored assets under root `assets/` when specs reference content, brand files, images, mockups, reference data, or approved fixture-like examples.
+4. Captain updates durable intent artifacts, including project instructions when workflow or product intent changes.
+5. Captain notes generated/derived artifacts that may have been invalidated by spec changes; QM or Bosun handles cleanup in later phases.
+6. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a new agent session. QM must not inherit Captain/human discovery chat; if it detects that context, it refuses to continue.
+7. Quartermaster writes missing tests, QM-owned fixtures, step definitions, and harnesses; `assets/**` is read-only.
+8. Failing tests are assigned to **Crew Mates**.
+9. Crew Mates implement the smallest production change needed to pass one target; `assets/**` is read-only.
+10. **Bosun** checks repo hygiene, removes obsolete artifacts, reruns verification, stages intended changes, and creates a local commit. Bosun does not push, tag, publish, release, change product intent, add scenarios/tests, or implement new behavior.
+11. If QM, Crew, or Bosun finds a missing/contradictory requirement, they stop and report a blocker.
+12. When moving from **Quartermaster**, **Crew Mate**, or **Bosun** back to **Captain**, do **not** clear the concrete blocker context unless there is a separate reason to. Captain then turns that context into durable specs/assets and the loop resumes.
 
 No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local commit custody, but does not push, tag, publish, or release.
 
@@ -260,9 +261,10 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
    - `<spec directory>`
    - `<implementation directory>`
 5. Start with the Captain.
-6. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees durable repo artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
-7. After Crew Mate makes verification pass, run Bosun to clean the repo and commit locally before the next Captain run.
-8. If Quartermaster, Crew Mate, or Bosun reports a blocker, start Captain from that blocker context instead of clearing. Captain can use the concrete evidence to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
+6. If Captain finds the deck unready, run Bosun first and return to Captain after Bosun leaves a clean deck.
+7. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees durable repo artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
+8. After Crew Mate makes verification pass, run Bosun to clean the repo and commit locally before the next Captain run.
+9. If Quartermaster, Crew Mate, or Bosun reports a blocker, start Captain from that blocker context instead of clearing. Captain can use the concrete evidence to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
 
 See `docs/adoption-guide.md` for details, `docs/golden-path.md` for an end-to-end example, and `docs/adoption-checklist.md` for readiness checks.
 

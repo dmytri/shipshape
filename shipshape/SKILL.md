@@ -40,7 +40,7 @@ Use `/captain` when:
 - Captain/human-owned files in `assets/**` need creation or edits,
 - Quartermaster or Crew Mate reports a blocker that needs product judgment.
 
-Captain is the only normal human-facing role. Captain does not normally write production code, tests, fixtures, or step definitions.
+Captain is the only normal human-facing role. Captain does not normally write production code, tests, fixtures, or step definitions. If Captain finds the repo unready for Captain attention, Captain routes to Bosun and stops until the deck is clean.
 
 ### Then run `/qm` in a fresh session
 
@@ -67,15 +67,16 @@ No new Captain voyage from a dirty deck.
 ## Workflow
 
 1. Start with `/captain` for discovery, product decisions, or blocker resolution.
-2. Captain updates durable specs/instructions and notes stale generated artifacts when useful.
-3. Clear the Captain session or start a new agent session.
-4. Run `/qm` so Quartermaster reads only durable repo artifacts, states which artifacts it used, and writes/updates executable coverage.
-5. Failing implementation tests become `/crew <target>` assignments.
-6. Clear/reset context where needed so Crew does not inherit product intent through chat.
-7. Crew Mates implement minimal production changes for exactly one target until that target passes.
-8. Run `/bosun` so Bosun leaves the deck clean and commits the work locally.
-9. The next Captain starts from a clean deck.
-10. If QM, Crew, or Bosun is blocked by missing or contradictory requirements, they report using `templates/blocker-report.md`; return to `/captain` to update durable specs/assets/instructions.
+2. If Captain finds the repo unready for Captain attention, run `/bosun <unready reason or change summary>` and return to Captain after Bosun leaves a clean deck.
+3. Captain updates durable specs/instructions and notes stale generated artifacts when useful.
+4. Clear the Captain session or start a new agent session.
+5. Run `/qm` so Quartermaster reads only durable repo artifacts, states which artifacts it used, and writes/updates executable coverage.
+6. Failing implementation tests become `/crew <target>` assignments.
+7. Clear/reset context where needed so Crew does not inherit product intent through chat.
+8. Crew Mates implement minimal production changes for exactly one target until that target passes.
+9. Run `/bosun` so Bosun leaves the deck clean and commits the work locally.
+10. The next Captain starts from a clean deck.
+11. If QM, Crew, or Bosun is blocked by missing or contradictory requirements, they report using `templates/blocker-report.md`; return to `/captain` to update durable specs/assets/instructions.
 
 When moving from Quartermaster, Crew, or Bosun back to Captain for a blocker, do not clear the concrete blocker context unless there is another reason to. Captain can use the failure evidence to update durable artifacts. After Captain resolves the blocker, clear again before returning to `/qm`.
 

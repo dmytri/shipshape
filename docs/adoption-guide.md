@@ -134,7 +134,7 @@ See `adapters/README.md` for the canonical support matrix and runtime notes, inc
 
 ## 5. Start with Captain
 
-Have the Captain capture the current product/workflow understanding in specs and `AGENTS.md`.
+Have the Captain capture the current product/workflow understanding in specs and `AGENTS.md`. If Captain finds the repo is not ready for Captain attention, run Bosun first and return to Captain after Bosun leaves a clean deck.
 
 For an existing codebase, do not immediately delete code. First identify which artifacts are derived from changed specs. Deletion should be targeted to artifacts that may encode stale requirements.
 
