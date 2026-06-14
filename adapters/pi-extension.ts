@@ -118,9 +118,6 @@ function buildRoleInstructions(
         }
     }
 
-    const resolvedArgs = args.trim();
-    instructions = instructions.replace(/\$ARGUMENTS/g, resolvedArgs);
-
     return { name: role, instructions };
 }
 
@@ -257,12 +254,16 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             const previousRole = roleState?.name;
             roleState = null;
             ctx.ui.setStatus("shipshape-role", undefined);
-            ctx.ui.notify(
-                previousRole
-                    ? `Cleared ${previousRole} role.`
-                    : "No Shipshape role was active.",
-                "info",
-            );
+            if (!previousRole) {
+                ctx.ui.notify("No Shipshape role was active.", "info");
+            } else if (captainUsedInThisSession) {
+                ctx.ui.notify(
+                    `Cleared ${previousRole} role. This session still contains Captain chat context — start a fresh Pi session before /qm.`,
+                    "info",
+                );
+            } else {
+                ctx.ui.notify(`Cleared ${previousRole} role.`, "info");
+            }
         },
     });
 

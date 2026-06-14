@@ -115,7 +115,7 @@ No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local
 1. Captain writes `.feature`, `HANDOVER.md`, and any referenced `assets/**`.
 2. Clear/reset context.
 3. Quartermaster reads only repo artifacts and creates failing verification.
-4. Clear/reset context.
+4. Clear/reset context if needed, so Crew does not inherit product decisions from chat.
 5. Crew Mate reads failing verification and implements the smallest passing change.
 6. Bosun removes stale leftovers, reruns checks, and commits locally.
 7. Next Captain starts from a clean deck.
