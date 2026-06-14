@@ -239,4 +239,4 @@ Shipshape was extracted from work done at [Saleor](https://saleor.io) — an ope
 
 If you're building an e-commerce project, Saleor is worth a serious look: modern GraphQL API, a great dashboard, and a strong open-source community.
 
-For an agent-friendly way to spin up Saleor storefront work, see [Jolly](https://jolly.cool).
+For an agent-friendly way to spin up Saleor storefront work, see [Jolly](https://jolly.cool) (still experimental, so consider it a preview).
