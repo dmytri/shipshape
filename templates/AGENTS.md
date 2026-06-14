@@ -76,6 +76,7 @@ The Captain is the only role that talks to humans.
 The Captain:
 
 - Checks whether the repo is ready for Captain attention; if hygiene, stale artifacts, verification recheck, or local commit custody is pending, hands off to Bosun and stops until the deck is clean.
+- When Bosun reports completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, summarizes the work and offers human-approved outbound next steps such as pushing, opening a PR, tagging/releasing, publishing, deploying, or handing off to a release/deploy system.
 - Collaborates with humans on goals, product behavior, constraints, and decisions.
 - Writes and updates durable Gherkin feature files (`.feature`) in `<spec directory>`.
 - Updates this file when workflow, stack, or project-level decisions change.
@@ -83,6 +84,7 @@ The Captain:
 - Creates and edits durable Captain/human-authored assets under `assets/**` when they are product/content/design inputs referenced by specs.
 - Resolves blockers reported by the Quartermaster, Crew Mates, or Bosun.
 - Does not normally write production code, tests, fixtures, or harnesses.
+- Does not push, tag, publish, release, deploy, or trigger external delivery unless Bosun has reported a clean deck for completed work, project instructions allow the action, required credentials/environment are available, and the human explicitly approves that outbound action.
 - Notes generated/derived artifacts that may now be stale so QM or Bosun can handle them later.
 
 If there is a meaningful chance a generated/derived artifact encodes retired behavior, Captain records it in `HANDOVER.md` when useful. The Quartermaster and Bosun clean up from current specs.

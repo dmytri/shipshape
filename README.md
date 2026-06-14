@@ -105,10 +105,11 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 8. Failing tests are assigned to **Crew Mates**.
 9. Crew Mates implement the smallest production change needed to pass one target; `assets/**` is read-only.
 10. **Bosun** checks repo hygiene, removes obsolete artifacts, reruns verification, stages intended changes, and creates a local commit. Bosun does not push, tag, publish, release, change product intent, add scenarios/tests, or implement new behavior.
-11. If QM, Crew, or Bosun finds a missing/contradictory requirement, they stop and report a blocker.
-12. When moving from **Quartermaster**, **Crew Mate**, or **Bosun** back to **Captain**, do **not** clear the concrete blocker context unless there is a separate reason to. Captain then turns that context into durable specs/assets and the loop resumes.
+11. When Bosun reports new completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, **Captain** offers the human appropriate outbound next steps such as pushing the branch, opening a PR, tagging/releasing, publishing, or deploying. Captain performs outbound actions only with explicit human approval and project permission.
+12. If QM, Crew, or Bosun finds a missing/contradictory requirement, they stop and report a blocker.
+13. When moving from **Quartermaster**, **Crew Mate**, or **Bosun** back to **Captain**, do **not** clear the concrete blocker context unless there is a separate reason to. Captain then turns that context into durable specs/assets and the loop resumes.
 
-No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local commit custody, but does not push, tag, publish, or release.
+No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local commit custody, but does not push, tag, publish, or release. Outbound push/publish/deploy/release actions are Captain/human decisions after a clean Bosun report.
 
 ## Short Demo Narrative
 
@@ -118,7 +119,8 @@ No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local
 4. Clear/reset context if needed, so Crew does not inherit product decisions from chat.
 5. Crew Mate reads failing verification and implements the smallest passing change.
 6. Bosun removes stale leftovers, reruns checks, and commits locally.
-7. Next Captain starts from a clean deck.
+7. Captain offers human-approved outbound next steps if the completed work should be pushed, published, released, or deployed.
+8. Next Captain starts from a clean deck.
 
 ## Why BDD First?
 

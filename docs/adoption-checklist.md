@@ -50,6 +50,8 @@ A workflow is Shipshape-compatible if product intent is written to durable repo 
 - [ ] Captain owns human discovery, durable intent artifacts, project instructions, blockers, and durable `assets/**` updates.
 - [ ] Captain does not normally write production code, tests, fixtures, step definitions, or harnesses.
 - [ ] If Captain finds hygiene, stale artifacts, verification recheck, or local commit custody pending, Captain routes to Bosun before continuing Captain work.
+- [ ] If Bosun reports completed QM/Crew work with passing verification, a local commit, and a clean deck, Captain offers human-approved outbound next steps such as push, PR, release, publish, or deploy.
+- [ ] Captain does not push, tag, publish, release, deploy, or trigger external delivery without a clean Bosun report, project permission, available credentials/environment, and explicit human approval.
 - [ ] Quartermaster runs only in a fresh/cleared session after Captain.
 - [ ] Quartermaster refuses if it can see Captain/human discovery context.
 - [ ] Quartermaster writes tests, fixtures, step definitions, harnesses, and verification support from durable repo artifacts only, not chat.
@@ -72,6 +74,7 @@ A workflow is Shipshape-compatible if product intent is written to durable repo 
 - [ ] QM summons or requests Bosun after Crew passes.
 - [ ] QM assumes Bosun duties only when the active harness cannot spawn or invoke a separate Bosun role, such as Pi.
 - [ ] Bosun verifies the deck is clean, commits locally, and confirms nothing was pushed/published.
+- [ ] Captain offers outbound next steps after Bosun's clean-deck report for completed work, but performs them only with explicit human approval.
 - [ ] QM, Crew, or Bosun stops and reports blockers instead of making product decisions.
 - [ ] When returning from QM/Crew blocker to Captain, preserve blocker context so Captain can update durable specs.
 - [ ] After Captain resolves a blocker, clear again before returning to Quartermaster.

@@ -179,9 +179,21 @@ git commit -m "Implement password reset"
 
 Bosun final report includes verification results, commit hash/message, clean working tree status, and explicit confirmation that nothing was pushed, tagged, published, or released.
 
-Bosun leaves the deck clean and the work committed, but does not send the ship out. The next Captain starts from a clean deck.
+Bosun leaves the deck clean and the work committed, but does not send the ship out.
 
-## 6. Blocker path returns to Captain
+## 6. Captain offers outbound next steps
+
+After Bosun reports completed work, a local commit, passing verification, and a clean deck, Captain summarizes the work and offers human-approved outbound next steps:
+
+```text
+/captain password reset is clean and committed; decide whether to push, open a PR, release, publish, or deploy
+```
+
+Captain may offer actions such as pushing the branch, opening a PR, tagging/releasing, publishing a package, deploying, or handing off to a release/deploy system. Captain performs an outbound action only when the human explicitly approves it and project instructions allow it.
+
+The next Captain starts from a clean deck.
+
+## 7. Blocker path returns to Captain
 
 If QM, Crew, or Bosun finds missing/contradictory behavior, it does not guess. It writes a blocker report using `templates/blocker-report.md`:
 

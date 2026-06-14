@@ -48,6 +48,7 @@ clear session / start fresh agent
 Quartermaster → executable verification from artifacts only
 Crew Mate → minimal implementation for one failing target
 Bosun → repo hygiene + local commit
+Captain → human-approved outbound offer if completed work is clean
 next Captain starts from a clean deck
 Blockers → templates/blocker-report.md → Captain
 ```
@@ -65,6 +66,8 @@ Use the Captain when:
 - updating agent instructions.
 
 The Captain first checks whether the repo is ready for Captain attention. If hygiene, stale artifacts, verification recheck, or local commit custody is pending, Captain hands off to Bosun and stops until Bosun leaves a clean deck.
+
+When Bosun reports new completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, Captain summarizes the completed work and offers appropriate human-approved outbound next steps such as pushing the branch, opening a PR, tagging/releasing, publishing a package, deploying, or handing off to a release/deploy system. Captain does not perform those outbound actions unless the human explicitly approves and project instructions allow them.
 
 The Captain writes durable intent artifacts, not implementation code. Today the primary intent format is valid Gherkin feature files. Captain may also create/edit durable assets under root `assets/`. These assets can include content, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
 
@@ -103,11 +106,11 @@ Use Bosun after Crew Mate has made verification pass and before the next Captain
 
 Bosun (boatswain) owns repo hygiene and local commit custody. Bosun checks for obsolete steps, fixtures, snapshots, visual baselines, stale assets, dead code, generated/temp files, dependency/config drift, stale `HANDOVER.md` notes, and dirty working tree state. Bosun may stage changes and create a local commit.
 
-Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification. Bosun leaves the deck clean and the work committed, but does not send the ship out.
+Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification. Bosun leaves the deck clean and the work committed, but does not send the ship out. After Bosun reports a clean deck for completed work, Captain may offer the human outbound next steps such as push, PR, release, publish, or deploy.
 
 No new Captain voyage from a dirty deck. Captain may discover the dirty deck and route to Bosun; Bosun cleans it.
 
-Bosun handles local repo hygiene and local commit custody only. Bosun must not push, tag, publish, or release.
+Bosun handles local repo hygiene and local commit custody only. Bosun must not push, tag, publish, or release. Outbound actions are Captain/human decisions after a clean Bosun report, and require explicit human approval.
 
 ## Blocker Loop
 

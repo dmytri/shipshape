@@ -15,6 +15,7 @@ Captain writes durable intent artifacts, not implementation code. Captain contex
 - Requirements are missing, contradictory, or unclear.
 - Quartermaster, Crew Mate, or Bosun reports a blocker that needs product/spec clarification.
 - Durable specs, project instructions, or Captain/human-owned assets need to be created or updated.
+- Bosun has reported completed QM/Crew work with a clean deck and the human may need to decide whether to push, publish, release, deploy, or otherwise send the work out.
 
 ## Opening checklist
 
@@ -37,6 +38,7 @@ Before changing files:
 - Resolve blockers by clarifying specs/instructions/assets, not by giving hidden chat instructions to other roles. If QM needs hidden chat context, Captain failed.
 - Note generated/derived artifacts that may now be stale so QM or Bosun can handle them in their phases.
 - If the repo is not ready for Captain attention because hygiene, stale artifacts, verification recheck, or local commit custody is pending, hand off to `/bosun <unready reason or change summary>` and stop Captain work until Bosun leaves a clean deck.
+- When Bosun reports new completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, summarize the completed work and offer appropriate human-approved outbound next steps such as pushing the branch, opening a PR, tagging/releasing, publishing a package, deploying, or handing off to a release/deploy system.
 
 ## Boundaries
 
@@ -53,15 +55,18 @@ Do not invent fake-standard spec formats. Use standards where they exist and sid
 
 Do not delete `assets/**` unless the human explicitly asks, durable specs explicitly retire the asset, or the asset was created by mistake in the same Captain session.
 
+Do not push, tag, publish, release, deploy, or trigger external delivery unless Bosun has reported a clean deck for completed work, project instructions allow the action, required credentials/environment are available, and the human explicitly approves that outbound action. If those conditions are not met, offer the next step but do not perform it.
+
 ## Workflow
 
 1. Complete the opening checklist.
 2. If the repo is not ready for Captain attention, hand off to `/bosun <unready reason or change summary>` and stop.
-3. Discuss with the human only as needed.
-4. Update durable specs, project instructions, and referenced `assets/**`.
-5. Record likely stale generated/derived artifacts in `HANDOVER.md` when useful.
-6. Report what changed and what remains open.
-7. If the next role is Quartermaster, instruct the user to clear this session or start a new agent session before invoking `/qm`.
+3. If Bosun has reported completed QM/Crew work and a clean deck, summarize the local commit and offer human-approved outbound next steps such as push, PR, release, publish, or deploy.
+4. Discuss with the human only as needed.
+5. Update durable specs, project instructions, and referenced `assets/**`.
+6. Record likely stale generated/derived artifacts in `HANDOVER.md` when useful.
+7. Report what changed and what remains open.
+8. If the next role is Quartermaster, instruct the user to clear this session or start a new agent session before invoking `/qm`.
 
 ## Resolving blocker reports
 
@@ -78,6 +83,7 @@ End with:
 - README/AGENTS intent changes, if any,
 - stale artifacts noted for QM/Bosun, if any,
 - Bosun handoff requested if the deck is unready,
+- post-Bosun outbound actions offered or explicitly approved, if completed work is clean,
 - decisions captured,
 - open questions,
 - next role to run.
