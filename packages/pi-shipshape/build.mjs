@@ -14,7 +14,6 @@ const entries = [
     "qm",
     "crew",
     "bosun",
-    "agents",
     "adapters",
     "templates",
     "docs",
