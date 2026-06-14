@@ -4,8 +4,8 @@
     "groupings": [
         {
             "title": "Agent Workflows",
-            "description": "Portable role-based workflows for spec-driven multi-agent software development.",
-            "skills": ["shipshape", "captain", "qm", "crew"]
+            "description": "Context-isolated spec-driven development workflows for coding agents.",
+            "skills": ["shipshape", "captain", "qm", "crew", "bosun"]
         }
     ]
 }

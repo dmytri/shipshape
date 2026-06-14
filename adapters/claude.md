@@ -14,6 +14,7 @@ Expected Claude skill entrypoints when installed with `--skill '*'`:
 - `/captain <topic>` — discovery/spec updates and blocker resolution.
 - `/qm <optional focus>` — fresh-context verification work.
 - `/crew <failing target>` — focused implementation.
+- `/bosun <completed target>` — repo hygiene and local commit custody.
 
 ## Project files
 
@@ -28,23 +29,16 @@ A Shipshape target project should still contain durable workflow files:
 
 Copy `templates/AGENTS.md` to `<project>/AGENTS.md` and configure placeholders. Copy `templates/HANDOVER.md` if useful.
 
-## Legacy command fallback
+## Skills-first support
 
-If a Claude setup does not expose the multiple skills as `/captain`, `/qm`, and `/crew`, use the legacy command files:
+Shipshape targets current Claude Code skill installs. If role skills are unavailable, update the skills install rather than using command-file fallbacks.
 
-```text
-<project>/.claude/commands/captain.md
-<project>/.claude/commands/qm.md
-<project>/.claude/commands/crew.md
-<project>/.claude/agents/crew-mate.md   # optional subagent definition
-```
+If your Claude setup does not expose the role skills, install or update with the `skills` CLI command above and verify the sibling skill directories exist under `.claude/skills/`.
 
-Copy command files from `commands/` into `.claude/commands/`, and copy `agents/crew-mate.md` into `.claude/agents/crew-mate.md` if the runtime supports subagents.
+If the runtime supports subagents, use `agents/crew-mate.md` and `agents/bosun.md` as role-specialized subagent definitions. If subagents are unavailable, document that in `HANDOVER.md`. Quartermaster may use the Crew fallback only when documented, and must assume Bosun role if no Bosun subagent is available.
 
 ## Quartermaster context firewall
 
-When moving from Captain to Quartermaster, clear the Captain session or start a new Claude session before invoking `/qm`. Quartermaster must use only committed specs, tests, instructions, and explicit durable handoff files.
+When moving from Captain to Quartermaster, clear the Captain session or start a new Claude session before invoking `/qm`. Quartermaster must use only durable specs, source-controlled tests, instructions, and explicit handoff files in the repository.
 
-Claude prompts cannot reliably prevent a user from typing `/qm` in the wrong chat, so enforcement is prompt-level: `qm/SKILL.md` and `commands/qm.md` instruct QM to inspect visible conversation context first and refuse if Captain/human discovery context is present.
-
-If subagents are unavailable, document that in `HANDOVER.md` and let the Quartermaster use the fallback rule.
+Claude prompts cannot reliably prevent a user from typing `/qm` in the wrong chat, so enforcement is prompt-level: `qm/SKILL.md` instructs QM to inspect visible conversation context first and refuse if Captain/human discovery context is present.

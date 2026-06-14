@@ -8,7 +8,7 @@ npx skills add dmytri/shipshape --agent cursor --skill '*'
 
 Project-local installs go under `.agents/skills/`. See [`README.md`](README.md) for the full support matrix and expected sibling skill layout.
 
-Cursor features vary by version and workspace configuration. If your Cursor setup exposes installed skills, use `shipshape`, `captain`, `qm`, and `crew` by name. Otherwise use [`generic.md`](generic.md) with the portable prompts in `agents/`.
+Cursor features vary by version and workspace configuration. If your Cursor setup exposes installed skills, use `shipshape`, `captain`, `qm`, `crew`, and `bosun` by name. Otherwise use [`generic.md`](generic.md) with the portable prompts in `agents/`.
 
 ## Recommended project files
 
@@ -29,7 +29,8 @@ Read AGENTS.md before substantive work.
 Use the captain skill for human-facing spec work.
 Use the qm skill only in a fresh/cleared chat after Captain. If Quartermaster detects Captain/human discovery context, it must refuse to continue.
 Use the crew skill for one failing test/scenario at a time.
+Use the bosun skill after Crew passes to clean the repo and commit locally; Bosun must not push or publish.
 Do not rely on prior chat for product requirements.
 ```
 
-If Cursor cannot dispatch separate Crew Mate agents in your setup, run Crew Mate chats manually. If manual Crew sessions are impractical, document Quartermaster fallback in `HANDOVER.md` before allowing QM to implement after writing failing tests.
+If Cursor cannot dispatch separate Crew Mate agents in your setup, run Crew Mate chats manually. If manual Crew sessions are impractical, document Quartermaster fallback in `HANDOVER.md` before allowing QM to implement after writing failing tests. Bosun is still required; if Cursor cannot dispatch Bosun, QM should explicitly assume Bosun role before ending.

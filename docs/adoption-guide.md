@@ -2,6 +2,8 @@
 
 Use this guide to add Shipshape to an existing project.
 
+Shipshape is context-isolated spec-driven development for coding agents. Most SDD tools make better prompts; Shipshape makes harder handoffs.
+
 For the smallest complete workflow example, see `docs/golden-path.md`. For a readiness checklist, see `docs/adoption-checklist.md`.
 
 ## Install with Pi
@@ -10,7 +12,7 @@ For the smallest complete workflow example, see `docs/golden-path.md`. For a rea
 pi install npm:pi-shipshape
 ```
 
-This installs the bundled Shipshape prompts and Pi role extension. The extension provides `/captain`, `/qm`, `/crew`, and `/clearrole`.
+This installs the bundled Shipshape prompts and Pi role extension. The extension provides `/captain`, `/qm`, `/crew`, `/bosun`, and `/clearrole`.
 
 ## Install with skills.sh
 
@@ -78,7 +80,7 @@ shipshape/templates/shipshape-readme-block.md
 shipshape/templates/shipshape-agents-block.md
 ```
 
-The Captain is responsible for enforcing these blocks when creating or adopting a project.
+During adoption, add these blocks up front. After each workflow pass, Bosun is responsible for verifying or restoring the standard blocks before committing locally.
 
 If the project needs human/Captain-authored copy, images, brand files, mockups, reference data, or approved fixture-like examples, create them under:
 
@@ -90,7 +92,7 @@ Use `templates/assets-policy.md` for the project asset policy. Specs should refe
 
 ## 2. Spec Format: Gherkin Feature Files
 
-Shipshape uses **Gherkin `.feature` files** as the canonical spec format. The Captain writes durable behavior as `Feature`, `Rule`, and `Scenario` blocks; the Quartermaster turns them into executable step definitions and tests; Crew Mates implement code to pass the scenarios.
+Shipshape uses **valid Gherkin `.feature` files** as its first backend. The Captain writes durable behavior as `Feature`, `Rule`, and `Scenario` blocks; the Quartermaster turns them into executable step definitions and tests; Crew Mates implement code to pass the scenarios.
 
 A feature file template is provided:
 
@@ -101,6 +103,8 @@ shipshape/templates/feature-template.feature
 Put feature files in `<spec directory>`.
 
 Other spec formats (markdown requirements, ADRs, test plans, committed issue files) can supplement Gherkin, but Gherkin `.feature` files should be the primary durable specification.
+
+BDD/Gherkin is the first backend, not Shipshape's identity. Future backends could include design cards, OpenAPI, JSON Schema, statecharts, approval tests, property specs, TLA+, Alloy, Lean, Coq, Dafny, or other durable formats. Use standards where they exist. Use sidecars where they do not. Do not invent fake-standard formats.
 
 ## 3. Configure Verification
 
@@ -116,14 +120,15 @@ If a command does not exist, mark it `N/A`.
 
 ## 4. Install Role Entrypoints
 
-Preferred runtimes install the four sibling skills directly:
+Preferred runtimes install the sibling skills directly:
 
 - `shipshape` — workflow orientation/router.
 - `captain` — human-facing discovery and specs.
 - `qm` — fresh-context verification and test coverage.
 - `crew` — focused implementation for one failing target.
+- `bosun` — repo hygiene, verification recheck, and local commit custody.
 
-For runtimes without native skill support, use the portable role charters in `agents/` or legacy command prompts in `commands/`.
+For runtimes without native skill support, use the portable role charters in `agents/`.
 
 See `adapters/README.md` for the canonical support matrix and runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Nanobot fallback, and Pi.
 
@@ -135,7 +140,7 @@ For an existing codebase, do not immediately delete code. First identify which a
 
 ## 6. Clear Context, Then Run Quartermaster
 
-Before invoking Quartermaster, clear the Captain session or start a new agent session. This is mandatory: QM should never receive Captain/human chat context.
+Before invoking Quartermaster, clear the Captain session or start a new agent session. This is mandatory: QM should never receive Captain/human chat context. Captain context dies; the spec survives.
 
 Quartermaster prompts include a context-firewall refusal: if QM detects Captain/human discovery context in the current session, it must stop and ask for a fresh/cleared session.
 
@@ -144,11 +149,12 @@ The Quartermaster should:
 1. run verification,
 2. write missing coverage,
 3. dispatch Crew Mates for implementation failures,
-4. report blockers using `templates/blocker-report.md`.
+4. after Crew passes, summon Bosun if possible or explicitly assume Bosun role if no subagent mechanism exists,
+5. report blockers using `templates/blocker-report.md`.
 
 ## 7. Run Crew Mates
 
-Each Crew Mate should receive one failing target. Crew should name the target, state which durable artifacts define the expected behavior, and edit only minimal production code for that target.
+Each Crew Mate should receive one failing target. Crew starts from failing verification, not inherited chat context. Crew should name the target, state which durable artifacts define the expected behavior, and edit only minimal production code for that target.
 
 Good target:
 
@@ -162,17 +168,30 @@ Poor target:
 Implement auth.
 ```
 
-## 8. Maintain Handover
+## 8. Run Bosun
+
+After Crew Mate makes verification pass, Bosun checks repo hygiene and creates a local commit before the next Captain run.
+
+Bosun checks for stale steps, helpers, fixtures, snapshots, assets, dead code, generated/temp files, dependency/config drift, stale `HANDOVER.md` notes, and dirty working tree state. Bosun may stage changes and commit locally.
+
+Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification.
+
+If the active harness supports subagents, separate role sessions, or skill invocation, QM must request or dispatch `/bosun <completed target or change summary>` and must not perform Bosun work itself.
+
+QM may assume Bosun duties only when the active harness cannot spawn or invoke a separate Bosun role, such as Pi. When QM must use this fallback, document `No Bosun subagent/role handoff is available in this harness; QM assumed Bosun duties as the required fallback.` in `HANDOVER.md` or the final response.
+
+## 9. Maintain Handover
 
 Use `HANDOVER.md` for current state that helps the next session, especially:
 
 - known skipped checks,
-- whether subagent dispatch exists,
+- whether Crew Mate and Bosun subagent dispatch exists,
 - current verification status,
+- Bosun hygiene/commit status,
 - environment limitations.
 
 Do not put product requirements only in handover. Product requirements belong in specs.
 
-## 9. Check Readiness
+## 10. Check Readiness
 
 Before relying on the workflow, run through `docs/adoption-checklist.md`. A project is ready when a fresh agent can determine from files alone where specs/tests/code/assets live, which commands to run, which role should act next, and what each role must refuse to do.

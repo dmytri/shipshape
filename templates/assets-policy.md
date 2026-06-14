@@ -31,7 +31,7 @@ Quartermaster and Crew Mates may read `assets/**`, reference it from tests/specs
 `assets/**` is not disposable implementation. The Captain must not delete assets as part of a stale-code cleanup unless:
 
 - the human explicitly asks,
-- committed specs explicitly retire the asset,
+- durable specs explicitly retire the asset,
 - or the asset was created by mistake in the same Captain session.
 
 ## Test Fixtures vs Assets

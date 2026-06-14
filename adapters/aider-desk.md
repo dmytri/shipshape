@@ -10,4 +10,4 @@ Project-local installs go under `.aider-desk/skills/`. See [`README.md`](README.
 
 > Note: `aider` is not currently a valid `skills` CLI agent alias. Use `aider-desk` for AiderDesk, or use [`generic.md`](generic.md) for other Aider setups.
 
-Use the installed role skills by name where AiderDesk exposes skills. For non-AiderDesk Aider workflows, use `agents/captain.md`, `agents/quartermaster.md`, and `agents/crew-mate.md` as manual prompts.
+Use the installed role skills by name where AiderDesk exposes skills. For non-AiderDesk Aider workflows, use `agents/captain.md`, `agents/quartermaster.md`, `agents/crew-mate.md`, and `agents/bosun.md` as manual prompts.

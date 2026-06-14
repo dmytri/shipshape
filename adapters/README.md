@@ -1,15 +1,16 @@
 # Shipshape Agent Adapters
 
-Shipshape installs as four sibling skills:
+Shipshape installs as five sibling skills:
 
 ```text
 shipshape/SKILL.md  # workflow orientation/router
 captain/SKILL.md    # human-facing discovery and durable specs
 qm/SKILL.md         # fresh-context verification and tests
 crew/SKILL.md       # focused implementation for one failing target
+bosun/SKILL.md      # repo hygiene and local commit custody
 ```
 
-For most users, install all four skills with:
+For most users, install all Shipshape skills with:
 
 ```bash
 npx skills add dmytri/shipshape --skill '*'
@@ -21,7 +22,7 @@ To install for every `skills` CLI-supported agent in a project:
 npx skills add dmytri/shipshape --agent '*' --skill '*'
 ```
 
-No `--full-depth` flag is required. Shipshape is intentionally laid out as sibling skill directories so normal `skills` CLI discovery finds each role skill.
+No `--full-depth` flag is required. Shipshape is intentionally laid out as sibling skill directories so normal `skills` CLI discovery finds each skill.
 
 ## Supported agent aliases and project-local paths
 
@@ -47,6 +48,7 @@ Expected installed entries under each project-local path:
 <skills-path>/captain/SKILL.md
 <skills-path>/qm/SKILL.md
 <skills-path>/crew/SKILL.md
+<skills-path>/bosun/SKILL.md
 ```
 
 ## Invalid or unsupported aliases
@@ -63,7 +65,9 @@ Expected installed entries under each project-local path:
 - Before switching from Captain to Quartermaster, clear the conversation or start a fresh agent session.
 - Use `qm` only from fresh/cleared context for verification, tests, harnesses, and coverage.
 - Use `crew` for one failing implementation target at a time.
-- If QM or Crew finds a missing or contradictory requirement, stop and escalate back to Captain with the concrete blocker context.
+- Use `bosun` after Crew passes to clean the repo, rerun checks, and commit locally.
+- If QM, Crew, or Bosun finds a missing or contradictory requirement, stop and escalate back to Captain with the concrete blocker context.
+- Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, or implement new behavior.
 
 ## Manual fallback
 

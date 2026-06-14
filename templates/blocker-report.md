@@ -2,7 +2,7 @@
 
 ## Reporting Role
 
-`<Quartermaster | Crew Mate>`
+`<Quartermaster | Crew Mate | Bosun>`
 
 ## Target
 

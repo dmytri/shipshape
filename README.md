@@ -2,9 +2,11 @@
 
 [![skills.sh](https://skills.sh/b/dmytri/shipshape)](https://skills.sh/dmytri/shipshape)
 
-Shipshape is a portable three-role, spec-driven workflow for coding agents.
+Shipshape is a context-isolated spec-driven development workflow for coding agents.
 
 **Specs are durable. Code is disposable. Agents are replaceable.**
+
+Most SDD tools make better prompts. Shipshape makes harder handoffs. The handoff is the product: each role must prove that the next role can continue from durable repository artifacts, not inherited chat.
 
 Install all Shipshape skills, start with the Captain, then clear the session or start a new agent before running Quartermaster:
 
@@ -23,7 +25,10 @@ npx skills add dmytri/shipshape --skill '*'
 /crew failing test or target
 # Crew Mate implements the smallest production change needed to pass.
 
-# If QM finds a blocker, do not clear; start /captain from the QM session.
+/bosun completed target or change summary
+# Bosun cleans the repo and commits locally. It does not push, publish, or release.
+
+# If QM/Crew/Bosun finds a blocker, do not clear; start /captain from the blocker session.
 /captain resolve the blocker
 # Captain benefits from QM's concrete failure context and updates durable specs.
 ```
@@ -39,12 +44,15 @@ pi install npm:pi-shipshape
 # Clear the chat/session or start a fresh Pi session before QM.
 /qm optional focused area
 /crew failing test or target
-/captain resolve a QM blocker   # keep QM context when escalating back to Captain
+/bosun completed target or change summary
+/captain resolve a blocker      # keep concrete blocker context when escalating back to Captain
 ```
 
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
 
 ## The Idea
+
+Shipshape is not "BDD for agents." It is context-isolated spec-driven development.
 
 Most agent failures come from hidden context:
 
@@ -53,32 +61,76 @@ Most agent failures come from hidden context:
 - implementation agents guessing product behavior,
 - handoffs that only exist in one session.
 
-Shipshape fixes that by making repository artifacts the source of truth.
+Shipshape fixes that by making repository artifacts the source of truth and making role context disposable.
 
 ```text
-Human ↔ Captain → Gherkin .feature files + assets/ → Quartermaster → tests → Crew Mate → code
+Captain → Quartermaster → Crew Mate → Bosun → next Captain
 ```
+
+- Captain context dies; the spec survives.
+- Quartermaster reads only durable repo artifacts.
+- Crew Mate starts from failing verification, not inherited chat context.
+- Bosun leaves a clean local commit boundary before the next Captain.
+
+If it did not survive `/clear`, it was never specified. If QM needs hidden chat context, Captain failed.
 
 ## Roles
 
-| Role | Talks to humans? | Writes specs? | Writes tests? | Writes implementation? |
-|---|---:|---:|---:|---:|
-| Captain | Yes | Yes | No | No |
-| Quartermaster | No | No | Yes | Normally no |
-| Crew Mate | No | No | No | Yes |
+| Role | Talks to humans? | Writes specs? | Writes tests? | Writes implementation? | Commits locally? |
+|---|---:|---:|---:|---:|---:|
+| Captain | Yes | Yes | No | No | No |
+| Quartermaster | No | No | Yes | Normally no | No |
+| Crew Mate | No | No | No | Yes | No |
+| Bosun | No | No | No | No | Yes |
+
+## Artifact Roles
+
+- `<spec directory>/**/*.feature` — valid executable Gherkin / BDD contracts. Use standard Gherkin; do not invent fake-Gherkin syntax.
+- `AGENTS.md` — project/agent instructions, commands, directories, and workflow conventions.
+- `HANDOVER.md` — durable context transfer and next-step state. It is not a place for product requirements that belong in specs.
+- `assets/**` — durable supporting material such as approved content, brand files, images, mockups, diagrams, reference data, or approved examples.
+- Future `design-cards/**` — visual/design acceptance where Gherkin is the wrong format.
+
+Use standards where they exist. Use sidecars where they do not. Do not invent fake-standard formats.
 
 ## Core Workflow
 
 1. **Captain** collaborates with the human and writes durable Gherkin feature files (`.feature`) in `<spec directory>`.
 2. Captain may create/edit durable human-authored assets under root `assets/` when specs reference content, brand files, images, mockups, reference data, or approved fixture-like examples.
-3. Captain ensures the target project's `README.md` and `AGENTS.md` declare that the repo is built with Shipshape and link to `https://github.com/dmytri/shipshape`.
-4. Captain deletes generated/derived artifacts that may have been invalidated by spec changes, but does not delete `assets/**` unless explicitly instructed or specs retire the asset.
+3. Captain updates durable intent artifacts, including project instructions when workflow or product intent changes.
+4. Captain notes generated/derived artifacts that may have been invalidated by spec changes; QM or Bosun handles cleanup in later phases.
 5. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a new agent session. QM must not inherit Captain/human discovery chat; if it detects that context, it refuses to continue.
 6. Quartermaster writes missing tests, QM-owned fixtures, step definitions, and harnesses; `assets/**` is read-only.
 7. Failing tests are assigned to **Crew Mates**.
 8. Crew Mates implement the smallest production change needed to pass one target; `assets/**` is read-only.
-9. If QM or Crew finds a missing/contradictory requirement, they stop and report a blocker.
-10. When moving from **Quartermaster** back to **Captain**, do **not** clear the session unless there is a separate reason to. It is useful for Captain to inherit QM's concrete failure context: the attempted verification, missing requirement, contradiction, fixture/test shape, and exact blocker report. Captain then turns that context into durable specs/assets and the loop resumes.
+9. **Bosun** checks repo hygiene, removes obsolete artifacts, reruns verification, stages intended changes, and creates a local commit. Bosun does not push, tag, publish, release, change product intent, add scenarios/tests, or implement new behavior.
+10. If QM, Crew, or Bosun finds a missing/contradictory requirement, they stop and report a blocker.
+11. When moving from **Quartermaster**, **Crew Mate**, or **Bosun** back to **Captain**, do **not** clear the concrete blocker context unless there is a separate reason to. Captain then turns that context into durable specs/assets and the loop resumes.
+
+No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local commit custody, but does not push, tag, publish, or release.
+
+## Short Demo Narrative
+
+1. Captain writes `.feature`, `HANDOVER.md`, and any referenced `assets/**`.
+2. Clear/reset context.
+3. Quartermaster reads only repo artifacts and creates failing verification.
+4. Clear/reset context.
+5. Crew Mate reads failing verification and implements the smallest passing change.
+6. Bosun removes stale leftovers, reruns checks, and commits locally.
+7. Next Captain starts from a clean deck.
+
+## Why BDD First?
+
+BDD/Gherkin is Shipshape's first backend because:
+
+- models already know it,
+- humans can review it,
+- it is language/framework neutral,
+- tooling exists for almost every stack,
+- it separates intent from implementation,
+- QM gets something concrete to turn into tests.
+
+BDD is the first backend, not the identity. Future backends could include design cards, OpenAPI, JSON Schema, statecharts, approval tests, property specs, TLA+, Alloy, Lean, Coq, Dafny, or other durable specification formats.
 
 ## Durable `assets/`
 
@@ -92,7 +144,7 @@ Use `assets/` for things specs depend on but agents should not casually rewrite,
 - reference data,
 - fixture-like examples explicitly approved as source material.
 
-Captain may create or update `assets/**` while clarifying product intent with the human. Quartermaster and Crew Mate may read `assets/**`, but must treat it as read-only: QM can derive tests from assets, and Crew can implement behavior that consumes them, but neither role should edit or delete them.
+Captain may create or update `assets/**` while clarifying product intent with the human. Quartermaster and Crew Mate may read `assets/**`, but must treat it as read-only: QM can derive tests from assets, and Crew can implement behavior that consumes them. Bosun may remove stale assets only when durable specs have retired them.
 
 This keeps durable authored material separate from generated tests, fixtures, harnesses, and implementation code. See `templates/assets-policy.md` for a reusable project policy.
 
@@ -104,9 +156,9 @@ shipshape/
 ├── captain/SKILL.md            # role skill: /captain
 ├── qm/SKILL.md                 # role skill: /qm
 ├── crew/SKILL.md               # role skill: /crew
+├── bosun/SKILL.md              # role skill: /bosun
 ├── README.md
 ├── agents/                     # portable role charters
-├── commands/                   # legacy/custom command entrypoints
 ├── adapters/
 ├── templates/
 └── docs/
@@ -182,13 +234,14 @@ pi install npm:pi-shipshape
 
 `pi-shipshape` exists to distribute the Pi extension and bundled Shipshape prompts through Pi's npm-based package system. Do not add `pi-shipshape` as a normal project dependency unless you specifically need Pi packaging behavior.
 
-The open skills install exposes `/shipshape` as an orientation/router skill and the role skills `/captain`, `/qm`, and `/crew` when installed with `--skill '*'`.
+The open skills install exposes `/shipshape` as an orientation/router skill and the role skills `/captain`, `/qm`, `/crew`, and `/bosun` when installed with `--skill '*'`.
 
 The Pi package installs the bundled Shipshape prompts and Pi extension, which provides:
 
 - `/captain [topic]`
 - `/qm [optional focus]`
 - `/crew <failing target>`
+- `/bosun [completed target or change summary]`
 - `/clearrole`
 
 After installing or updating, run `/reload` in Pi if needed.
@@ -199,7 +252,7 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
 
 1. Install with `npx skills add dmytri/shipshape --skill '*'` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
 2. Copy `templates/HANDOVER.md` if you want a durable current-state handoff.
-3. Use the role skills in `captain/`, `qm/`, and `crew/`; for runtimes without multi-skill support, copy role prompts from `agents/` or command entrypoints from `commands/` into your agent runtime.
+3. Use the role skills in `captain/`, `qm/`, `crew/`, and `bosun/`; for runtimes without multi-skill support, copy role prompts from `agents/` into your agent runtime.
 4. Configure your project-specific commands:
    - `<test command>`
    - `<focused test command>`
@@ -207,18 +260,38 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
    - `<spec directory>`
    - `<implementation directory>`
 5. Start with the Captain.
-6. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees committed artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
-7. If Quartermaster reports a blocker, start Captain from that QM session instead of clearing. Captain can use QM's concrete verification context to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
+6. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees durable repo artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
+7. After Crew Mate makes verification pass, run Bosun to clean the repo and commit locally before the next Captain run.
+8. If Quartermaster, Crew Mate, or Bosun reports a blocker, start Captain from that blocker context instead of clearing. Captain can use the concrete evidence to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
 
 See `docs/adoption-guide.md` for details, `docs/golden-path.md` for an end-to-end example, and `docs/adoption-checklist.md` for readiness checks.
 
+## Shipshape Compatibility Checklist
+
+A workflow is Shipshape-compatible if:
+
+- product intent is written to durable repo artifacts,
+- verification is produced from artifacts, not chat,
+- implementation starts from failing verification,
+- role context is reset or isolated between handoffs,
+- stale artifacts are cleaned before the next Captain run,
+- local commit custody is separated from push/publish/release actions.
+
+## How Shipshape Relates to Other Spec Tools
+
+OpenSpec, Spec Kit, and similar tools are useful for structuring spec and planning context. Shipshape solves a different failure mode: unsafe agent handoffs.
+
+OpenSpec / Spec Kit structure context. Shipshape destroys context between roles.
+
+Agent orchestration tools decide where and how agents run. Shipshape defines how agents hand off work safely.
+
 ## Operational docs
 
-- `docs/golden-path.md` — smallest complete Captain → QM → Crew → Captain example.
+- `docs/golden-path.md` — smallest complete Captain → QM → Crew → Bosun example.
 - `docs/adoption-guide.md` — how to add Shipshape to a project.
 - `docs/adoption-checklist.md` — readiness checklist for projects adopting Shipshape.
 - `docs/context-firewall.md` — Quartermaster fresh-context refusal and pass behavior.
-- `templates/blocker-report.md` — standard format for QM/Crew blockers.
+- `templates/blocker-report.md` — standard format for QM/Crew/Bosun blockers.
 
 ## Portability
 

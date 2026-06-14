@@ -1,6 +1,6 @@
 ## Built with Shipshape
 
-This repository is built with [Shipshape](https://github.com/dmytri/shipshape), a three-role, spec-driven workflow for coding agents.
+This repository is built with [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven development workflow for coding agents.
 
 **Specs are durable. Code is disposable. Agents are replaceable.**
 
@@ -23,5 +23,6 @@ pi install npm:pi-shipshape
 Use the Shipshape roles:
 
 - Captain for human-facing discovery and spec updates.
-- Quartermaster for tests, harnesses, and verification coverage.
+- Quartermaster for tests, harnesses, and verification coverage from durable repo artifacts.
 - Crew Mate for focused implementation against one failing target.
+- Bosun for repo hygiene, verification recheck, and local commit custody. Bosun must not push, tag, publish, or release.

@@ -1,68 +1,69 @@
 {
-  "name": "pi-shipshape",
-  "version": "0.1.10",
-  "description": "Pi package for the Shipshape three-role spec-driven agent workflow.",
-  "type": "module",
-  "license": "0BSD",
-  "author": {
-    "name": "Dmytri Kleiner",
-    "email": "dev@dmytri.to"
-  },
-  "homepage": "https://github.com/dmytri/shipshape#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dmytri/shipshape.git",
-    "directory": "packages/pi-shipshape"
-  },
-  "bugs": {
-    "url": "https://github.com/dmytri/shipshape/issues"
-  },
-  "keywords": [
-    "pi-package",
-    "pi-extension",
-    "pi-skill",
-    "shipshape",
-    "agent-workflows",
-    "multi-agent",
-    "spec-driven-development"
-  ],
-  "pi": {
-    "extensions": [
-      "./adapters/pi-extension.ts"
+    "name": "pi-shipshape",
+    "version": "0.1.10",
+    "description": "Pi package for the Shipshape context-isolated spec-driven development workflow.",
+    "type": "module",
+    "license": "0BSD",
+    "author": {
+        "name": "Dmytri Kleiner",
+        "email": "dev@dmytri.to"
+    },
+    "homepage": "https://github.com/dmytri/shipshape#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dmytri/shipshape.git",
+        "directory": "packages/pi-shipshape"
+    },
+    "bugs": {
+        "url": "https://github.com/dmytri/shipshape/issues"
+    },
+    "keywords": [
+        "pi-package",
+        "pi-extension",
+        "pi-skill",
+        "shipshape",
+        "agent-workflows",
+        "multi-agent",
+        "spec-driven-development"
     ],
-    "skills": [
-      "./shipshape",
-      "./captain",
-      "./qm",
-      "./crew"
-    ]
-  },
-  "files": [
-    "README.md",
-    "LICENSE",
-    "shipshape/",
-    "captain/",
-    "qm/",
-    "crew/",
-    "agents/",
-    "commands/",
-    "adapters/",
-    "templates/",
-    "docs/",
-    "skills.sh.json"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*"
-  },
-  "peerDependenciesMeta": {
-    "@earendil-works/pi-coding-agent": {
-      "optional": true
+    "pi": {
+        "extensions": [
+            "./adapters/pi-extension.ts"
+        ],
+        "skills": [
+            "./shipshape",
+            "./captain",
+            "./qm",
+            "./crew",
+            "./bosun"
+        ]
+    },
+    "files": [
+        "README.md",
+        "LICENSE",
+        "shipshape/",
+        "captain/",
+        "qm/",
+        "crew/",
+        "bosun/",
+        "agents/",
+        "adapters/",
+        "templates/",
+        "docs/",
+        "skills.sh.json"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "@earendil-works/pi-coding-agent": "*"
+    },
+    "peerDependenciesMeta": {
+        "@earendil-works/pi-coding-agent": {
+            "optional": true
+        }
+    },
+    "engines": {
+        "node": ">=20.6.0"
     }
-  },
-  "engines": {
-    "node": ">=20.6.0"
-  }
 }

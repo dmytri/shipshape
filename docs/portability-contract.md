@@ -1,6 +1,6 @@
 # Portability Contract
 
-Shipshape is agent-runtime neutral. It can be adapted to Zed, Claude Code, Cursor, OpenCode, Hermes Agent, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Pi, and other coding-agent environments.
+Shipshape is agent-runtime neutral and context-isolated. It can be adapted to Zed, Claude Code, Cursor, OpenCode, Hermes Agent, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Pi, and other coding-agent environments.
 
 ## Required Agent Capabilities
 
@@ -25,7 +25,7 @@ Optional capabilities:
 | Shipshape term | Runtime-neutral meaning |
 |---|---|
 | Skill | Reusable instructions loaded by an agent |
-| Command | A named prompt entrypoint |
+| Runtime command | A runtime-provided invocation mechanism, such as Pi slash commands |
 | Subagent | A separate role-specialized agent session |
 | Spec | Durable expected-behavior artifact |
 | Verification | Tests, typechecks, linters, dry-runs, or equivalent checks |
@@ -37,7 +37,7 @@ Any adapter must preserve these rules:
 
 1. Captain is the only human-facing role.
 2. Captain updates specs/instructions, not implementation.
-3. QM writes tests/harness/coverage from committed specs.
+3. QM writes tests/harness/coverage from durable specs.
 4. Crew Mate implements minimal code for one failing target.
 5. QM and Crew do not accept ad hoc product instructions.
 6. Blockers return to Captain and are resolved in durable artifacts.
@@ -45,6 +45,8 @@ Any adapter must preserve these rules:
 8. Fresh sessions must be able to continue from repository files alone.
 9. Quartermaster must be invoked in a fresh/cleared context after Captain; it must never inherit Captain chat context.
 10. Quartermaster must enforce a context firewall: if it detects Captain/human discovery context in the current session, it refuses to continue.
+11. Implementation starts from failing verification, not inherited chat context.
+12. Bosun handles repo hygiene and local commit custody only; push, publish, tag, and release actions remain outside Bosun.
 
 ## May Adapt
 

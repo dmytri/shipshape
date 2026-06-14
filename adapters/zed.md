@@ -10,14 +10,15 @@ Project-local installs go under `.agents/skills/`. See [`README.md`](README.md) 
 
 ## Usage in Zed
 
-Zed does not need Claude-style `.claude/commands` files. Use the skills by name in the Zed agent panel:
+Use the skills by name in the Zed agent panel:
 
 - Ask Zed to use the `shipshape` skill for workflow orientation.
 - Ask Zed to use the `captain` skill for human-facing discovery, specs, and blocker resolution.
 - Clear the conversation or start a fresh agent session, then ask Zed to use the `qm` skill for verification and test coverage.
 - Ask Zed to use the `crew` skill for one failing implementation target.
+- Ask Zed to use the `bosun` skill after Crew passes to clean the repo and commit locally.
 
-If your Zed version exposes installed skills as slash entries, `/captain`, `/qm`, `/crew`, and `/shipshape` may appear. If it does not, invoke them by name in natural language; the installed skill files are still available to the agent.
+If your Zed version exposes installed skills as slash entries, `/captain`, `/qm`, `/crew`, `/bosun`, and `/shipshape` may appear. If it does not, invoke them by name in natural language; the installed skill files are still available to the agent.
 
 ## Project adoption
 

@@ -1,16 +1,16 @@
 /**
  * Shipshape Roles Extension for Pi
  *
- * Pi extension that registers /captain, /qm, /crew, and /clearrole commands
- * for the Shipshape three-role workflow.
+ * Pi extension that registers /captain, /qm, /crew, /bosun, and /clearrole commands
+ * for the Shipshape role-based workflow.
  *
- * Resolution order for role prompts:
- *   1. Project-local overrides in commands/*.md, .claude/commands/*.md, or .agents/commands/*.md
- *   2. Packaged Shipshape prompts bundled with the installed npm package
+ * Resolution order for role skill prompts:
+ *   1. Project-local skill overrides in .agents/skills/<role>/SKILL.md or <role>/SKILL.md
+ *   2. Packaged Shipshape <role>/SKILL.md bundled with the installed npm package
  *
- * Resolution order for the Crew Mate definition:
- *   1. Project-local overrides in agents/crew-mate.md, .claude/agents/crew-mate.md, or .agents/crew-mate.md
- *   2. Packaged Shipshape agents/crew-mate.md bundled with the installed npm package
+ * Resolution order for role agent definitions:
+ *   1. Project-local overrides in agents/crew-mate.md or agents/bosun.md, .claude/agents/, or .agents/
+ *   2. Packaged Shipshape agents/*.md bundled with the installed npm package
  *
  * After installing or updating the package, run /reload in Pi if needed.
  *
@@ -25,7 +25,7 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-type RoleName = "captain" | "qm" | "crew";
+type RoleName = "captain" | "qm" | "crew" | "bosun";
 
 interface RoleState {
     name: RoleName;
@@ -52,18 +52,20 @@ function projectPaths(cwd: string) {
     return {
         agentsPath: path.join(cwd, "AGENTS.md"),
         handoverPath: path.join(cwd, "HANDOVER.md"),
-        commandPaths: (role: RoleName) => [
-            path.join(cwd, "commands", `${role}.md`),
-            path.join(cwd, ".claude", "commands", `${role}.md`),
-            path.join(cwd, ".agents", "commands", `${role}.md`),
-            path.join(packageRoot, "commands", `${role}.md`),
+        skillPaths: (role: RoleName) => [
+            path.join(cwd, ".agents", "skills", role, "SKILL.md"),
+            path.join(cwd, role, "SKILL.md"),
+            path.join(packageRoot, role, "SKILL.md"),
         ],
-        crewAgentPaths: [
-            path.join(cwd, "agents", "crew-mate.md"),
-            path.join(cwd, ".claude", "agents", "crew-mate.md"),
-            path.join(cwd, ".agents", "crew-mate.md"),
-            path.join(packageRoot, "agents", "crew-mate.md"),
-        ],
+        agentPaths: (role: RoleName) => {
+            const fileName = role === "crew" ? "crew-mate.md" : `${role}.md`;
+            return [
+                path.join(cwd, "agents", fileName),
+                path.join(cwd, ".claude", "agents", fileName),
+                path.join(cwd, ".agents", fileName),
+                path.join(packageRoot, "agents", fileName),
+            ];
+        },
     };
 }
 
@@ -82,19 +84,18 @@ function buildRoleInstructions(
     cwd: string,
 ): { name: RoleName; instructions: string } | null {
     const paths = projectPaths(cwd);
-    const commandPath = firstExistingPath(paths.commandPaths(role));
-    if (!commandPath) return null;
+    const skillPath = firstExistingPath(paths.skillPaths(role));
+    if (!skillPath) return null;
 
-    let instructions = readMarkdownBody(commandPath);
+    let instructions = readMarkdownBody(skillPath);
     if (!instructions) return null;
 
-    if (role === "crew") {
-        const crewAgentPath = firstExistingPath(paths.crewAgentPaths);
-        const crewAgent = crewAgentPath
-            ? readMarkdownBody(crewAgentPath)
-            : null;
-        if (crewAgent) {
-            instructions += `\n\n## Crew Mate Agent Definition\n\n${crewAgent}`;
+    if (role === "crew" || role === "bosun") {
+        const agentPath = firstExistingPath(paths.agentPaths(role));
+        const agent = agentPath ? readMarkdownBody(agentPath) : null;
+        if (agent) {
+            const title = role === "crew" ? "Crew Mate" : "Bosun";
+            instructions += `\n\n## ${title} Agent Definition\n\n${agent}`;
         }
     }
 
@@ -131,7 +132,7 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             const role = buildRoleInstructions("captain", args, ctx.cwd);
             if (!role) {
                 ctx.ui.notify(
-                    "Captain prompt not found. Expected a project-local override or the packaged Shipshape commands/captain.md.",
+                    "Captain skill prompt not found. Expected a project-local override or the packaged Shipshape captain/SKILL.md.",
                     "error",
                 );
                 return;
@@ -167,7 +168,7 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             const role = buildRoleInstructions("qm", args, ctx.cwd);
             if (!role) {
                 ctx.ui.notify(
-                    "Quartermaster prompt not found. Expected a project-local override or the packaged Shipshape commands/qm.md.",
+                    "Quartermaster skill prompt not found. Expected a project-local override or the packaged Shipshape qm/SKILL.md.",
                     "error",
                 );
                 return;
@@ -176,7 +177,7 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             roleState = { ...role, injected: false };
             ctx.ui.setStatus("shipshape-role", "⚙️ Quartermaster");
             ctx.ui.notify(
-                "⚙️ Quartermaster activated. Derive work from verification status and committed artifacts only.",
+                "⚙️ Quartermaster activated. Derive work from verification status and durable repo artifacts only.",
                 "info",
             );
 
@@ -203,7 +204,7 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             const role = buildRoleInstructions("crew", args, ctx.cwd);
             if (!role) {
                 ctx.ui.notify(
-                    "Crew prompt not found. Expected a project-local override or the packaged Shipshape commands/crew.md.",
+                    "Crew skill prompt not found. Expected a project-local override or the packaged Shipshape crew/SKILL.md.",
                     "error",
                 );
                 return;
@@ -217,8 +218,36 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             );
 
             pi.sendUserMessage(
-                `Crew Mate session started. Target: ${args.trim()}\n\nRead committed specs and tests for behavior. Implement only the minimal production change needed.`,
+                `Crew Mate session started. Target: ${args.trim()}\n\nRead durable specs and source-controlled tests for behavior. Implement only the minimal production change needed.`,
             );
+        },
+    });
+
+    pi.registerCommand("bosun", {
+        description:
+            "Start Shipshape Bosun for repo hygiene and local commit custody",
+        getArgumentCompletions: (_prefix) => null,
+        handler: async (args, ctx) => {
+            const role = buildRoleInstructions("bosun", args, ctx.cwd);
+            if (!role) {
+                ctx.ui.notify(
+                    "Bosun skill prompt not found. Expected a project-local override or the packaged Shipshape bosun/SKILL.md.",
+                    "error",
+                );
+                return;
+            }
+
+            roleState = { ...role, injected: false };
+            ctx.ui.setStatus("shipshape-role", "⚓ Bosun");
+            ctx.ui.notify(
+                "⚓ Bosun activated. Clean the deck and commit locally; do not push, publish, or release.",
+                "info",
+            );
+
+            const focus = args.trim()
+                ? `Bosun session started. Completed work: ${args.trim()}`
+                : "Bosun session started. Inspect git status/diff, run hygiene checks, verify, and commit locally. Do not push, tag, publish, or release.";
+            pi.sendUserMessage(focus);
         },
     });
 
@@ -245,7 +274,7 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
         return {
             systemPrompt:
                 `# Active Shipshape Role: ${roleState.name.toUpperCase()}\n\n` +
-                `You are operating in the \"${roleState.name}\" role from the Shipshape workflow.\n\n` +
+                `You are operating in the "${roleState.name}" role from the Shipshape workflow.\n\n` +
                 `Role instructions:\n\n${roleState.instructions}\n\n---\n\n` +
                 event.systemPrompt,
         };

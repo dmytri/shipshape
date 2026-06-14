@@ -1,19 +1,37 @@
 # Handover
 
-This file is the durable current-state handoff for Shipshape roles.
+This file is the durable current-state handoff for Shipshape roles. The handoff is the product: if context matters after `/clear`, record it in durable repo artifacts.
 
 ## Shipshape Project Notices
 
-- `README.md` contains the required Shipshape attribution/install block: `<yes/no/unknown>`
-- `AGENTS.md` contains the required Shipshape workflow requirement block: `<yes/no/unknown>`
+- Bosun verified/restored the required Shipshape README block: `<yes/no/unknown>`
+- Bosun verified/restored the required Shipshape AGENTS block: `<yes/no/unknown>`
 - `assets/` policy is documented and protected: `<yes/no/unknown>`
+
+## Durable Artifact Notes
+
+- Product intent lives in valid Gherkin `.feature` files or other explicit durable spec artifacts, not hidden chat.
+- Project conventions live in `AGENTS.md`.
+- Supporting material lives in `assets/**`.
+- This file records current state and next steps; it must not be the only place product requirements exist.
+- Use standards where they exist. Use sidecars where they do not.
 
 ## Environment Notes
 
 - Crew Mate dispatch available: `<yes/no/unknown>`
-- If dispatch is unavailable, Quartermaster fallback allowed: `<yes/no>`
+- Bosun dispatch available: `<yes/no/unknown>`
+- If Crew dispatch is unavailable, Quartermaster implementation fallback allowed: `<yes/no>`
+- If the active harness cannot spawn or invoke a separate Bosun role, QM assumed Bosun duties as required fallback: `<yes/no/N/A>`
 - Required credentials or services: `<list or N/A>`
 - Known unavailable checks: `<list or N/A>`
+
+## Bosun Status
+
+- Bosun hygiene complete: `<yes/no/unknown>`
+- Local commit created: `<yes/no/unknown>`
+- Commit: `<hash and message or N/A>`
+- Working tree clean: `<yes/no/unknown>`
+- Nothing pushed/tagged/published/released: `<yes/no/unknown>`
 
 ## Current Verification Status
 
@@ -44,8 +62,9 @@ Use `templates/blocker-report.md` format for detailed blockers. Each blocker sho
 
 ## Notes for Next Role
 
-- Next recommended role: `<Captain | Quartermaster | Crew Mate>`
+- Next recommended role: `<Captain | Quartermaster | Crew Mate | Bosun>`
 - If next role is Quartermaster, user must clear the current session or start a fresh agent first: `<yes/no/N/A>`
 - Quartermaster should state context-firewall status and durable artifacts used: `<yes/no/N/A>`
 - If next role is Crew Mate, exact failing target: `<test/scenario/command or N/A>`
+- If next role is Bosun, completed target/change summary: `<summary or N/A>`
 - Focus: `<topic/test/scenario>`

@@ -2,6 +2,8 @@
 
 This example shows the smallest complete Shipshape loop. The filenames are illustrative; use the directories configured in the target project's `AGENTS.md`.
 
+The handoff is the product: Captain writes durable intent, QM reads only repo artifacts, Crew starts from failing verification, and Bosun leaves a clean local commit boundary.
+
 ## 0. Project is configured
 
 The target project has durable workflow configuration:
@@ -32,7 +34,7 @@ Human prompt:
 /captain Add password reset. Users should request a reset link by email and then choose a new password from that link.
 ```
 
-Captain does human-facing discovery and writes durable behavior, for example:
+Captain does human-facing discovery and writes durable behavior as valid Gherkin, for example:
 
 ```gherkin
 Feature: Password reset
@@ -67,7 +69,7 @@ After clearing or opening a fresh session:
 /qm password reset
 ```
 
-Quartermaster first performs the context-firewall check. If the session is clean, it reads only durable artifacts:
+Quartermaster first performs the context-firewall check. If the session is clean, it reads only durable artifacts. If it needs hidden chat context, Captain failed.
 
 ```text
 AGENTS.md
@@ -94,7 +96,7 @@ Quartermaster dispatches Crew with routing context only:
 
 ```text
 /crew Make the failing verification target pass: tests/password-reset.test.ts > resetting the password with a valid link
-Read the committed specs and tests for behavior. Do not change specs or test intent.
+Read the durable specs and source-controlled tests for behavior. Do not change specs or test intent.
 ```
 
 ## 3. Crew implements one target
@@ -108,7 +110,7 @@ tests/password-reset.test.ts
 related production files under src/
 ```
 
-Crew changes only the minimal production code needed for that target, then runs focused verification:
+Crew starts from the failing verification target, not inherited chat context. Crew changes only the minimal production code needed for that target, then runs focused verification:
 
 ```text
 npm test -- tests/password-reset.test.ts
@@ -131,11 +133,57 @@ Quartermaster reruns the relevant suite, dispatches another Crew target if neede
 /qm password reset
 ```
 
-QM final report includes coverage changed, commands run, Crew targets dispatched, and remaining blockers or failures.
+QM final report includes coverage changed, commands run, Crew targets dispatched, Bosun handoff/fallback status, and remaining blockers or failures.
 
-## 5. Blocker path returns to Captain
+After Crew Mate reports verification passing, QM hands off to Bosun. In harnesses that support subagents, separate role sessions, or skill invocation, QM must dispatch or request:
 
-If QM or Crew finds missing/contradictory behavior, it does not guess. It writes a blocker report using `templates/blocker-report.md`:
+```text
+/bosun password reset completed
+```
+
+Only in harnesses that cannot spawn or invoke a separate Bosun role, such as Pi, may QM assume Bosun duties directly. In that fallback, QM reports:
+
+```text
+No Bosun subagent/role handoff is available in this harness; QM assumed Bosun duties as the required fallback.
+```
+
+## 5. Bosun leaves the deck clean
+
+Bosun runs after Crew passes and before the next Captain voyage:
+
+```text
+/bosun password reset completed
+```
+
+Bosun checks:
+
+```text
+git status
+git diff
+unused BDD steps
+obsolete fixtures/helpers
+stale snapshots or visual baselines
+stale assets related to removed scenarios
+dead implementation paths
+generated/temp files
+dependency/config drift
+HANDOVER.md stale notes
+```
+
+Bosun may remove stale artifacts, rerun checks, stage intended changes only, and create a local commit:
+
+```text
+git add <intended files>
+git commit -m "Implement password reset"
+```
+
+Bosun final report includes verification results, commit hash/message, clean working tree status, and explicit confirmation that nothing was pushed, tagged, published, or released.
+
+Bosun leaves the deck clean and the work committed, but does not send the ship out. The next Captain starts from a clean deck.
+
+## 6. Blocker path returns to Captain
+
+If QM, Crew, or Bosun finds missing/contradictory behavior, it does not guess. It writes a blocker report using `templates/blocker-report.md`:
 
 ```md
 # Blocker Report
@@ -173,3 +221,5 @@ Then the user invokes Captain from that QM/Crew blocker context:
 ```
 
 Do not clear before this Captain escalation unless there is another reason to. Captain benefits from the concrete failure evidence, updates durable specs/instructions, then the user clears again before returning to Quartermaster.
+
+Bosun stops at the local commit boundary: it does not push, tag, publish, or release.

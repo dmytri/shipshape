@@ -10,6 +10,6 @@ Project-local installs go under `.agents/skills/`. See [`README.md`](README.md) 
 
 Exact OpenCode integration details may vary by version and configuration. Shipshape does not require OpenCode-specific APIs.
 
-If OpenCode consumes installed skills directly, use `shipshape`, `captain`, `qm`, and `crew` by name. If it does not, use [`generic.md`](generic.md) and keep role prompts from `agents/` accessible in the repository.
+If OpenCode consumes installed skills directly, use `shipshape`, `captain`, `qm`, `crew`, and `bosun` by name. If it does not, use [`generic.md`](generic.md) and keep role prompts from `agents/` accessible in the repository.
 
-If OpenCode supports custom commands, map command entrypoints from `commands/` to OpenCode's command mechanism. If it supports subagents, register `agents/crew-mate.md` as the implementation subagent so Quartermaster can dispatch one failing target at a time.
+If OpenCode supports subagents, register `agents/crew-mate.md` as the implementation subagent and `agents/bosun.md` as the hygiene/local commit subagent.

@@ -24,14 +24,16 @@ Minimal Nanobot setup:
    - `agents/captain.md` for human-facing spec work.
    - `agents/quartermaster.md` only in a fresh/cleared context for verification.
    - `agents/crew-mate.md` for one failing implementation target.
+   - `agents/bosun.md` for repo hygiene and local commit custody after Crew passes.
 
-If Nanobot supports a custom skills directory, copy the four sibling skill directories manually:
+If Nanobot supports a custom skills directory, copy the sibling skill directories manually:
 
 ```text
 shipshape/SKILL.md
 captain/SKILL.md
 qm/SKILL.md
 crew/SKILL.md
+bosun/SKILL.md
 ```
 
 Use the same role boundaries and context firewall documented in `docs/workflow.md`.
