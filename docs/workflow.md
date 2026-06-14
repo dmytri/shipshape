@@ -1,23 +1,30 @@
 # Shipshape Workflow
 
-Shipshape is context-isolated spec-driven development for coding agents. It separates agent work into focused roles: Captain, Quartermaster, Crew Mate, and Bosun.
+Shipshape is context-isolated spec-driven development for coding agents. It separates work into focused roles: Captain, Quartermaster, Crew Mate, and Bosun.
 
 **Specs are durable. Code is disposable. Agents are replaceable.**
 
-The handoff is the product. Each role must leave enough durable repository state for the next role to proceed without inherited chat.
+The handoff is the product. Each role leaves durable repository state so the next role can continue without hidden chat context.
 
-## Why Focused Roles?
+## The one hard context boundary
 
-Each role has a different failure mode:
+Shipshape has one mandatory context reset:
 
-- Discovery agents can accidentally implement premature assumptions.
-- Test agents can encode stale or ambiguous requirements.
-- Implementation agents can broaden scope or silently make product decisions.
-- Cleanup/commit work can accidentally become release work or leave stale artifacts behind.
+```text
+Captain -- clear/start fresh --> Quartermaster
+```
 
-Shipshape reduces those risks by assigning each role a narrow charter, making repository artifacts authoritative, and destroying or isolating context between roles. If it did not survive `/clear`, it was never specified.
+Captain is human-facing and may contain product discovery chat. Quartermaster must not inherit that context. Captain tells the user to clear the session or start a fresh session before QM; QM enforces the context firewall and refuses if Captain/human discovery context is visible.
 
-## Durable Repo Artifacts
+After QM starts clean, QM, Crew, Bosun, and Captain may transition by loading the next role skill in the same session because their context is derived from durable repo artifacts and verification output.
+
+```text
+Captain --clear--> QM <--> Crew --> QM --> Bosun --> Captain
+```
+
+If QM, Crew, or Bosun encounters missing or contradictory product intent, it loads Captain with the concrete blocker context. Captain updates durable artifacts. After Captain resolves product/spec intent, clear again before returning to QM.
+
+## Durable repo artifacts
 
 Durable intent and handoff artifacts include:
 
@@ -32,14 +39,7 @@ Source-controlled tests, fixtures, harnesses, and implementation code are also r
 
 Use standards where they exist. Use sidecars where they do not. Do not invent fake-standard formats.
 
-Non-durable artifacts include:
-
-- chat history,
-- private agent memory,
-- unstated assumptions,
-- hidden dispatch prompts containing product behavior.
-
-## Role Loop
+## Role loop
 
 ```text
 Human ↔ Captain
@@ -47,73 +47,33 @@ Captain → durable intent artifacts
 clear session / start fresh agent
 Quartermaster → executable verification from artifacts only
 Crew Mate → minimal implementation for one failing target
+Quartermaster → verifies the target/result
 Bosun → repo hygiene + local commit
 Captain → human-approved outbound offer if completed work is clean
-next Captain starts from a clean deck
-Blockers → templates/blocker-report.md → Captain
 ```
 
-For a concrete end-to-end walkthrough, see `docs/golden-path.md`.
+For a compact one-page summary of the start sequence, role transitions, config blocks, and blocker format, see `docs/quick-reference.md`. For a concrete walkthrough, see `docs/golden-path.md`.
 
-## Captain Phase
+## Captain phase
 
-Use the Captain when:
+Use Captain for human/product discussion, durable specs/assets/instructions, blocker resolution, and post-Bosun outbound decisions. If the deck is unready, Captain loads Bosun before continuing. When QM is next, Captain tells the user to clear the session — this is the only mandatory clear in the workflow.
 
-- starting a new feature,
-- changing expected behavior,
-- resolving a blocker,
-- making product or architectural decisions,
-- updating agent instructions.
+## Quartermaster phase
 
-The Captain first checks whether the repo is ready for Captain attention. If hygiene, stale artifacts, verification recheck, or local commit custody is pending, Captain hands off to Bosun and stops until Bosun leaves a clean deck.
+Use Quartermaster to convert specs into executable coverage and drive verification. QM starts with the context firewall check: refuses if Captain/human discovery context is visible; if clean, states the durable artifacts it will use. QM loads Crew for one failing target and loads Bosun when verification passes.
 
-When Bosun reports new completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, Captain summarizes the completed work and offers appropriate human-approved outbound next steps such as pushing the branch, opening a PR, tagging/releasing, publishing a package, deploying, or handing off to a release/deploy system. Captain does not perform those outbound actions unless the human explicitly approves and project instructions allow them.
+## Crew Mate phase
 
-The Captain writes durable intent artifacts, not implementation code. Today the primary intent format is valid Gherkin feature files. Captain may also create/edit durable assets under root `assets/`. These assets can include content, images, brand files, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
+Use Crew for one failing implementation target.
 
-The Captain may note stale generated/derived artifacts in `HANDOVER.md`, but does not normally delete implementation, test, fixture, harness, snapshot, or generated verification artifacts. QM and Bosun handle cleanup in their phases.
+Crew starts from failing verification and existing durable specs/tests. Crew changes the smallest production code needed for that target. When the target passes, Crew loads QM and becomes Quartermaster again, or reports back if running as a subagent.
 
-Captain updates `README.md` and `AGENTS.md` only when product/workflow intent changes.
+## Bosun phase
 
-When the Captain phase is complete, do not invoke the Quartermaster in the same conversation. Clear the session or start a new agent so the Quartermaster cannot see Captain/human chat context.
+Use Bosun after verification passes or when Captain finds a dirty deck. Bosun checks stale changed-file-adjacent artifacts, reruns verification, stages intended changes, and commits locally. After a clean commit, Bosun loads Captain for outbound decisions.
 
-## Quartermaster Phase
+## Blocker loop
 
-Use the Quartermaster when specs need executable coverage.
+If QM, Crew, or Bosun cannot continue from durable repo artifacts alone, it loads Captain with the concrete blocker context. The report should name the target, evidence, commands tried, exact blocker, why continuing would require guessing, and the suggested Captain resolution.
 
-The Quartermaster must start from a fresh context. If the current session contains Captain discussion, stop and restart/clear before continuing. If QM needs hidden chat context, Captain failed.
-
-This is the Quartermaster context firewall: QM's first action is to check whether it can see Captain/human discovery context. If it can, it refuses to continue. If it passes, QM states which durable artifacts it will use. See `docs/context-firewall.md`.
-
-The Quartermaster discovers work by running verification. Examples:
-
-- missing scenario definitions,
-- failing tests,
-- skipped environment-dependent checks,
-- typecheck or harness failures.
-
-The Quartermaster turns durable artifacts into executable verification, not product intent. It writes tests and dispatches implementation work. `assets/**` is read-only to the Quartermaster; QM-owned test fixtures should live outside `assets/`.
-
-## Crew Mate Phase
-
-Use a Crew Mate when there is a specific failing implementation target.
-
-A Crew Mate starts from failing verification, not inherited chat context. Work should be narrow: one scenario, one failing test file, or one small cluster of directly related failures. Crew starts by naming the target and durable artifacts that define expected behavior. `assets/**` is read-only to Crew Mates; they implement code that consumes approved assets rather than editing the assets.
-
-## Bosun Phase
-
-Use Bosun after Crew Mate has made verification pass and before the next Captain run.
-
-Bosun (boatswain) owns repo hygiene and local commit custody. Bosun checks for obsolete steps, fixtures, snapshots, visual baselines, stale assets, dead code, generated/temp files, dependency/config drift, stale `HANDOVER.md` notes, and dirty working tree state. Bosun may stage changes and create a local commit.
-
-Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification. Bosun leaves the deck clean and the work committed, but does not send the ship out. After Bosun reports a clean deck for completed work, Captain may offer the human outbound next steps such as push, PR, release, publish, or deploy.
-
-No new Captain voyage from a dirty deck. Captain may discover the dirty deck and route to Bosun; Bosun cleans it.
-
-Bosun handles local repo hygiene and local commit custody only. Bosun must not push, tag, publish, or release. Outbound actions are Captain/human decisions after a clean Bosun report, and require explicit human approval.
-
-## Blocker Loop
-
-If QM, Crew, or Bosun cannot continue from durable repo artifacts alone, they stop and report using `templates/blocker-report.md`. The report should name the target, evidence, commands tried, exact blocker, why continuing would require guessing, and the suggested Captain resolution.
-
-The Captain uses that report as evidence, updates specs/instructions/assets as needed, then the blocked role is rerun after the correct context boundary. This keeps all product decisions visible in source control.
+Captain uses that evidence, updates durable artifacts, and then the user clears before returning to QM. This keeps product decisions visible in source control.

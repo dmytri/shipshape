@@ -39,14 +39,13 @@ Any adapter must preserve these rules:
 2. Captain updates specs/instructions, not implementation.
 3. QM writes tests/harness/coverage from durable specs.
 4. Crew Mate implements minimal code for one failing target.
-5. QM and Crew do not accept ad hoc product instructions.
-6. Blockers return to Captain and are resolved in durable artifacts.
+5. QM and Crew derive product behavior from durable artifacts, not ad hoc chat instructions.
+6. Blockers load Captain and are resolved in durable artifacts.
 7. Work is derived from verification status.
 8. Fresh sessions must be able to continue from repository files alone.
-9. Quartermaster must be invoked in a fresh/cleared context after Captain; it must never inherit Captain chat context.
-10. Quartermaster must enforce a context firewall: if it detects Captain/human discovery context in the current session, it refuses to continue.
-11. Implementation starts from failing verification, not inherited chat context.
-12. Bosun handles repo hygiene and local commit custody only; push, publish, tag, and release actions remain outside Bosun.
+9. Quartermaster must run in a fresh/cleared context after Captain and must refuse if it can detect Captain/human discovery context in the current session.
+10. After QM starts clean, QM, Crew, Bosun, and Captain may transition by loading the next role skill in the same artifact-grounded session.
+11. Bosun stops at a clean local commit boundary; Captain handles outbound decisions.
 
 ## May Adapt
 
@@ -60,11 +59,12 @@ Adapters may change:
 - validation commands,
 - handover naming.
 
-## Dispatch Fallback
+## Role Loading
 
-If the runtime cannot dispatch subagents, there are two valid options:
+Subagents are optional. If the runtime cannot dispatch subagents, the active agent loads the next role skill directly:
 
-1. Start Crew Mate sessions manually for each failing target.
-2. Allow Quartermaster fallback after it writes failing tests.
+```text
+QM -> Crew -> QM -> Bosun -> Captain
+```
 
-The fallback should be explicit in the handover or project instructions.
+Only Captain → QM requires a cleared/fresh context.

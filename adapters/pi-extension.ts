@@ -8,10 +8,6 @@
  *   1. Project-local skill overrides in .agents/skills/<role>/SKILL.md or <role>/SKILL.md
  *   2. Packaged Shipshape <role>/SKILL.md bundled with the installed npm package
  *
- * Resolution order for role agent definitions:
- *   1. Project-local overrides in agents/crew-mate.md or agents/bosun.md, .claude/agents/, or .agents/
- *   2. Packaged Shipshape agents/*.md bundled with the installed npm package
- *
  * After installing or updating the package, run /reload in Pi if needed.
  *
  * Important workflow boundary:
@@ -57,15 +53,6 @@ function projectPaths(cwd: string) {
             path.join(cwd, role, "SKILL.md"),
             path.join(packageRoot, role, "SKILL.md"),
         ],
-        agentPaths: (role: RoleName) => {
-            const fileName = role === "crew" ? "crew-mate.md" : `${role}.md`;
-            return [
-                path.join(cwd, "agents", fileName),
-                path.join(cwd, ".claude", "agents", fileName),
-                path.join(cwd, ".agents", fileName),
-                path.join(packageRoot, "agents", fileName),
-            ];
-        },
     };
 }
 
@@ -89,15 +76,6 @@ function buildRoleInstructions(
 
     let instructions = readMarkdownBody(skillPath);
     if (!instructions) return null;
-
-    if (role === "crew" || role === "bosun") {
-        const agentPath = firstExistingPath(paths.agentPaths(role));
-        const agent = agentPath ? readMarkdownBody(agentPath) : null;
-        if (agent) {
-            const title = role === "crew" ? "Crew Mate" : "Bosun";
-            instructions += `\n\n## ${title} Agent Definition\n\n${agent}`;
-        }
-    }
 
     if (fs.existsSync(paths.agentsPath)) {
         instructions +=
@@ -237,13 +215,13 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
             roleState = { ...role, injected: false };
             ctx.ui.setStatus("shipshape-role", "⚓ Bosun");
             ctx.ui.notify(
-                "⚓ Bosun activated. Clean the deck and commit locally; do not push, publish, or release.",
+                "⚓ Bosun activated. Clean the deck, commit locally, then load Captain for outbound decisions.",
                 "info",
             );
 
             const focus = args.trim()
                 ? `Bosun session started. Completed work: ${args.trim()}`
-                : "Bosun session started. Inspect git status/diff, run hygiene checks, verify, and commit locally. Do not push, tag, publish, or release.";
+                : "Bosun session started. Inspect git status/diff, run hygiene checks, verify, commit locally, then load Captain for outbound decisions.";
             pi.sendUserMessage(focus);
         },
     });

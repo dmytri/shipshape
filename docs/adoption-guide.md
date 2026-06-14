@@ -47,11 +47,6 @@ npx skills add dmytri/shipshape --agent hermes-agent --skill '*'
 npx skills add dmytri/shipshape --agent aider-desk --skill '*'
 ```
 
-Notes:
-
-- `nanobot` is not currently a valid `skills` CLI agent alias; use `adapters/nanobot.md` as a manual fallback.
-- Plain `aider` is not currently a valid alias; use `aider-desk` for AiderDesk.
-
 You can list the available skills without installing:
 
 ```bash
@@ -104,7 +99,7 @@ Put feature files in `<spec directory>`.
 
 Other spec formats (markdown requirements, ADRs, test plans, committed issue files) can supplement Gherkin, but Gherkin `.feature` files should be the primary durable specification.
 
-BDD/Gherkin is the first backend, not Shipshape's identity. Future backends could include design cards, OpenAPI, JSON Schema, statecharts, approval tests, property specs, TLA+, Alloy, Lean, Coq, Dafny, or other durable formats. Use standards where they exist. Use sidecars where they do not. Do not invent fake-standard formats.
+BDD is the first backend, not Shipshape's identity. Other durable spec formats may be added. Use standards where they exist; use sidecars where they do not.
 
 ## 3. Configure Verification
 
@@ -128,57 +123,29 @@ Preferred runtimes install the sibling skills directly:
 - `crew` — focused implementation for one failing target.
 - `bosun` — repo hygiene, verification recheck, and local commit custody.
 
-For runtimes without native skill support, use the portable role charters in `agents/`.
-
-See `adapters/README.md` for the canonical support matrix and runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Nanobot fallback, and Pi.
+See `adapters/README.md` for the runtime support matrix and install paths.
 
 ## 5. Start with Captain
 
-Have the Captain capture the current product/workflow understanding in specs and `AGENTS.md`. If Captain finds the repo is not ready for Captain attention, run Bosun first and return to Captain after Bosun leaves a clean deck.
-
-For an existing codebase, do not immediately delete code. First identify which artifacts are derived from changed specs. Deletion should be targeted to artifacts that may encode stale requirements.
+Have Captain capture product intent in specs, `AGENTS.md`, `HANDOVER.md`, and referenced `assets/**`. If the deck is unready, Captain loads Bosun first. For existing codebases, identify stale-spec artifacts before deleting code.
 
 ## 6. Clear Context, Then Run Quartermaster
 
-Before invoking Quartermaster, clear the Captain session or start a new agent session. This is mandatory: QM should never receive Captain/human chat context. Captain context dies; the spec survives.
+Clear the Captain session before QM. This is mandatory. QM will refuse if it detects Captain/human discovery context. After QM starts clean, later transitions do not require another clear unless Captain resolves new product/spec intent. See `docs/context-firewall.md`.
 
-Quartermaster prompts include a context-firewall refusal: if QM detects Captain/human discovery context in the current session, it must stop and ask for a fresh/cleared session.
+## 7. Let QM Load Crew, Then QM Again
 
-The Quartermaster should:
+QM writes executable coverage and loads Crew for one failing target. Provide a specific target, not a broad directive:
 
-1. run verification,
-2. write missing coverage,
-3. dispatch Crew Mates for implementation failures,
-4. after Crew passes, summon Bosun if possible or explicitly assume Bosun role if no subagent mechanism exists,
-5. report blockers using `templates/blocker-report.md`.
+Good: `Make tests/auth/login-invalid-token.test.ts pass.`
 
-## 7. Run Crew Mates
+Poor: `Implement auth.`
 
-Each Crew Mate should receive one failing target. Crew starts from failing verification, not inherited chat context. Crew should name the target, state which durable artifacts define the expected behavior, and edit only minimal production code for that target.
+Crew implements the smallest change needed, then loads QM again.
 
-Good target:
+## 8. Let QM Load Bosun, Then Bosun Load Captain
 
-```text
-Make `tests/auth/login-invalid-token.test.ts` pass.
-```
-
-Poor target:
-
-```text
-Implement auth.
-```
-
-## 8. Run Bosun
-
-After Crew Mate makes verification pass, Bosun checks repo hygiene and creates a local commit before the next Captain run.
-
-Bosun checks for stale steps, helpers, fixtures, snapshots, assets, dead code, generated/temp files, dependency/config drift, stale `HANDOVER.md` notes, and dirty working tree state. Bosun may stage changes and commit locally.
-
-Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification.
-
-If the active harness supports subagents, separate role sessions, or skill invocation, QM must request or dispatch `/bosun <completed target or change summary>` and must not perform Bosun work itself.
-
-QM may assume Bosun duties only when the active harness cannot spawn or invoke a separate Bosun role, such as Pi. When QM must use this fallback, document `No Bosun subagent/role handoff is available in this harness; QM assumed Bosun duties as the required fallback.` in `HANDOVER.md` or the final response.
+When verification passes, QM loads Bosun. Bosun cleans stale artifacts, reruns verification, and commits locally. After a clean commit, Bosun loads Captain for human-approved outbound decisions.
 
 ## 9. Maintain Handover
 

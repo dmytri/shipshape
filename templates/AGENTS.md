@@ -41,9 +41,11 @@ Committed repository artifacts are durable. Chat history is not.
 
 The handoff is the product. New agent sessions must be able to continue from repository documents alone. Captain context dies; the spec survives. If it did not survive `/clear`, it was never specified.
 
-Before invoking the Quartermaster after a Captain session, clear the current conversation or start a new agent session. The Quartermaster must never inherit Captain/human chat context; it may only use durable specs, source-controlled tests, instructions, and explicit handoff files in the repository.
+Shipshape has one mandatory context reset: Captain → Quartermaster. Before invoking Quartermaster after Captain, clear the current conversation or start a fresh session. Quartermaster must never inherit Captain/human discovery chat; it may only use durable specs, source-controlled tests, instructions, and handoff files in the repository.
 
-Quartermaster context firewall: if Quartermaster is invoked in a session containing Captain/human discovery context, it must refuse to continue and ask the user to clear the session or start a new agent session. If QM needs hidden chat context, Captain failed.
+After QM starts from clean context, QM, Crew, Bosun, and Captain may transition by loading the next role skill in the same session because their context is derived from durable repo artifacts and verification output. If Captain resolves product/spec intent, clear again before returning to QM.
+
+Quartermaster context firewall: if Quartermaster is invoked in a session containing Captain/human discovery context, it must refuse to continue and ask the user to clear the session or start a fresh session. If QM needs hidden chat context, Captain failed.
 
 ## Artifact Roles
 
@@ -57,101 +59,42 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 
 ## Durable Assets
 
-Durable Captain/human-authored assets live in `<asset directory>`, usually `assets/`.
-
-`assets/**` may contain content, brand files, images, media, mockups, diagrams, reference data, and approved fixture-like examples referenced by specs.
-
-Captain and humans may create/edit `assets/**`. Quartermaster and Crew Mates may read `assets/**`, write tests against it, and implement code that consumes it, but must not modify, rewrite, regenerate, or delete it. Bosun may remove stale assets only when durable specs have retired them.
-
-Captain must not delete `assets/**` unless the human explicitly asks, durable specs explicitly retire the asset, or the asset was created by mistake in the same Captain session.
-
-QM-owned test fixtures live outside `assets/`, usually under `<test directory>`.
+`assets/**` contains Captain/human-authored durable material (content, brand, design, reference data). Captain and humans may create/edit it. QM and Crew may read it but must not modify, regenerate, or delete it. Bosun may remove only assets explicitly retired by durable specs. QM-owned test fixtures belong under `<test directory>`, not `assets/`.
 
 ## Role Workflow
 
 ### Captain
 
-The Captain is the only role that talks to humans.
-
-The Captain:
-
-- Checks whether the repo is ready for Captain attention; if hygiene, stale artifacts, verification recheck, or local commit custody is pending, hands off to Bosun and stops until the deck is clean.
-- When Bosun reports completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, summarizes the work and offers human-approved outbound next steps such as pushing, opening a PR, tagging/releasing, publishing, deploying, or handing off to a release/deploy system.
-- Collaborates with humans on goals, product behavior, constraints, and decisions.
-- Writes and updates durable Gherkin feature files (`.feature`) in `<spec directory>`.
-- Updates this file when workflow, stack, or project-level decisions change.
-- Updates `README.md` and `AGENTS.md` when product/workflow intent changes.
-- Creates and edits durable Captain/human-authored assets under `assets/**` when they are product/content/design inputs referenced by specs.
-- Resolves blockers reported by the Quartermaster, Crew Mates, or Bosun.
-- Does not normally write production code, tests, fixtures, or harnesses.
-- Does not push, tag, publish, release, deploy, or trigger external delivery unless Bosun has reported a clean deck for completed work, project instructions allow the action, required credentials/environment are available, and the human explicitly approves that outbound action.
-- Notes generated/derived artifacts that may now be stale so QM or Bosun can handle them later.
-
-If there is a meaningful chance a generated/derived artifact encodes retired behavior, Captain records it in `HANDOVER.md` when useful. The Quartermaster and Bosun clean up from current specs.
+- Writes durable intent artifacts: Gherkin specs, project instructions, handover notes, and `assets/**`.
+- Resolves blockers from QM, Crew, or Bosun by updating durable artifacts; does not write implementation or verification.
+- Loads Bosun if the deck is unready before continuing Captain work.
+- After Bosun's clean commit, offers human-approved outbound next steps (push, PR, publish, release, deploy).
+- Tells the user to clear before QM. This is the only mandatory context reset. Outbound actions require explicit human approval.
 
 ### Quartermaster
 
-The Quartermaster converts durable specs into executable verification. It does not create product intent.
-
-The Quartermaster:
-
-- Runs in a fresh session that does not include Captain/human discovery chat.
-- Refuses to continue if the current context includes Captain/human discovery chat.
-- Starts by stating whether the context firewall passed and which durable artifacts it will use.
-- Reads this file, `<handover file>`, valid Gherkin feature files, tests, and referenced `assets/**`.
-- Derives work from verification status.
-- Writes tests, step definitions, QM-owned fixtures, harnesses, and support code.
-- Removes obsolete test-only artifacts that encode retired requirements.
-- Dispatches Crew Mates for failing implementation tests.
-- Does not normally write production code.
-
-Fallback: if no Crew Mate dispatch mechanism is available, the Quartermaster may implement after writing failing tests. Document this explicitly in `<handover file>`.
-
-After Crew Mate reports verification passing, Quartermaster must hand off to Bosun. If the active harness supports subagents, separate role sessions, or skill invocation, Quartermaster must request or dispatch `/bosun <completed target or change summary>` and must not perform Bosun work itself. Quartermaster may assume Bosun duties only when the active harness cannot spawn or invoke a separate Bosun role, such as Pi. When QM must use this fallback, document `No Bosun subagent/role handoff is available in this harness; QM assumed Bosun duties as the required fallback.` in `<handover file>` or its final response. Do not skip Bosun.
+- Runs only in a fresh/cleared session; refuses if Captain/human discovery context is visible.
+- Reads durable repo artifacts only; writes executable coverage and runs configured verification.
+- Loads Crew for one failing target; loads Bosun when verification passes.
+- Loads Captain with a concrete blocker report if product intent is missing or contradictory.
 
 ### Crew Mate
 
-Crew Mates are focused implementation agents. They start from failing verification, not inherited chat context.
-
-A Crew Mate:
-
-- Works on one failing test, scenario, or verification target.
-- Starts by naming the target and the durable artifacts that define expected behavior.
-- Reads this file, relevant Gherkin feature files, and relevant tests before editing.
-- Implements the minimal production code needed in `<implementation directory>`.
-- Does not change specs, test intent, acceptance criteria, or `assets/**`.
-- Stops and reports blockers instead of improvising.
+- Starts from one failing verification target; implements the smallest production change needed.
+- Reads the relevant spec, failing test, directly related implementation files, and `assets/**`.
+- Runs focused verification; when the target passes, loads QM again.
+- If product intent is missing, loads Captain with the blocker context.
 
 ### Bosun
 
-Bosun (boatswain) is the repo hygiene and local commit custody role. Bosun runs after Crew Mate has made verification pass and before the next Captain run.
-
-Bosun:
-
-- Inspects `git status`, `git diff`, and relevant recent `git log`.
-- Checks for unused BDD step definitions, obsolete helpers/fixtures, stale snapshots/baselines, dead implementation paths, stale assets related to removed scenarios, generated/temp files, dependency/config drift, stale `HANDOVER.md` notes, and missing standard Shipshape blocks in `README.md` or `AGENTS.md`.
-- Removes stale or obsolete artifacts caused by the completed change.
-- Runs configured verification checks as practical.
-- Stages intended changes and creates a local git commit.
-- Updates `HANDOVER.md` only to remove stale/misleading notes or reflect the clean final state.
-- Does not push, tag, publish, release, change product intent, add scenarios/tests, implement new product behavior, or weaken verification.
-
-No new Captain voyage from a dirty deck. Captain may discover the dirty deck and route to Bosun; Bosun cleans it.
-
-Bosun handles local repo hygiene and local commits only. Bosun does not push, tag, publish, or release.
+- Inspects `git status`, `git diff`, and recent `git log`; removes stale changed-file-adjacent artifacts.
+- Runs configured verification; stages intended changes; creates a local commit.
+- Loads Captain after a clean commit; loads Crew if verification exposes an incomplete target.
+- Stops at local commit boundary. Captain handles outbound decisions.
 
 ## Blocker Policy
 
-Quartermasters, Crew Mates, and Bosun must stop and report if they encounter:
-
-- missing normative requirements,
-- contradictory requirements,
-- impossible-to-test behavior,
-- missing harness conventions,
-- unsafe or unavailable required external dependency,
-- uncertainty requiring product judgment.
-
-They must not accept ad hoc chat workarounds. They must report blockers using the format in `templates/blocker-report.md`: target, evidence, commands tried, exact blocker, why continuing would require guessing, and suggested Captain resolution. The Captain updates specs/instructions, then the blocked role is rerun.
+If QM, Crew, or Bosun encounters missing or contradictory product intent, it loads Captain with concrete blocker context. Captain updates durable specs/instructions/assets. After Captain resolves product/spec intent, clear again before returning to QM.
 
 ## Verification Policy
 

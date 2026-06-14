@@ -22,7 +22,7 @@ pi install npm:pi-shipshape
 
 Use the Shipshape roles:
 
-- Captain for human-facing discovery and spec updates.
-- Quartermaster for tests, harnesses, and verification coverage from durable repo artifacts.
-- Crew Mate for focused implementation against one failing target.
-- Bosun for repo hygiene, verification recheck, and local commit custody. Bosun must not push, tag, publish, or release.
+- Captain records human/product intent in durable specs, instructions, handover notes, and assets.
+- Clear/start fresh before Quartermaster; QM refuses Captain/human discovery context.
+- After QM starts clean, roles transition by loading the next role skill: QM → Crew → QM → Bosun → Captain.
+- Bosun leaves a clean local commit boundary; Captain handles human-approved outbound decisions such as push, PR, publish, release, or deploy.

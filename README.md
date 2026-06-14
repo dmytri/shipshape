@@ -16,21 +16,15 @@ npx skills add dmytri/shipshape --skill '*'
 
 ```text
 /captain describe the feature or change
-# Captain writes durable specs/instructions and updates assets/ when needed.
+# Captain writes durable specs/instructions/assets.
 
-# Clear the session or start a new agent here.
+# Clear the session or start a fresh agent here.
 /qm optional focused area
-# Quartermaster reads repository artifacts only and writes failing tests.
+# Quartermaster reads repository artifacts only, writes verification, loads Crew for failing targets,
+# loads Bosun after verification passes, and Bosun loads Captain after a clean local commit.
 
-/crew failing test or target
-# Crew Mate implements the smallest production change needed to pass.
-
-/bosun completed target or change summary
-# Bosun cleans the repo and commits locally. It does not push, publish, or release.
-
-# If QM/Crew/Bosun finds a blocker, do not clear; start /captain from the blocker session.
-/captain resolve the blocker
-# Captain benefits from QM's concrete failure context and updates durable specs.
+# If QM/Crew/Bosun finds a blocker, load Captain with the concrete blocker context.
+# After Captain resolves product/spec intent, clear again before returning to QM.
 ```
 
 For Pi:
@@ -43,9 +37,8 @@ pi install npm:pi-shipshape
 /captain describe the feature or change
 # Clear the chat/session or start a fresh Pi session before QM.
 /qm optional focused area
-/crew failing test or target
-/bosun completed target or change summary
-/captain resolve a blocker      # keep concrete blocker context when escalating back to Captain
+# QM loads Crew, then QM, then Bosun, then Captain as the work progresses.
+# Load Captain directly with concrete blocker context when product/spec intent is missing.
 ```
 
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
@@ -64,13 +57,14 @@ Most agent failures come from hidden context:
 Shipshape fixes that by making repository artifacts the source of truth and making role context disposable.
 
 ```text
-Captain → Quartermaster → Crew Mate → Bosun → next Captain
+Captain --clear--> Quartermaster <--> Crew Mate --> Quartermaster --> Bosun --> Captain
 ```
 
 - Captain context dies; the spec survives.
-- Quartermaster reads only durable repo artifacts.
-- Crew Mate starts from failing verification, not inherited chat context.
-- Bosun leaves a clean local commit boundary before the next Captain.
+- Only Captain → Quartermaster requires a clear/fresh context.
+- Quartermaster reads only durable repo artifacts and verification output.
+- Crew Mate starts from failing verification.
+- Bosun leaves a clean local commit boundary, then becomes Captain for outbound decisions.
 
 If it did not survive `/clear`, it was never specified. If QM needs hidden chat context, Captain failed.
 
@@ -95,32 +89,26 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 
 ## Core Workflow
 
-1. **Captain** first confirms the deck is ready for Captain attention. If hygiene, stale artifacts, verification recheck, or local commit custody is pending, Captain hands off to **Bosun** and stops.
-2. When the deck is ready, Captain collaborates with the human and writes durable Gherkin feature files (`.feature`) in `<spec directory>`.
-3. Captain may create/edit durable human-authored assets under root `assets/` when specs reference content, brand files, images, mockups, reference data, or approved fixture-like examples.
-4. Captain updates durable intent artifacts, including project instructions when workflow or product intent changes.
-5. Captain notes generated/derived artifacts that may have been invalidated by spec changes; QM or Bosun handles cleanup in later phases.
-6. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a new agent session. QM must not inherit Captain/human discovery chat; if it detects that context, it refuses to continue.
-7. Quartermaster writes missing tests, QM-owned fixtures, step definitions, and harnesses; `assets/**` is read-only.
-8. Failing tests are assigned to **Crew Mates**.
-9. Crew Mates implement the smallest production change needed to pass one target; `assets/**` is read-only.
-10. **Bosun** checks repo hygiene, removes obsolete artifacts, reruns verification, stages intended changes, and creates a local commit. Bosun does not push, tag, publish, release, change product intent, add scenarios/tests, or implement new behavior.
-11. When Bosun reports new completed QM/Crew work with verification passing, intended changes committed locally, and the deck clean, **Captain** offers the human appropriate outbound next steps such as pushing the branch, opening a PR, tagging/releasing, publishing, or deploying. Captain performs outbound actions only with explicit human approval and project permission.
-12. If QM, Crew, or Bosun finds a missing/contradictory requirement, they stop and report a blocker.
-13. When moving from **Quartermaster**, **Crew Mate**, or **Bosun** back to **Captain**, do **not** clear the concrete blocker context unless there is a separate reason to. Captain then turns that context into durable specs/assets and the loop resumes.
-
-No new Captain voyage from a dirty deck. Bosun owns local repo hygiene and local commit custody, but does not push, tag, publish, or release. Outbound push/publish/deploy/release actions are Captain/human decisions after a clean Bosun report.
+1. **Captain** collaborates with the human and writes durable intent artifacts: specs, instructions, handover notes, and referenced `assets/**`.
+2. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a fresh session. QM enforces the context firewall and refuses if it can see Captain/human discovery chat.
+3. **Quartermaster** writes missing executable coverage and runs verification from durable repo artifacts only.
+4. For one failing implementation target, QM loads **Crew Mate** and becomes Crew, or dispatches Crew if the harness provides subagents.
+5. **Crew Mate** implements the smallest production change needed to pass that target, then loads QM again or reports back to QM.
+6. When implementation verification passes, QM loads **Bosun** and becomes Bosun.
+7. **Bosun** checks repo hygiene, reruns verification, stages intended changes, and creates a local commit.
+8. After the deck is clean, Bosun loads **Captain** so Captain can summarize completed work and offer human-approved outbound next steps such as push, PR, publish, release, or deploy.
+9. If QM, Crew, or Bosun finds missing/contradictory product intent, it loads Captain with the concrete blocker context. After Captain resolves product/spec intent, clear again before returning to QM.
 
 ## Short Demo Narrative
 
 1. Captain writes `.feature`, `HANDOVER.md`, and any referenced `assets/**`.
-2. Clear/reset context.
+2. Clear/reset context before QM.
 3. Quartermaster reads only repo artifacts and creates failing verification.
-4. Clear/reset context if needed, so Crew does not inherit product decisions from chat.
-5. Crew Mate reads failing verification and implements the smallest passing change.
-6. Bosun removes stale leftovers, reruns checks, and commits locally.
-7. Captain offers human-approved outbound next steps if the completed work should be pushed, published, released, or deployed.
-8. Next Captain starts from a clean deck.
+4. QM loads Crew for one failing target.
+5. Crew makes the target pass and loads QM again.
+6. QM verifies and loads Bosun.
+7. Bosun removes stale leftovers, reruns checks, commits locally, and loads Captain.
+8. Captain offers human-approved outbound next steps if the completed work should be pushed, published, released, or deployed.
 
 ## Why BDD First?
 
@@ -161,7 +149,6 @@ shipshape/
 ├── crew/SKILL.md               # role skill: /crew
 ├── bosun/SKILL.md              # role skill: /bosun
 ├── README.md
-├── agents/                     # portable role charters
 ├── adapters/
 ├── templates/
 └── docs/
@@ -204,12 +191,7 @@ npx skills add dmytri/shipshape --agent hermes-agent --skill '*'
 npx skills add dmytri/shipshape --agent aider-desk --skill '*'
 ```
 
-See `adapters/README.md` for the canonical support matrix, verified project-local install paths, and runtime-specific notes.
-
-Notes:
-
-- `nanobot` is not currently a valid `skills` CLI agent alias; use the manual fallback in `adapters/nanobot.md`.
-- Plain `aider` is not currently a valid alias; use `aider-desk` for AiderDesk.
+See `adapters/README.md` for the runtime support matrix and install paths.
 
 Preview/use without installing:
 
@@ -255,7 +237,7 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
 
 1. Install with `npx skills add dmytri/shipshape --skill '*'` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
 2. Copy `templates/HANDOVER.md` if you want a durable current-state handoff.
-3. Use the role skills in `captain/`, `qm/`, `crew/`, and `bosun/`; for runtimes without multi-skill support, copy role prompts from `agents/` into your agent runtime.
+3. Use the role skills in `captain/`, `qm/`, `crew/`, and `bosun/`.
 4. Configure your project-specific commands:
    - `<test command>`
    - `<focused test command>`
@@ -263,10 +245,10 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
    - `<spec directory>`
    - `<implementation directory>`
 5. Start with the Captain.
-6. If Captain finds the deck unready, run Bosun first and return to Captain after Bosun leaves a clean deck.
-7. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees durable repo artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
-8. After Crew Mate makes verification pass, run Bosun to clean the repo and commit locally before the next Captain run.
-9. If Quartermaster, Crew Mate, or Bosun reports a blocker, start Captain from that blocker context instead of clearing. Captain can use the concrete evidence to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
+6. If Captain finds the deck unready, Captain loads Bosun and becomes Bosun until the deck is clean.
+7. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees durable repo artifacts. QM refuses if it detects Captain/human discovery context.
+8. After QM starts clean, QM/Crew/Bosun/Captain transition by loading the next role skill; no additional clear is required unless Captain resolves product/spec intent.
+9. If Quartermaster, Crew Mate, or Bosun hits a blocker, load Captain with that concrete blocker context. Captain updates durable specs/assets; after Captain resolves it, clear again before returning to QM.
 
 See `docs/adoption-guide.md` for details, `docs/golden-path.md` for an end-to-end example, and `docs/adoption-checklist.md` for readiness checks.
 
@@ -277,7 +259,7 @@ A workflow is Shipshape-compatible if:
 - product intent is written to durable repo artifacts,
 - verification is produced from artifacts, not chat,
 - implementation starts from failing verification,
-- role context is reset or isolated between handoffs,
+- Captain → QM context is reset and later role transitions are grounded in durable artifacts,
 - stale artifacts are cleaned before the next Captain run,
 - local commit custody is separated from push/publish/release actions.
 
@@ -291,7 +273,8 @@ Agent orchestration tools decide where and how agents run. Shipshape defines how
 
 ## Operational docs
 
-- `docs/golden-path.md` — smallest complete Captain → QM → Crew → Bosun example.
+- `docs/quick-reference.md` — one-page reference: start sequence, role transitions, AGENTS.md config, HANDOVER.md state block, blocker format, and outbound decision point.
+- `docs/golden-path.md` — smallest complete Captain → QM → Crew → QM → Bosun → Captain example.
 - `docs/adoption-guide.md` — how to add Shipshape to a project.
 - `docs/adoption-checklist.md` — readiness checklist for projects adopting Shipshape.
 - `docs/context-firewall.md` — Quartermaster fresh-context refusal and pass behavior.

@@ -1,12 +1,10 @@
 # Golden Path Example
 
-This example shows the smallest complete Shipshape loop. The filenames are illustrative; use the directories configured in the target project's `AGENTS.md`.
+This example shows the smallest complete Shipshape loop. Filenames are illustrative; use the directories configured in the target project's `AGENTS.md`.
 
-The handoff is the product: Captain writes durable intent, QM reads only repo artifacts, Crew starts from failing verification, and Bosun leaves a clean local commit boundary.
+The key invariant: **only Captain → QM requires a cleared/fresh context**. After QM starts clean, QM, Crew, Bosun, and Captain transition by loading the next role skill because their context is grounded in durable repo artifacts and verification output.
 
 ## 0. Project is configured
-
-The target project has durable workflow configuration:
 
 ```text
 AGENTS.md
@@ -27,8 +25,6 @@ assets/                        # Captain/human-authored inputs, optional
 ```
 
 ## 1. Human starts with Captain
-
-Human prompt:
 
 ```text
 /captain Add password reset. Users should request a reset link by email and then choose a new password from that link.
@@ -55,10 +51,10 @@ Feature: Password reset
 
 Captain may also update `AGENTS.md`, `HANDOVER.md`, or approved files under `assets/**` if the specs reference durable content or design inputs.
 
-Captain final instruction:
+Captain ends with the only mandatory context-reset instruction:
 
 ```text
-Specs have been updated. Clear this session or start a new agent session before invoking /qm so Quartermaster cannot see this discovery chat.
+Specs have been updated. Clear this session or start a fresh session before invoking /qm so Quartermaster cannot see this discovery chat.
 ```
 
 ## 2. User clears context, then runs Quartermaster
@@ -69,7 +65,7 @@ After clearing or opening a fresh session:
 /qm password reset
 ```
 
-Quartermaster first performs the context-firewall check. If the session is clean, it reads only durable artifacts. If it needs hidden chat context, Captain failed.
+Quartermaster performs the context-firewall check. If clean, it reads only durable artifacts:
 
 ```text
 AGENTS.md
@@ -92,14 +88,9 @@ Quartermaster runs verification and finds a failing implementation target:
 Failing target: tests/password-reset.test.ts > resetting the password with a valid link
 ```
 
-Quartermaster dispatches Crew with routing context only:
+## 3. QM loads Crew for one target
 
-```text
-/crew Make the failing verification target pass: tests/password-reset.test.ts > resetting the password with a valid link
-Read the durable specs and source-controlled tests for behavior. Do not change specs or test intent.
-```
-
-## 3. Crew implements one target
+Quartermaster loads `crew/SKILL.md` and becomes Crew for the failing target, or dispatches Crew if the harness provides subagents.
 
 Crew reads:
 
@@ -110,64 +101,38 @@ tests/password-reset.test.ts
 related production files under src/
 ```
 
-Crew starts from the failing verification target, not inherited chat context. Crew changes only the minimal production code needed for that target, then runs focused verification:
+Crew changes only the production code needed for that target, then runs focused verification:
 
 ```text
 npm test -- tests/password-reset.test.ts
 ```
 
-Crew final report includes:
+Crew result:
 
 ```text
 Target addressed: tests/password-reset.test.ts > resetting the password with a valid link
 Files changed: src/auth/password-reset.ts
 Verification: focused target passed
-Remaining failures: request-link scenario still failing; not part of this Crew target
 ```
 
-## 4. Quartermaster repeats or verifies broadly
+When the target passes, Crew loads `qm/SKILL.md` and becomes Quartermaster again, or reports back to QM if running as a subagent.
 
-Quartermaster reruns the relevant suite, dispatches another Crew target if needed, or records green status.
+## 4. QM verifies and loads Bosun
 
-```text
-/qm password reset
-```
-
-QM final report includes coverage changed, commands run, Crew targets dispatched, Bosun handoff/fallback status, and remaining blockers or failures.
-
-After Crew Mate reports verification passing, QM hands off to Bosun. In harnesses that support subagents, separate role sessions, or skill invocation, QM must dispatch or request:
-
-```text
-/bosun password reset completed
-```
-
-Only in harnesses that cannot spawn or invoke a separate Bosun role, such as Pi, may QM assume Bosun duties directly. In that fallback, QM reports:
-
-```text
-No Bosun subagent/role handoff is available in this harness; QM assumed Bosun duties as the required fallback.
-```
+Quartermaster reruns relevant verification. If more implementation targets fail, QM loads Crew for the next target. When implementation verification passes, QM loads `bosun/SKILL.md` and becomes Bosun.
 
 ## 5. Bosun leaves the deck clean
 
-Bosun runs after Crew passes and before the next Captain voyage:
-
-```text
-/bosun password reset completed
-```
-
-Bosun checks:
+Bosun checks changed-file-adjacent hygiene:
 
 ```text
 git status
 git diff
-unused BDD steps
+unused or obsolete BDD steps
 obsolete fixtures/helpers
-stale snapshots or visual baselines
-stale assets related to removed scenarios
-dead implementation paths
-generated/temp files
-dependency/config drift
-HANDOVER.md stale notes
+stale snapshots or generated files
+stale HANDOVER.md notes
+configured verification commands
 ```
 
 Bosun may remove stale artifacts, rerun checks, stage intended changes only, and create a local commit:
@@ -177,25 +142,31 @@ git add <intended files>
 git commit -m "Implement password reset"
 ```
 
-Bosun final report includes verification results, commit hash/message, clean working tree status, and explicit confirmation that nothing was pushed, tagged, published, or released.
+Bosun result:
 
-Bosun leaves the deck clean and the work committed, but does not send the ship out.
+```text
+Verification: passed
+Commit: abc123 Implement password reset
+Deck: clean
+```
+
+When the deck is clean, Bosun loads `captain/SKILL.md` and becomes Captain.
 
 ## 6. Captain offers outbound next steps
 
-After Bosun reports completed work, a local commit, passing verification, and a clean deck, Captain summarizes the work and offers human-approved outbound next steps:
+Captain summarizes the completed work and offers human-approved outbound next steps:
 
 ```text
-/captain password reset is clean and committed; decide whether to push, open a PR, release, publish, or deploy
+Password reset is clean and committed as abc123. Would you like me to push the branch, open a PR, publish/release, deploy, or leave it local?
 ```
 
-Captain may offer actions such as pushing the branch, opening a PR, tagging/releasing, publishing a package, deploying, or handing off to a release/deploy system. Captain performs an outbound action only when the human explicitly approves it and project instructions allow it.
-
-The next Captain starts from a clean deck.
+Captain performs outbound actions only when the human explicitly approves them and project instructions allow them.
 
 ## 7. Blocker path returns to Captain
 
-If QM, Crew, or Bosun finds missing/contradictory behavior, it does not guess. It writes a blocker report using `templates/blocker-report.md`:
+If QM, Crew, or Bosun finds missing or contradictory product intent, it loads Captain with concrete blocker context instead of guessing.
+
+Example blocker:
 
 ```md
 # Blocker Report
@@ -205,16 +176,6 @@ If QM, Crew, or Bosun finds missing/contradictory behavior, it does not guess. I
 
 ## Target
 `features/password-reset.feature / reset link expiration`
-
-## Blocker Type
-- [x] Missing normative requirement
-
-## What I Read
-- `features/password-reset.feature`
-- `AGENTS.md`
-
-## What I Tried
-- `npm run test:bdd -- --dry-run`
 
 ## Exact Blocker
 The spec says the reset link expires in 30 minutes, but does not say whether an expired link should show a generic error, offer to resend, or redirect to login.
@@ -226,12 +187,4 @@ Any test expectation here would encode product behavior that is not present in d
 Add acceptance criteria for expired reset links.
 ```
 
-Then the user invokes Captain from that QM/Crew blocker context:
-
-```text
-/captain Resolve the password reset expired-link blocker.
-```
-
-Do not clear before this Captain escalation unless there is another reason to. Captain benefits from the concrete failure evidence, updates durable specs/instructions, then the user clears again before returning to Quartermaster.
-
-Bosun stops at the local commit boundary: it does not push, tag, publish, or release.
+Captain updates durable specs/instructions using the blocker evidence. After Captain resolves product/spec intent, the user clears again before returning to QM.

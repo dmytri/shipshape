@@ -20,11 +20,10 @@ For Pi:
 pi install npm:pi-shipshape
 ```
 
-Follow the Shipshape role boundaries:
+Follow the Shipshape role flow:
 
-- Captain is the only human-facing discovery/spec role.
-- Quartermaster must run in a fresh/cleared session, derive work from verification status and durable repo artifacts, and write tests/harnesses.
-- Crew Mate implements the minimal production change for one failing verification target.
-- Bosun cleans stale artifacts, reruns checks, stages intended changes, and commits locally.
-- Quartermaster and Crew Mate must not rely on Captain chat context; requirements must be recorded in durable repository artifacts.
-- Bosun must not push, tag, publish, release, change product intent, add scenarios/tests, implement new behavior, or weaken verification.
+- Captain is the human-facing discovery/spec role and records product intent in durable artifacts.
+- Clear/start fresh before Quartermaster. QM refuses if it can see Captain/human discovery context.
+- After QM starts clean, roles transition by loading the next role skill: QM loads Crew for one failing target, Crew loads QM after the target passes, QM loads Bosun after verification passes, and Bosun loads Captain after a clean local commit.
+- If QM, Crew, or Bosun hits missing product intent, load Captain with the concrete blocker context. After Captain resolves it, clear again before QM.
+- Captain handles human-approved outbound decisions after Bosun leaves a clean local commit boundary.

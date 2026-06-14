@@ -1,6 +1,6 @@
 {
     "name": "pi-shipshape",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "description": "Pi package for the Shipshape context-isolated spec-driven development workflow.",
     "type": "module",
     "license": "0BSD",
@@ -46,7 +46,6 @@
         "qm/",
         "crew/",
         "bosun/",
-        "agents/",
         "adapters/",
         "templates/",
         "docs/",
