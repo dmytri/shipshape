@@ -54,10 +54,10 @@ Crew Mate reads committed specs and tests, then implements the smallest producti
 1. Start with `/captain` for discovery, product decisions, or blocker resolution.
 2. Captain updates durable specs/instructions and removes stale generated artifacts when specs changed.
 3. Clear the Captain session or start a new agent session.
-4. Run `/qm` so Quartermaster reads only committed artifacts and writes/updates executable coverage.
+4. Run `/qm` so Quartermaster reads only committed artifacts, states which durable artifacts it used, and writes/updates executable coverage.
 5. Failing implementation tests become `/crew <target>` assignments.
-6. Crew Mates implement minimal production changes until the target passes.
-7. If QM or Crew is blocked by missing or contradictory requirements, return to `/captain` to update durable specs/assets/instructions.
+6. Crew Mates implement minimal production changes for exactly one target until that target passes.
+7. If QM or Crew is blocked by missing or contradictory requirements, they report using `templates/blocker-report.md`; return to `/captain` to update durable specs/assets/instructions.
 
 When moving from Quartermaster back to Captain for a blocker, do not clear the QM context unless there is another reason to. Captain can use QM's concrete failure context to update durable artifacts. After Captain resolves the blocker, clear again before returning to `/qm`.
 
@@ -83,7 +83,9 @@ Recommended supporting docs in this repository:
 - `qm/SKILL.md` — Quartermaster role skill.
 - `crew/SKILL.md` — Crew Mate role skill.
 - `docs/workflow.md` — full workflow description.
+- `docs/golden-path.md` — smallest complete Captain → QM → Crew → Captain loop example.
 - `docs/adoption-guide.md` — how to add Shipshape to a project.
+- `docs/adoption-checklist.md` — checklist for deciding whether a project is Shipshape-ready.
 - `docs/portability-contract.md` — runtime-neutral rules.
 - `docs/context-firewall.md` — Quartermaster fresh-context refusal behavior.
 - `agents/*.md` — portable role charters for runtimes that use agent files.

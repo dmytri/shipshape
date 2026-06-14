@@ -210,7 +210,15 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
 6. Before invoking Quartermaster after Captain, clear the session or start a fresh agent so QM only sees committed artifacts. QM is instructed to refuse if it detects Captain/human discovery context.
 7. If Quartermaster reports a blocker, start Captain from that QM session instead of clearing. Captain can use QM's concrete verification context to update durable specs/assets; after Captain resolves it, clear again before returning to QM.
 
-See `docs/adoption-guide.md` for details.
+See `docs/adoption-guide.md` for details, `docs/golden-path.md` for an end-to-end example, and `docs/adoption-checklist.md` for readiness checks.
+
+## Operational docs
+
+- `docs/golden-path.md` — smallest complete Captain → QM → Crew → Captain example.
+- `docs/adoption-guide.md` — how to add Shipshape to a project.
+- `docs/adoption-checklist.md` — readiness checklist for projects adopting Shipshape.
+- `docs/context-firewall.md` — Quartermaster fresh-context refusal and pass behavior.
+- `templates/blocker-report.md` — standard format for QM/Crew blockers.
 
 ## Portability
 
@@ -230,3 +238,5 @@ See `docs/portability-contract.md` and `adapters/README.md` for runtime-specific
 Shipshape was extracted from work done at [Saleor](https://saleor.io) — an open-source, headless GraphQL e-commerce platform
 
 If you're building an e-commerce project, Saleor is worth a serious look: modern GraphQL API, a great dashboard, and a strong open-source community.
+
+For an agent-friendly way to spin up Saleor storefront work, see [Jolly](https://jolly.cool).

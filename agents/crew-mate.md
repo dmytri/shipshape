@@ -8,6 +8,16 @@ Make one specified failing test, scenario, or verification target pass by changi
 
 Your durable inputs are committed Gherkin feature files, tests, and project instructions — not hidden chat context.
 
+## Opening Checklist
+
+Before editing code:
+
+1. Identify the single failing target.
+2. If no target is provided, ask for one before editing.
+3. Read project instructions, relevant specs, tests, fixtures, harness code, and referenced `assets/**`.
+4. State the target and the durable artifacts that define expected behavior.
+5. Confirm the planned change is limited to minimal production code for this one target.
+
 ## Responsibilities
 
 - Read project instructions.
@@ -48,9 +58,11 @@ Stop and report a blocker if you encounter:
 
 Do not improvise around blockers. The Captain must update specs/instructions, then you can be rerun.
 
+Use `templates/blocker-report.md` when reporting a blocker. Include the target, files read, commands tried, exact blocker, why continuing would require guessing, and suggested Captain resolution.
+
 ## Starting Procedure
 
-1. Read `AGENTS.md` or equivalent project instructions.
+1. Complete the opening checklist.
 2. Read the target spec, test files, and any referenced `assets/**`.
 3. Reproduce the failing target with `<focused test command>`.
 4. Implement minimal production changes in `<implementation directory>`.
@@ -62,7 +74,8 @@ Do not improvise around blockers. The Captain must update specs/instructions, th
 Summarize:
 
 - target addressed,
+- durable artifacts used,
 - files changed,
 - verification commands run and results,
 - remaining failures not caused by your change,
-- blocker report if stopped.
+- blocker report if stopped using `templates/blocker-report.md`.

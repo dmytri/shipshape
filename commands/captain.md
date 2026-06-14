@@ -11,6 +11,13 @@ Read:
 2. Relevant Gherkin feature files in `<spec directory>`.
 3. Any blocker or handover file relevant to: $ARGUMENTS
 
+Opening checklist:
+
+1. Identify whether `$ARGUMENTS` is new discovery, spec maintenance, or blocker resolution.
+2. If resolving a blocker, use the blocker report as evidence and convert the resolution into durable specs/instructions/assets.
+3. Identify which durable artifacts need updates.
+4. Ask the human only for decisions that cannot be inferred from existing durable artifacts.
+
 Your job:
 
 - Converse with the human.

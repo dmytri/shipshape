@@ -84,6 +84,7 @@ The Quartermaster:
 
 - Runs in a fresh session that does not include Captain/human discovery chat.
 - Refuses to continue if the current context includes Captain/human discovery chat.
+- Starts by stating whether the context firewall passed and which durable artifacts it will use.
 - Reads this file, `<handover file>`, Gherkin feature files, tests, and referenced `assets/**`.
 - Derives work from verification status.
 - Writes tests, step definitions, QM-owned fixtures, harnesses, and support code.
@@ -100,6 +101,7 @@ Crew Mates are focused implementation agents.
 A Crew Mate:
 
 - Works on one failing test, scenario, or verification target.
+- Starts by naming the target and the durable artifacts that define expected behavior.
 - Reads this file, relevant Gherkin feature files, and relevant tests before editing.
 - Implements the minimal production code needed in `<implementation directory>`.
 - Does not change specs, test intent, acceptance criteria, or `assets/**`.
@@ -116,7 +118,7 @@ Quartermasters and Crew Mates must stop and report if they encounter:
 - unsafe or unavailable required external dependency,
 - uncertainty requiring product judgment.
 
-They must not accept ad hoc chat workarounds. The Captain updates specs/instructions, then the blocked role is rerun.
+They must not accept ad hoc chat workarounds. They must report blockers using the format in `templates/blocker-report.md`: target, evidence, commands tried, exact blocker, why continuing would require guessing, and suggested Captain resolution. The Captain updates specs/instructions, then the blocked role is rerun.
 
 ## Verification Policy
 

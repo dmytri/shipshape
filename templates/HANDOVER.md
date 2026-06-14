@@ -38,7 +38,7 @@ The Quartermaster should derive the real worklist from verification status. This
 
 ## Known Blockers
 
-Use `templates/blocker-report.md` format for detailed blockers.
+Use `templates/blocker-report.md` format for detailed blockers. Each blocker should include the reporting role, target, files read, commands tried, exact blocker, why the role cannot continue without guessing, and suggested Captain resolution.
 
 - `<blocker or none>`
 
@@ -46,4 +46,6 @@ Use `templates/blocker-report.md` format for detailed blockers.
 
 - Next recommended role: `<Captain | Quartermaster | Crew Mate>`
 - If next role is Quartermaster, user must clear the current session or start a fresh agent first: `<yes/no/N/A>`
+- Quartermaster should state context-firewall status and durable artifacts used: `<yes/no/N/A>`
+- If next role is Crew Mate, exact failing target: `<test/scenario/command or N/A>`
 - Focus: `<topic/test/scenario>`

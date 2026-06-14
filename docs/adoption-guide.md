@@ -2,6 +2,8 @@
 
 Use this guide to add Shipshape to an existing project.
 
+For the smallest complete workflow example, see `docs/golden-path.md`. For a readiness checklist, see `docs/adoption-checklist.md`.
+
 ## Install with Pi
 
 ```bash
@@ -123,7 +125,7 @@ Preferred runtimes install the four sibling skills directly:
 
 For runtimes without native skill support, use the portable role charters in `agents/` or legacy command prompts in `commands/`.
 
-See `adapters/` for runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Nanobot fallback, and Pi.
+See `adapters/README.md` for the canonical support matrix and runtime notes, including Zed, Claude, Cursor, OpenCode, Hermes, Codex, GitHub Copilot, OpenClaw, Goose, AiderDesk, Nanobot fallback, and Pi.
 
 ## 5. Start with Captain
 
@@ -142,11 +144,11 @@ The Quartermaster should:
 1. run verification,
 2. write missing coverage,
 3. dispatch Crew Mates for implementation failures,
-4. report blockers.
+4. report blockers using `templates/blocker-report.md`.
 
 ## 7. Run Crew Mates
 
-Each Crew Mate should receive one failing target.
+Each Crew Mate should receive one failing target. Crew should name the target, state which durable artifacts define the expected behavior, and edit only minimal production code for that target.
 
 Good target:
 
@@ -170,3 +172,7 @@ Use `HANDOVER.md` for current state that helps the next session, especially:
 - environment limitations.
 
 Do not put product requirements only in handover. Product requirements belong in specs.
+
+## 9. Check Readiness
+
+Before relying on the workflow, run through `docs/adoption-checklist.md`. A project is ready when a fresh agent can determine from files alone where specs/tests/code/assets live, which commands to run, which role should act next, and what each role must refuse to do.

@@ -38,9 +38,11 @@ Human ↔ Captain
 Captain → Gherkin .feature files + assets/
 clear session / start fresh agent
 Quartermaster → tests/harness/coverage
-Crew Mate → minimal implementation
-Blockers → Captain
+Crew Mate → minimal implementation for one target
+Blockers → templates/blocker-report.md → Captain
 ```
+
+For a concrete end-to-end walkthrough, see `docs/golden-path.md`.
 
 ## Captain Phase
 
@@ -66,7 +68,7 @@ Use the Quartermaster when specs need executable coverage.
 
 The Quartermaster must start from a fresh context. If the current session contains Captain discussion, stop and restart/clear before continuing.
 
-This is the Quartermaster context firewall: QM's first action is to check whether it can see Captain/human discovery context. If it can, it refuses to continue. See `docs/context-firewall.md`.
+This is the Quartermaster context firewall: QM's first action is to check whether it can see Captain/human discovery context. If it can, it refuses to continue. If it passes, QM states which durable artifacts it will use. See `docs/context-firewall.md`.
 
 The Quartermaster discovers work by running verification. Examples:
 
@@ -81,10 +83,10 @@ The Quartermaster writes tests and dispatches implementation work. `assets/**` i
 
 Use a Crew Mate when there is a specific failing implementation target.
 
-A Crew Mate should be narrow: one scenario, one failing test file, or one small cluster of directly related failures. `assets/**` is read-only to Crew Mates; they implement code that consumes approved assets rather than editing the assets.
+A Crew Mate should be narrow: one scenario, one failing test file, or one small cluster of directly related failures. Crew starts by naming the target and durable artifacts that define expected behavior. `assets/**` is read-only to Crew Mates; they implement code that consumes approved assets rather than editing the assets.
 
 ## Blocker Loop
 
-If QM or Crew cannot continue from committed artifacts alone, they stop and report. The Captain updates specs/instructions, then the role is rerun.
+If QM or Crew cannot continue from committed artifacts alone, they stop and report using `templates/blocker-report.md`. The report should name the target, evidence, commands tried, exact blocker, why continuing would require guessing, and the suggested Captain resolution.
 
-This keeps all product decisions visible in source control.
+The Captain uses that report as evidence, updates specs/instructions/assets as needed, then the blocked role is rerun after the correct context boundary. This keeps all product decisions visible in source control.
