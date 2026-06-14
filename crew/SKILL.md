@@ -22,9 +22,8 @@ Crew starts from one failing verification target supplied by Quartermaster. Make
    I cannot run as Crew Mate without a named failing target. Invoke Crew with a specific failing test or scenario.
    ```
 
-2. Read `AGENTS.md` or equivalent project instructions.
-3. Read the relevant spec, failing test/step, directly related implementation files, and referenced `assets/**`.
-4. State the target and the durable artifacts that define expected behavior.
+2. Read only the failing scenario/test/step, its referenced durable spec or asset, and the directly related implementation files needed to make that target pass.
+3. State the target and the durable artifacts that define expected behavior.
 
 ## Responsibilities
 
@@ -32,7 +31,7 @@ Crew starts from one failing verification target supplied by Quartermaster. Make
 - Implement the smallest production change needed for that target.
 - Run focused verification.
 - When the target passes, load `qm/SKILL.md` and become Quartermaster again, or report back to QM if running as a subagent.
-- If expected behavior is missing or contradictory, load `captain/SKILL.md` with the blocker context.
+- If expected behavior is missing or contradictory, report the blocker to QM and stop.
 
 ## Boundaries
 
@@ -47,7 +46,7 @@ Make the target pass by changing only the minimum production code. If the first 
 3. Edit only the production code needed for that target.
 4. Rerun focused verification.
 5. If it passes, load QM and become Quartermaster again.
-6. If blocked on product intent, load Captain with the blocker context; after Captain resolves it, the user must clear before QM runs again.
+6. If blocked on product intent, report the blocker to QM and stop.
 
 ## Final report
 
