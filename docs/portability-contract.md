@@ -57,7 +57,6 @@ Adapters may change:
 - spec formats,
 - subagent mechanics,
 - validation commands,
-- handover naming.
 
 ## Role Loading
 

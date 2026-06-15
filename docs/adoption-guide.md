@@ -127,7 +127,7 @@ See `adapters/README.md` for the runtime support matrix and install paths.
 
 ## 5. Start with Captain
 
-Have Captain capture product intent in specs, `AGENTS.md`, `HANDOVER.md`, and referenced `assets/**`. If the deck is unready, Captain loads Bosun first. For existing codebases, identify stale-spec artifacts before deleting code.
+Have Captain capture product intent in specs, `AGENTS.md`, and referenced `assets/**`. If the deck is unready, Captain loads Bosun first. For existing codebases, identify stale-spec artifacts before deleting code.
 
 ## 6. Clear Context, Then Run Quartermaster
 
@@ -147,18 +147,6 @@ Crew implements the smallest change needed, then loads QM again.
 
 When verification passes, QM loads Bosun. Bosun cleans stale artifacts, reruns verification, and commits locally. After a clean commit, Bosun loads Captain for human-approved outbound decisions.
 
-## 9. Maintain Handover
+## 9. Check Readiness
 
-Use `HANDOVER.md` for current state that helps the next session, especially:
-
-- known skipped checks,
-- whether Crew Mate and Bosun subagent dispatch exists,
-- current verification status,
-- Bosun hygiene/commit status,
-- environment limitations.
-
-Do not put product requirements only in handover. Product requirements belong in specs.
-
-## 10. Check Readiness
-
-Before relying on the workflow, run through `docs/adoption-checklist.md`. A project is ready when a fresh agent can determine from files alone where specs/tests/code/assets live, which commands to run, which role should act next, and what each role must refuse to do.
+Before relying on the workflow, run through `docs/adoption-checklist.md`. A project is ready when a fresh agent can determine from files alone where specs/tests/code/assets live, which commands to run, what behavior is expected, and what each role must refuse to do.

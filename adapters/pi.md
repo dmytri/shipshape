@@ -48,4 +48,4 @@ The `/qm` command includes a programmatic best-effort guard: if `/captain` was u
 
 ## Notes
 
-The Pi extension is intentionally generic. It avoids project-specific test runners and product names. Put project-specific commands in `AGENTS.md`, `HANDOVER.md`, and project-local skill overrides when needed.
+The Pi extension is intentionally generic. It avoids project-specific test runners and product names. Put project-specific commands in `AGENTS.md` and project-local skill overrides when needed.

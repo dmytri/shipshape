@@ -13,7 +13,7 @@ Most SDD tools make better prompts. Shipshape makes harder handoffs. The handoff
 
 Use this skill as an orientation and router. The role skills are:
 
-- `/captain` — human-facing discovery, durable specs, project instructions, assets, blocker resolution, and post-Bosun outbound decisions.
+- `/captain` — human-facing discovery, durable specs/assets, Captain-only notes, blocker resolution, and post-Bosun outbound decisions.
 - `/qm` — fresh-context verification, executable coverage, and role transitions from durable repo artifacts only.
 - `/crew` — focused implementation for one failing verification target.
 - `/bosun` — repo hygiene, verification recheck, and local commit custody after implementation passes.
@@ -22,7 +22,7 @@ Use this skill as an orientation and router. The role skills are:
 
 Repository artifacts are durable. Chat is not.
 
-Human decisions belong in repository artifacts: valid Gherkin feature files, project instructions, handover files, and approved `assets/**` source material. Specs and tests are more authoritative than chat history.
+Binding product decisions belong in valid Gherkin feature files and approved `assets/**` source material. `AGENTS.md` is agent/tooling configuration, not product intent. `CAPTAIN.md`, if present, is Captain-only non-binding notes and must not be read by QM, Crew, or Bosun.
 
 If it did not survive `/clear`, it was never specified. If Quartermaster needs hidden Captain chat context, Captain failed.
 
@@ -48,11 +48,11 @@ If QM, Crew, or Bosun hits missing or contradictory product intent, load Captain
 
 ### Captain
 
-Use for human-facing discovery, durable spec/instruction/asset updates, blocker resolution, and post-Bosun outbound decisions. If the deck is unready, load Bosun first.
+Use for human-facing discovery, durable spec/asset updates, Captain-only notes, blocker resolution, and post-Bosun outbound decisions. If the deck is unready, load Bosun first.
 
 ### Quartermaster
 
-Use in a fresh session after Captain. QM reads durable repo artifacts, writes executable coverage, and loads Crew for one failing target. Load only after clearing Captain context.
+Use in a fresh session after Captain. QM starts from verification discovery, writes executable coverage exactly matching scenario steps, and loads Crew for one failing target. Load only after clearing Captain context.
 
 ### Crew
 
@@ -72,12 +72,11 @@ Before running Shipshape in a project, define these in project instructions such
 - `<typecheck command>`: how to run static checks, if applicable.
 - `<implementation directory>`: where production code lives.
 - `<test directory>`: where tests/fixtures/harness files live.
-- `<handover file>`: optional current-state handoff, such as `HANDOVER.md`.
 - `<asset directory>`: protected Captain/human-authored assets, usually `assets/`.
 
 ## Supporting files
 
-- `docs/quick-reference.md` — one-page reference: start sequence, role transitions, AGENTS.md config, HANDOVER.md state block, blocker format, and outbound decision point.
+- `docs/quick-reference.md` — one-page reference: start sequence, role transitions, AGENTS.md config, blocker format, and outbound decision point.
 - `shipshape/SKILL.md` — workflow orientation/router skill.
 - `captain/SKILL.md` — Captain role skill.
 - `qm/SKILL.md` — Quartermaster role skill.

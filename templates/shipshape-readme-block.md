@@ -22,7 +22,7 @@ pi install npm:pi-shipshape
 
 Use the Shipshape roles:
 
-- Captain records human/product intent in durable specs, instructions, handover notes, and assets.
+- Captain records binding human/product intent in durable specs and assets; optional `CAPTAIN.md` notes are Captain-only and non-binding.
 - Clear/start fresh before Quartermaster; QM refuses Captain/human discovery context.
 - After QM starts clean, roles transition by loading the next role skill: QM → Crew → QM → Bosun → Captain.
 - Bosun leaves a clean local commit boundary; Captain handles human-approved outbound decisions such as push, PR, publish, release, or deploy.

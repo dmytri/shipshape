@@ -47,7 +47,6 @@ function firstExistingPath(paths: string[]): string | null {
 function projectPaths(cwd: string) {
     return {
         agentsPath: path.join(cwd, "AGENTS.md"),
-        handoverPath: path.join(cwd, "HANDOVER.md"),
         skillPaths: (role: RoleName) => [
             path.join(cwd, ".agents", "skills", role, "SKILL.md"),
             path.join(cwd, role, "SKILL.md"),
@@ -77,7 +76,7 @@ function buildRoleInstructions(
     let instructions = readMarkdownBody(skillPath);
     if (!instructions) return null;
 
-    if (fs.existsSync(paths.agentsPath)) {
+    if (role !== "qm" && fs.existsSync(paths.agentsPath)) {
         instructions +=
             "\n\n## Project Instructions\n\n" +
             "Read AGENTS.md before starting work. It is the authoritative project workflow and configuration file for Shipshape.\n";
@@ -88,12 +87,6 @@ function buildRoleInstructions(
             "\n\n## Session Boundary\n\n" +
             "You must be running in a fresh session that does not include Captain/human discovery chat. " +
             "If this is not true, stop and ask the user to start a new Pi session before invoking /qm.\n";
-
-        if (fs.existsSync(paths.handoverPath)) {
-            instructions +=
-                "\n\n## Handover\n\n" +
-                fs.readFileSync(paths.handoverPath, "utf8");
-        }
     }
 
     return { name: role, instructions };
@@ -158,7 +151,7 @@ export default function shipshapeRolesExtension(pi: ExtensionAPI) {
 
             const focus = args.trim()
                 ? `Quartermaster session started. Narrow focus: ${args.trim()}`
-                : "Quartermaster session started. Read AGENTS.md and HANDOVER.md, then derive the worklist from verification status.";
+                : "Quartermaster session started. Derive the worklist from verification status.";
             pi.sendUserMessage(focus);
         },
     });

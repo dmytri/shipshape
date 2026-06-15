@@ -16,11 +16,11 @@ npx skills add dmytri/shipshape --skill '*'
 
 ```text
 /captain describe the feature or change
-# Captain writes durable specs/instructions/assets.
+# Captain writes durable specs/assets and optional Captain-only notes.
 
 # Clear the session or start a fresh agent here.
 /qm optional focused area
-# Quartermaster reads repository artifacts only, writes verification, loads Crew for failing targets,
+# Quartermaster starts from verification discovery, writes verification, loads Crew for failing targets,
 # loads Bosun after verification passes, and Bosun loads Captain after a clean local commit.
 
 # If QM/Crew/Bosun finds a blocker, load Captain with the concrete blocker context.
@@ -80,8 +80,8 @@ If it did not survive `/clear`, it was never specified. If QM needs hidden chat 
 ## Artifact Roles
 
 - `<spec directory>/**/*.feature` — valid executable Gherkin / BDD contracts. Use standard Gherkin; do not invent fake-Gherkin syntax.
-- `AGENTS.md` — project/agent instructions, commands, directories, and workflow conventions.
-- `HANDOVER.md` — durable context transfer and next-step state. It is not a place for product requirements that belong in specs.
+- `AGENTS.md` — agent/tooling instructions, commands, directories, and workflow conventions. It is not product intent.
+- `CAPTAIN.md` — optional Captain-only non-binding notes. QM, Crew, and Bosun must not read it.
 - `assets/**` — durable supporting material such as approved content, brand files, images, mockups, diagrams, reference data, or approved examples.
 - Future `design-cards/**` — visual/design acceptance where Gherkin is the wrong format.
 
@@ -89,9 +89,9 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 
 ## Core Workflow
 
-1. **Captain** collaborates with the human and writes durable intent artifacts: specs, instructions, handover notes, and referenced `assets/**`.
+1. **Captain** collaborates with the human and writes durable product intent into specs and referenced `assets/**`; optional `CAPTAIN.md` notes are Captain-only and non-binding.
 2. When moving from **Captain** to **Quartermaster**, the user clears the Captain session or starts a fresh session. QM enforces the context firewall and refuses if it can see Captain/human discovery chat.
-3. **Quartermaster** writes missing executable coverage and runs verification from durable repo artifacts only.
+3. **Quartermaster** derives its worklist from undefined, unimplemented, or failing verification targets, then writes executable coverage exactly matching scenario steps.
 4. For one failing implementation target, QM loads **Crew Mate** and becomes Crew, or dispatches Crew if the harness provides subagents.
 5. **Crew Mate** implements the smallest production change needed to pass that target, then loads QM again or reports back to QM.
 6. When implementation verification passes, QM loads **Bosun** and becomes Bosun.
@@ -101,7 +101,7 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 
 ## Short Demo Narrative
 
-1. Captain writes `.feature`, `HANDOVER.md`, and any referenced `assets/**`.
+1. Captain writes `.feature` specs and any referenced `assets/**`.
 2. Clear/reset context before QM.
 3. Quartermaster reads only repo artifacts and creates failing verification.
 4. QM loads Crew for one failing target.
@@ -236,7 +236,6 @@ skills.sh discovers public GitHub skill repositories after they are seen by the 
 ## Quick Adoption
 
 1. Install with `npx skills add dmytri/shipshape --skill '*'` or copy `templates/AGENTS.md` into your project and fill in the placeholders.
-2. Copy `templates/HANDOVER.md` if you want a durable current-state handoff.
 3. Use the role skills in `captain/`, `qm/`, `crew/`, and `bosun/`.
 4. Configure your project-specific commands:
    - `<test command>`
@@ -273,7 +272,7 @@ Agent orchestration tools decide where and how agents run. Shipshape defines how
 
 ## Operational docs
 
-- `docs/quick-reference.md` — one-page reference: start sequence, role transitions, AGENTS.md config, HANDOVER.md state block, blocker format, and outbound decision point.
+- `docs/quick-reference.md` — one-page reference: start sequence, role transitions, AGENTS.md config, blocker format, and outbound decision point.
 - `docs/golden-path.md` — smallest complete Captain → QM → Crew → QM → Bosun → Captain example.
 - `docs/adoption-guide.md` — how to add Shipshape to a project.
 - `docs/adoption-checklist.md` — readiness checklist for projects adopting Shipshape.

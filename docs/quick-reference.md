@@ -20,14 +20,14 @@ Only this transition requires a cleared context. After QM starts clean, all late
 
 ```text
 /captain  describe the feature or change
-          → Captain writes durable specs, instructions, assets.
+          → Captain writes durable specs/assets and optional Captain-only notes.
           → Captain tells you to clear before QM.
 
 # Clear the session or start a fresh session here.
 
 /qm       optional focused area
-          → QM enforces context firewall, then reads durable repo artifacts.
-          → QM writes verification, finds failing target, loads Crew.
+          → QM enforces context firewall, then starts from verification discovery.
+          → QM writes verification exactly matching scenario steps, finds failing target, loads Crew.
           → Crew makes target pass, loads QM again.
           → QM verifies, loads Bosun.
           → Bosun cleans, commits locally, loads Captain.
@@ -91,7 +91,6 @@ Add this table to your project's `AGENTS.md` and fill in each value:
 | `<test directory>`               | `tests/`              |
 | `<implementation directory>`     | `src/`                |
 | `<asset directory>`              | `assets/`             |
-| `<handover file>`                | `HANDOVER.md`         |
 | `<verification discovery command>` | `<command or N/A>` |
 | `<test command>`                 | `<command>`           |
 | `<focused test command>`         | `<command>`           |
@@ -99,17 +98,7 @@ Add this table to your project's `AGENTS.md` and fill in each value:
 | `<lint command>`                 | `<command or N/A>`    |
 ```
 
-Also add the Shipshape workflow requirement block from `templates/shipshape-agents-block.md` so future agents know Shipshape must be installed or loaded before substantive work.
-
----
-
-## HANDOVER.md Compact State Block
-
-Copy the `## Current Shipshape State` block from `templates/HANDOVER.md` and fill it in after each role transition. The three fields that orient any incoming role immediately:
-
-- **Next role to load** — what runs next
-- **Captain → QM clear required** — whether the user must clear before QM
-- **Deck status / Bosun commit** — whether Captain can make outbound decisions
+Also add the Shipshape workflow requirement block from `templates/shipshape-agents-block.md` so future agents know Shipshape must be installed or loaded before substantive work. Copy `templates/CAPTAIN.md` only if the project wants a Captain-only notes file; QM, Crew, and Bosun must not read it.
 
 ---
 
@@ -173,6 +162,6 @@ See `adapters/README.md` for the full support matrix and runtime-specific notes.
 | `docs/adoption-guide.md` | How to add Shipshape to an existing project |
 | `docs/adoption-checklist.md` | Readiness checklist |
 | `docs/context-firewall.md` | QM fresh-context refusal behavior |
-| `templates/AGENTS.md` | Project instructions template |
-| `templates/HANDOVER.md` | Full handover template |
+| `templates/AGENTS.md` | Agent/tooling configuration template |
+| `templates/CAPTAIN.md` | Optional Captain-only notes template |
 | `templates/blocker-report.md` | Detailed blocker report format |

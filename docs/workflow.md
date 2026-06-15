@@ -26,11 +26,11 @@ If QM, Crew, or Bosun encounters missing or contradictory product intent, it loa
 
 ## Durable repo artifacts
 
-Durable intent and handoff artifacts include:
+Durable repository artifacts include:
 
 - `<spec directory>/**/*.feature` — valid executable Gherkin / BDD contracts,
-- `AGENTS.md` — project/agent instructions, commands, directories, and conventions,
-- `HANDOVER.md` — durable context transfer and next-step state,
+- `AGENTS.md` — agent/tooling instructions, commands, directories, and conventions; not product intent,
+- `CAPTAIN.md` — optional Captain-only non-binding notes; not input to QM, Crew, or Bosun,
 - `assets/**` — Captain/human-authored durable supporting material,
 - blocker reports,
 - future `design-cards/**` — visual/design acceptance where Gherkin is the wrong format.

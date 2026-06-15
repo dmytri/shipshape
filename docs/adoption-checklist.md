@@ -18,11 +18,12 @@ A workflow is Shipshape-compatible if product intent is written to durable repo 
 - [ ] `AGENTS.md` defines `<test directory>`.
 - [ ] `AGENTS.md` defines `<implementation directory>`.
 - [ ] `AGENTS.md` defines `<asset directory>`, usually `assets/`.
-- [ ] `AGENTS.md` defines `<handover file>`, usually `HANDOVER.md`.
 - [ ] `AGENTS.md` defines `<verification discovery command>` or marks it `N/A`.
 - [ ] `AGENTS.md` defines `<test command>`.
 - [ ] `AGENTS.md` defines `<focused test command>`.
 - [ ] `AGENTS.md` defines `<typecheck command>` and `<lint command>`, or marks them `N/A`.
+- [ ] Slow checks are either isolated for safe parallel runs or documented as serial-only.
+- [ ] Cached verification, if used, is reported as cache-backed and does not replace current discovery.
 - [ ] The target project `README.md` contains the Shipshape attribution/install block.
 
 ## Specs and assets
@@ -34,22 +35,20 @@ A workflow is Shipshape-compatible if product intent is written to durable repo 
 - [ ] Specs reference approved assets by path when assets define expected behavior/content.
 - [ ] Non-Gherkin intent uses real standards where available or clear sidecar artifacts where not; the project does not invent fake-standard formats.
 
-## Handover and blockers
+## Blockers
 
-- [ ] `HANDOVER.md` exists if useful for current-state continuity.
-- [ ] `HANDOVER.md` names the current target, next role, relevant specs/tests/files, verification status, and deck status when useful.
-- [ ] Known unavailable checks, credentials, or environment limits are recorded.
 - [ ] Blockers use the format in `templates/blocker-report.md`.
+- [ ] Missing credentials, environment limits, or unavailable checks are expressed in project instructions, test skip output, or blocker reports instead of hidden chat.
 
 ## Workflow checklist
 
 - [ ] Start product/spec work with Captain.
-- [ ] Captain owns human discovery, durable intent artifacts, project instructions, and `assets/**` updates.
+- [ ] Captain owns human discovery, durable product-intent specs/assets, and optional Captain-only `CAPTAIN.md` notes.
 - [ ] Captain does not write production code, tests, fixtures, or harnesses.
 - [ ] If Captain finds hygiene, stale artifacts, or local commit custody pending, Captain loads Bosun before continuing.
 - [ ] Clear the Captain session or start a fresh session before Quartermaster.
 - [ ] Quartermaster refuses if it can see Captain/human discovery context.
-- [ ] Quartermaster states which durable artifacts it will use.
+- [ ] Quartermaster starts from verification discovery and uses only target scenario/test/step files plus adjacent test support.
 - [ ] Quartermaster writes/runs verification and loads Crew for one failing implementation target.
 - [ ] Crew changes only the production code needed for that target, then loads QM again.
 - [ ] When implementation verification passes, QM loads Bosun.
@@ -62,9 +61,8 @@ A workflow is Shipshape-compatible if product intent is written to durable repo 
 
 A project is Shipshape-ready when a fresh agent can answer these questions from files alone:
 
-1. Where are specs, tests, implementation files, assets, and handover?
+1. Where are specs, tests, implementation files, and assets?
 2. Which commands discover coverage, run tests, run focused tests, and run static checks?
 3. What behavior is expected for the current work?
-4. Which role should act next?
-5. Whether the working tree is clean and intended changes are committed locally.
-6. Which role should be loaded next, and whether a Captain → QM clear is required.
+4. Whether the working tree is clean and intended changes are committed locally.
+5. Whether a Captain → QM clear is required before verification work.

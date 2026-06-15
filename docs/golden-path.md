@@ -8,7 +8,6 @@ The key invariant: **only Captain → QM requires a cleared/fresh context**. Aft
 
 ```text
 AGENTS.md
-HANDOVER.md                    # optional but recommended
 features/                      # <spec directory>
 tests/                         # <test directory>
 src/                           # <implementation directory>
@@ -49,7 +48,7 @@ Feature: Password reset
     And the reset link cannot be used again
 ```
 
-Captain may also update `AGENTS.md`, `HANDOVER.md`, or approved files under `assets/**` if the specs reference durable content or design inputs.
+Captain may also update approved files under `assets/**` if the specs reference durable content or design inputs. Captain must not update `AGENTS.md` as part of feature/spec work.
 
 Captain ends with the only mandatory context-reset instruction:
 
@@ -69,7 +68,6 @@ Quartermaster performs the context-firewall check. If clean, it reads only durab
 
 ```text
 AGENTS.md
-HANDOVER.md
 features/password-reset.feature
 tests/**
 assets/** referenced by specs
@@ -131,7 +129,6 @@ git diff
 unused or obsolete BDD steps
 obsolete fixtures/helpers
 stale snapshots or generated files
-stale HANDOVER.md notes
 configured verification commands
 ```
 

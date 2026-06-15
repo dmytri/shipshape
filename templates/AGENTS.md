@@ -28,7 +28,6 @@ Fill in these values before running the workflow:
 | `<test directory>` | `<path>` |
 | `<implementation directory>` | `<path>` |
 | `<asset directory>` | `assets/` |
-| `<handover file>` | `HANDOVER.md` |
 | `<verification discovery command>` | `<command or N/A>` |
 | `<test command>` | `<command>` |
 | `<focused test command>` | `<command>` |
@@ -37,11 +36,11 @@ Fill in these values before running the workflow:
 
 ## Core Rule
 
-Committed repository artifacts are durable. Chat history is not.
+Committed repository artifacts are durable. Chat history is not. `AGENTS.md` is agent/tooling configuration, not product intent.
 
 The handoff is the product. New agent sessions must be able to continue from repository documents alone. Captain context dies; the spec survives. If it did not survive `/clear`, it was never specified.
 
-Shipshape has one mandatory context reset: Captain → Quartermaster. Before invoking Quartermaster after Captain, clear the current conversation or start a fresh session. Quartermaster must never inherit Captain/human discovery chat; it may only use durable specs, source-controlled tests, instructions, and handoff files in the repository.
+Shipshape has one mandatory context reset: Captain → Quartermaster. Before invoking Quartermaster after Captain, clear the current conversation or start a fresh session. Quartermaster must never inherit Captain/human discovery chat; it may only use durable specs, source-controlled tests, project instructions, assets, and verification output.
 
 After QM starts from clean context, QM, Crew, Bosun, and Captain may transition by loading the next role skill in the same session because their context is derived from durable repo artifacts and verification output. If Captain resolves product/spec intent, clear again before returning to QM.
 
@@ -50,8 +49,8 @@ Quartermaster context firewall: if Quartermaster is invoked in a session contain
 ## Artifact Roles
 
 - `<spec directory>/**/*.feature` — valid executable Gherkin / BDD contracts. Use standard Gherkin; do not invent fake-Gherkin syntax.
-- `AGENTS.md` — project/agent instructions and conventions.
-- `HANDOVER.md` — durable context transfer and next-step state, not hidden product requirements.
+- `AGENTS.md` — agent/tooling instructions and conventions; not product goals, worklists, or acceptance criteria.
+- `CAPTAIN.md` — optional Captain-only non-binding notes; QM, Crew, and Bosun must not read it.
 - `assets/**` — durable supporting material.
 - Future `design-cards/**` — visual/design acceptance where Gherkin is the wrong format.
 
@@ -65,7 +64,7 @@ Use standards where they exist. Use sidecars where they do not. Do not invent fa
 
 ### Captain
 
-- Writes durable intent artifacts: Gherkin specs, project instructions, handover notes, and `assets/**`.
+- Writes durable product intent artifacts: Gherkin specs and `assets/**`; may keep non-binding Captain-only notes in `CAPTAIN.md`.
 - Resolves blockers from QM, Crew, or Bosun by updating durable artifacts; does not write implementation or verification.
 - Loads Bosun if the deck is unready before continuing Captain work.
 - After Bosun's clean commit, offers human-approved outbound next steps (push, PR, publish, release, deploy).
@@ -106,3 +105,7 @@ Use project-specific commands:
 - Static checks: `<typecheck command>` / `<lint command>`
 
 Progress is measured by verification status, not a separate hand-written checklist.
+
+Prefer fast focused checks and isolated slow checks. If slow checks can run safely in parallel, document the command.
+
+Verification may use project-defined caches, but discovery must reflect current specs/tests. Reports must distinguish fresh results from cache-backed results.

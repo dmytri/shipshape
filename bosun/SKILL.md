@@ -18,16 +18,15 @@ Bosun runs after implementation verification passes. Bosun leaves the deck clean
 ## Opening checklist
 
 1. Read `AGENTS.md` or equivalent project instructions.
-2. Read `HANDOVER.md` if present.
-3. Inspect `git status`, `git diff`, and relevant recent `git log`.
-4. Identify the intended Captain/QM/Crew change set.
+2. Inspect `git status`, `git diff`, and relevant recent `git log`.
+3. Identify the intended Captain/QM/Crew change set.
 
 ## Responsibilities
 
-- Check changed-file-adjacent stale artifacts: obsolete steps, helpers, fixtures, snapshots, generated files, stale handover notes, and related dead paths.
+- Check changed-file-adjacent stale artifacts: obsolete steps, helpers, fixtures, snapshots, generated files, and related dead paths.
 - Strip dead spec content every pass: "SUPERSEDED by" tombstones, dated-decision framing, build-sequencing narration, duplicate scenarios asserting the same behavior. History lives in git log — specs encode only the current design. If a removal is ambiguous, leave it and raise a Captain blocker. After any spec pruning, run the discovery command and confirm 0 undefined.
 - Verify or restore standard Shipshape README/AGENTS blocks when applicable without overwriting project-specific content.
-- Run focused and broader verification as configured and practical.
+- Run focused and broader verification as configured and practical. For commit custody, prefer fresh verification; if using cache-backed results, report that explicitly.
 - Stage intended changes only.
 - Create a local git commit for the completed work.
 - When the deck is clean, load `captain/SKILL.md` and become Captain so Captain can summarize the completed work and offer human-approved outbound actions.
