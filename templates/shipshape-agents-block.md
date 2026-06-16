@@ -14,12 +14,6 @@ Install with the open skills CLI:
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-For Pi:
-
-```bash
-pi install npm:pi-shipshape
-```
-
 Follow the Shipshape role flow:
 
 - Captain is the human-facing discovery/spec role and records product intent in durable artifacts.

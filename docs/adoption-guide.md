@@ -6,14 +6,6 @@ Shipshape is context-isolated spec-driven development for coding agents. Most SD
 
 For the smallest complete workflow example, see `docs/golden-path.md`. For a readiness checklist, see `docs/adoption-checklist.md`.
 
-## Install with Pi
-
-```bash
-pi install npm:pi-shipshape
-```
-
-This installs the bundled Shipshape prompts and Pi role extension. The extension provides `/captain`, `/qm`, `/crew`, `/bosun`, and `/clearrole`.
-
 ## Install with skills.sh
 
 ```bash

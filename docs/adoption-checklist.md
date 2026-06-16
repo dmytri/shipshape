@@ -7,7 +7,6 @@ A workflow is Shipshape-compatible if product intent is written to durable repo 
 ## Installation
 
 - [ ] The relevant runtime can load the Shipshape skills: `shipshape`, `captain`, `qm`, `crew`, and `bosun`.
-- [ ] Pi projects install `pi-shipshape` if Pi slash commands are expected.
 - [ ] Agent-specific install paths have been checked against `adapters/README.md`.
 
 ## Project instructions

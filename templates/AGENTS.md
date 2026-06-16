@@ -12,12 +12,6 @@ Install with the open skills CLI:
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-For Pi:
-
-```bash
-pi install npm:pi-shipshape
-```
-
 ## Project Configuration
 
 Fill in these values before running the workflow:

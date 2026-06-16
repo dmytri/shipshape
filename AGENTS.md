@@ -21,8 +21,8 @@ All files are directly authored by Captain — edit anything, commit directly.
 | `shipshape/SKILL.md` | Orientation/router skill |
 | `docs/` | Workflow docs, quick reference, adoption guide, etc. |
 | `templates/` | Bootstrap templates for adopting projects |
-| `adapters/` | Runtime-specific adapters (Pi, etc.) |
-| `packages/` | Distribution packages (pi-shipshape, etc.) |
+| `adapters/` | Runtime-specific adapters |
+| `packages/` | Distribution packages |
 | `README.md` | Public-facing project description |
 | `AGENTS.md` | This file — agent instructions for working on Shipshape |
 | `skills.sh.json` | skills.sh registry metadata |

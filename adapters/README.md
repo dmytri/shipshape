@@ -38,9 +38,3 @@ Installed skill directories under each path:
 <skills-path>/crew/SKILL.md
 <skills-path>/bosun/SKILL.md
 ```
-
-## Special cases
-
-| Runtime | How to install |
-|---|---|
-| Pi | `pi install npm:pi-shipshape` — see [`pi.md`](pi.md) |

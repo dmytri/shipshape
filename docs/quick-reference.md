@@ -144,9 +144,6 @@ Captain performs outbound actions only when the human explicitly approves and pr
 ```bash
 # skills.sh (Zed, Claude Code, Cursor, Codex, OpenCode, and more)
 npx skills add dmytri/shipshape --skill '*'
-
-# Pi
-pi install npm:pi-shipshape
 ```
 
 See `adapters/README.md` for the full support matrix and runtime-specific notes.

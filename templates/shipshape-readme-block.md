@@ -14,12 +14,6 @@ Install Shipshape:
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-For Pi:
-
-```bash
-pi install npm:pi-shipshape
-```
-
 Use the Shipshape roles:
 
 - Captain records binding human/product intent in durable specs and assets; optional `CAPTAIN.md` notes are Captain-only and non-binding.

@@ -27,20 +27,6 @@ npx skills add dmytri/shipshape --skill '*'
 # After Captain resolves product/spec intent, clear again before returning to QM.
 ```
 
-For Pi:
-
-```bash
-pi install npm:pi-shipshape
-```
-
-```text
-/captain describe the feature or change
-# Clear the chat/session or start a fresh Pi session before QM.
-/qm optional focused area
-# QM loads Crew, then QM, then Bosun, then Captain as the work progresses.
-# Load Captain directly with concrete blocker context when product/spec intent is missing.
-```
-
 It is extracted from a real repository workflow and generalized so it can be used with Zed, Claude, Cursor, OpenCode, Hermes, Pi, or any agent runner that can read repository files and edit code.
 
 ## The Idea
@@ -211,27 +197,7 @@ The public skills.sh page is:
 https://skills.sh/dmytri/shipshape
 ```
 
-For Pi, install the Pi-specific package:
-
-```bash
-pi install npm:pi-shipshape
-```
-
-`pi-shipshape` exists to distribute the Pi extension and bundled Shipshape prompts through Pi's npm-based package system. Do not add `pi-shipshape` as a normal project dependency unless you specifically need Pi packaging behavior.
-
 The open skills install exposes `/shipshape` as an orientation/router skill and the role skills `/captain`, `/qm`, `/crew`, and `/bosun` when installed with `--skill '*'`.
-
-The Pi package installs the bundled Shipshape prompts and Pi extension, which provides:
-
-- `/captain [topic]`
-- `/qm [optional focus]`
-- `/crew <failing target>`
-- `/bosun [completed target or change summary]`
-- `/clearrole`
-
-After installing or updating, run `/reload` in Pi if needed.
-
-skills.sh discovers public GitHub skill repositories after they are seen by the `skills` CLI. If the page or badge has not appeared yet, run a normal install once and allow time for the skills.sh cache to refresh.
 
 ## Quick Adoption
 
