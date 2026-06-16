@@ -86,7 +86,8 @@ function buildRoleInstructions(
         instructions +=
             "\n\n## Session Boundary\n\n" +
             "You must be running in a fresh session that does not include Captain/human discovery chat. " +
-            "If this is not true, stop and ask the user to start a new Pi session before invoking /qm.\n";
+            "If the runtime does not provide automatic context clearing, start a new Pi session before invoking /qm. " +
+            "If this session contains Captain context, stop and refuse.\n";
     }
 
     return { name: role, instructions };

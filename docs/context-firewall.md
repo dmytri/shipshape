@@ -19,8 +19,17 @@ Opening checklist:
 The refusal should be short and explicit:
 
 ```text
-I cannot continue as Quartermaster in this session because it contains Captain/human discovery context. Please clear the session or start a new agent session, then invoke Quartermaster again. I will use only verification output and the specific scenario/test/step files for failing or unimplemented targets.
+I cannot continue as Quartermaster in this session because it contains Captain/human discovery context. If the runtime does not provide automatic context clearing, please clear the session or start a new agent session, then invoke Quartermaster again. I will use only verification output and the specific scenario/test/step files for failing or unimplemented targets.
 ```
+
+## Two-mode context clearing
+
+Shipshape skills declare two modes for the Captain → QM transition:
+
+1. **Runtime auto-clear** — if the runtime (e.g. Estelle) provides automatic context clearing when switching roles, the transition happens without user action. The QM prompt still includes the context firewall as a defense-in-depth check.
+2. **Manual clear** — if the runtime does not provide auto-clear, Captain tells the user to clear the session or start a fresh session before `/qm`. QM enforces the firewall and refuses if it detects Captain context.
+
+The same skill text works for both modes: runtimes that auto-clear satisfy the constraint transparently; skill-only agents follow the manual clear path.
 
 ## Allowed Inputs
 
@@ -29,7 +38,8 @@ Quartermaster may use:
 - durable specs,
 - source-controlled tests,
 - verification output it runs itself,
-- command-line arguments that only narrow focus, such as a feature path or scenario name.
+- command-line arguments that only narrow focus, such as a feature path or scenario name,
+- `cycle.json` (optional worklist — validated against schema before use).
 
 ## Forbidden Inputs
 
@@ -39,7 +49,8 @@ Quartermaster must not use:
 - human discussion from the same session,
 - product decisions mentioned only in chat,
 - ad hoc instructions that work around specs,
-- hidden dispatch prompts containing product behavior.
+- hidden dispatch prompts containing product behavior,
+- `CAPTAIN.md` (Captain-only, excluded from QM context).
 
 ## Runtime Enforcement Levels
 
@@ -60,3 +71,7 @@ Context firewall passed. I do not see Captain/human discovery context in this se
 ```
 
 This statement makes accidental context contamination easier to spot in reviews.
+
+## Bosun exception
+
+Bosun is the only non-Captain role that may read `CAPTAIN.md`. Bosun reads it only to evaluate spec quality and cycle completeness, never to derive product behavior. Bosun must not edit `CAPTAIN.md`. QM and Crew must never read it.
