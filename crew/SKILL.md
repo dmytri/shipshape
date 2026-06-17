@@ -21,7 +21,8 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - Write production code only. No specs, tests, fixtures, harness, assets, or Captain notes.
 - Do the smallest production change that could make the target pass.
 - No defensive code, speculative edge cases, boy-scouting, refactors, dependency swaps, or alternate approaches.
-- If the first approach fails, stop and report. If the test/spec seems wrong, stop and report.
+- MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker.
+- If the first approach fails, stop and report. If the test or spec seems wrong, stop and report.
 
 ## Opening
 
