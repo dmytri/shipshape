@@ -35,7 +35,7 @@ Internal roles (QM, Crew, Bosun) use smart-but-silent voice:
 
 These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline.
 
-1. **Durable artifacts outrank chat.** Binding product decisions live in valid `.feature` files and referenced `assets/**`. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
+1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are Captain-owned editable artifacts. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
 2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
 4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour.
@@ -45,7 +45,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 8. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline (for example `@exceptional-double`). It MUST never replace normal-path real coverage.
 9. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 10. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
-11. **Three layers.** Specs/assets are durable. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
+11. **Three layers.** Specs and assets are durable artifacts. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
 12. **Directed work uses `watchbill.json`.** Captain MAY write fixed-shape `watchbill.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. `watchbill.json` is scenario-level only. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. Captain MAY update or remove `watchbill.json`.
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
@@ -72,7 +72,7 @@ Follow this scenario-writing agreement. Shipshape uses specification by example:
 - Do not bundle unrelated quality concerns into one scenario. Aim for fewer than about 10 steps.
 - Use `Scenario Outline` only when the same behaviour is checked with input variations. Use tables for data instead of step spam, and doc strings for structured payloads.
 - Keep tables concise with descriptive headers. If a table does not fit one screen, split the behaviour or move data to an asset.
-- Avoid faux steps, abstract subjects, actor assertions, hedge words, and behaviour hidden in `Rule:` prose. `Rule:` prose SHOULD provide context only; executable requirements belong in scenarios.
+- Avoid faux steps, abstract subjects, actor assertions, hedge words, and behaviour hidden in `Rule:` prose. `Rule:` prose MAY provide context only when it helps QM or Crew understand durable constraints that do not fit cleanly in steps; executable requirements belong in scenarios.
 - Use `@property` for cross-cutting invariants, including agent-behaviour and runtime-enforcement invariants.
 - Real by default. Doubles only for narrow, justified exceptional conditions the real environment cannot produce on demand, and never for normal-path coverage.
 
@@ -100,7 +100,15 @@ These policies apply to all Shipshape project work.
 
 ### Blocker policy
 
-If QM, Crew, or Bosun encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs or assets. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
+If QM, Crew, or Bosun encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
+
+### Asset policy
+
+`assets/**` are Captain-owned editable artifacts: content, media, examples, fixtures, screenshots, pages, copy, or other materials. Some assets may ship as product material, and some may support verification. Assets are not an instruction layer or a second specification surface. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
+
+### Artifact authority policy
+
+Do not create extra binding Shipshape artifact types such as constitution, project-rules, memory-bank, decision-log, architecture-notes, roadmap, or backlog files. Product behaviour belongs in `.feature` files. Tooling configuration belongs in `AGENTS.md` or equivalent tooling config. Directed work selection belongs in `watchbill.json`. Captain-only non-binding notes belong in `CAPTAIN.md`. Historical rationale belongs in git history and commit messages.
 
 ### Verification policy
 
@@ -150,7 +158,6 @@ Coverage reports are transient verification output. They MUST NOT define product
 |---|---|---|
 | `@logic` | Pure local tests, no external accounts. Fast, deterministic, safe. | Yes |
 | `@sandbox` | Tests requiring real sandbox accounts, test keys, or external services. | No |
-| `@eval` | Opt-in model-behaviour quality evaluation. Not for MVP. | No |
 
 ## Project setup templates
 
@@ -188,8 +195,9 @@ it as input.
 ## Purpose
 
 `CAPTAIN.md` does not define product behaviour. Binding behaviour MUST be
-promoted to executable `.feature` specs or referenced `assets/**` before
-Quartermaster runs.
+promoted to executable `.feature` specs before Quartermaster runs. Assets MAY
+be referenced by scenarios or verification, but assets do not define hidden
+requirements.
 ```
 
 

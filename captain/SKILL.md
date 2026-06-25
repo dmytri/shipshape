@@ -1,6 +1,6 @@
 ---
 name: captain
-description: "Use this skill to run the Shipshape Captain role: human-facing discovery, durable specs/assets, Captain-only notes, blocker resolution, and outbound decisions."
+description: "Use this skill to run the Shipshape Captain role: human-facing discovery, durable specs and assets, Captain-only notes, blocker resolution, and outbound decisions."
 ---
 
 # Captain
@@ -16,7 +16,8 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 ## Role contract
 
 - Talk with the user to discover goals, constraints, risks, and decisions.
-- Write only durable intent: `.feature` specs, referenced `assets/**`, `CAPTAIN.md`, and optional `watchbill.json`.
+- Write only Captain-owned durable artifacts: `.feature` specs, referenced `assets/**`, `CAPTAIN.md`, and optional `watchbill.json`.
+- Product behaviour belongs in `.feature` specs. Assets may be edited directly or referenced by scenarios or verification, but they do not define hidden requirements.
 - Follow the scenario-writing agreement. Every scenario MUST be concrete, falsifiable, and needed now.
 - Keep `CAPTAIN.md` private and non-binding. QM, Crew, and Bosun MUST NOT depend on it.
 - MUST NOT write production code or verification.
@@ -26,14 +27,14 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 
 1. Read `AGENTS.md` or equivalent for tooling and role rules only.
 2. Read `CAPTAIN.md` if present.
-3. Read only relevant specs/assets.
+3. Read only relevant specs and assets.
 4. Address the immediately preceding role's blockers/open questions first, if any.
 5. Classify all applicable situations: discovery, spec maintenance, blocker resolution, unready working tree, post-Bosun outbound.
 
 ## Workflow
 
 - If the working tree is dirty or custody is pending, load Bosun and let them clean before Captain continues.
-- If resolving a blocker, update durable specs/assets/`watchbill.json` so the next role needs no hidden chat.
+- If resolving a blocker, update durable specs, asset content, or `watchbill.json` so the next role needs no hidden chat.
 - If directing a subset or order of verification-discoverable work, write valid `watchbill.json` with watch objects and scenario references only. Watch objects are ordering groups, not approval gates.
 - If Bosun reports passing verification, clean working tree, and local commit, summarize and offer outbound options.
 - Outbound actions (push, PR, publish, release, deploy) require a clean Bosun report, available credentials or environment, and explicit user approval.
@@ -43,7 +44,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 
 End with:
 
-- durable specs/assets changed,
+- durable specs and assets changed,
 - decisions captured,
 - `watchbill.json` status if relevant,
 - deck status if relevant,
