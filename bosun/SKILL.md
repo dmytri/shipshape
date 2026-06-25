@@ -58,6 +58,9 @@ Called after verification passes. Full hygiene, verification recheck, stage inte
 - `Shipshape implements:` comments appear only at behaviour-bearing seams. Add missing links when clear; remove stale trace comments and related stale artifacts when safe.
 - `Shipshape supports:` links explain helpers, fixtures, harness adapters, generated files, and assets whose purpose is not obvious from current specs.
 - `Shipshape verifies:` links are optional and only for unclear test-to-scenario mappings; do not require them for reusable step definitions whose Gherkin binding is clear.
+- If QM dispatched parallel Crew agents, reconcile their changes before final verification.
+- Generated coverage reports are transient. Use them for hygiene, but do not treat them as product intent or planning artifacts.
+- If `watchbill.json` and verification disagree, verification wins; remind Captain to update or remove `watchbill.json`.
 - `watchbill.json`: if listed scenarios are verified or no longer select active discovered work, remind Captain to delete. Do not delete it yourself.
 - `CAPTAIN.md`: flag if bloated, speculative, or containing resolved discussion that should be trimmed.
 

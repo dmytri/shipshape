@@ -25,7 +25,7 @@ All files are directly authored by Captain — edit anything, commit directly.
 
 ## Key principle
 
-Shipshape skills are **declarations** that tell agents and runtimes what roles should and should not do. They cannot enforce anything alone. Enforcing runtimes, such as Estelle, implement the constraints. This repository ships the declarations.
+Shipshape skills are **declarations** that tell agents and runtimes what roles should and should not do. They cannot enforce anything alone. Enforcing runtimes implement the constraints. This repository ships the declarations.
 
 ## Pronouns
 

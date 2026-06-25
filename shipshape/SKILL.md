@@ -46,7 +46,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 9. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 10. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
 11. **Three layers.** Specs/assets are durable. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
-12. **Directed work uses `watchbill.json`.** Captain MAY write fixed-shape `watchbill.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
+12. **Directed work uses `watchbill.json`.** Captain MAY write fixed-shape `watchbill.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. `watchbill.json` is scenario-level only. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. Captain MAY update or remove `watchbill.json`.
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
 
@@ -119,6 +119,13 @@ Trace links explain why implementation and support artifacts exist. They MUST NO
 
 Use canonical scenario references in `<spec>.feature:<Scenario Name>` form, the same form used by `watchbill.json`.
 
+Step-level trace detail SHOULD be added when it makes deletion, ownership, or behaviour mapping clearer. The canonical trace target remains the scenario reference.
+
+```ts
+// Shipshape implements: features/checkout/card-payment.feature:Card payment is authorized
+// Step: Then the payment is authorized
+```
+
 Use language-appropriate comments or metadata near the linked artifact:
 
 - `Shipshape implements: <spec>.feature:<Scenario Name>` — production code exists for scenario behaviour.
@@ -126,6 +133,16 @@ Use language-appropriate comments or metadata near the linked artifact:
 - `Shipshape verifies: <spec>.feature:<Scenario Name>` — optional; use only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
 
 Do not trace ordinary plumbing, every branch, or reusable step definitions whose Gherkin binding is already clear. Add trace links at behaviour-bearing seams and support artifacts where they make deletion, coverage, or ownership clearer. Enforcing runtimes MAY later make these rules mechanical.
+
+### Coverage report convention
+
+Generated coverage reports MAY summarize current trace and verification state:
+
+```text
+feature/scenario → verifies → implements/supports → verification status
+```
+
+Coverage reports are transient verification output. They MUST NOT define product intent, create work, or become durable planning artifacts.
 
 ### Tier tags
 

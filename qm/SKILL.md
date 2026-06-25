@@ -26,6 +26,8 @@ Example: `Context clean. Target red. Crew next.`
 - Green suite means only current checks pass; it is not proof of correctness.
 - Add `Shipshape supports: <spec>.feature:<Scenario Name>` links to fixtures, helpers, harness adapters, and test support when their purpose is not obvious from Gherkin step text or file names.
 - Add `Shipshape verifies: <spec>.feature:<Scenario Name>` only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
+- Design verification targets to be independently runnable, cacheable where safe, and parallelizable where project tooling supports it. Reports MUST distinguish fresh results from cache-backed results.
+- QM MAY dispatch multiple Crew agents only for independent verification targets whose expected production changes do not require shared mutable state.
 
 ## Context firewall
 
@@ -56,10 +58,11 @@ Use only:
 7. If valid `watchbill.json` is present, intersect discovered targets with listed scenarios and preserve watch order. Treat listed green scenarios as complete. Block if a listed scenario is absent from durable specs or cannot be matched to verification.
 8. Make one target executable exactly as written.
 9. Run focused verification.
-10. If production fails, load/dispatch Crew for one target.
-11. Continue through all `watchbill.json` watches unless verification, product intent, environment, or tooling blocks.
-12. After directed work completes, load Bosun for hygiene, verification recheck, and commit custody.
-13. If product intent missing/contradictory, load Captain with concrete blocker.
+10. If production fails, load/dispatch Crew for one target, or multiple Crew agents for independent targets whose expected production changes do not require shared mutable state.
+11. After parallel Crew work, route through Bosun for reconciliation, hygiene, and verification after merge.
+12. Continue through all `watchbill.json` watches unless verification, product intent, environment, or tooling blocks.
+13. After directed work completes, load Bosun for hygiene, verification recheck, and commit custody.
+14. If product intent missing/contradictory, load Captain with concrete blocker.
 
 ## Final report
 
