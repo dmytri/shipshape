@@ -133,18 +133,53 @@ Shipshape uses lightweight trace comments when they make ownership, deletion, or
 
 Trace links explain why artifacts exist. They do not create work, replace verification discovery, or define product intent.
 
-## Comparison with SDD and agent-methodology tools
+## Related approaches
 
-| Approach | What it optimizes for | Shipshape difference |
-|---|---|---|
-| [Kiro](https://kiro.dev)-style SDD | IDE-guided requirements, design, task execution, and task-status tracking | Shipshape is skill-based and rejects task-list progress; verification discovers work. |
-| [Spec Kit](https://github.com/github/spec-kit)-style SDD | Agent-agnostic constitution, specs, plans, tasks, and templates | Shipshape rejects constitution/task-list authority and keeps the authoritative surface to Cucumber specs, Watchbill, and verification output. |
-| [OpenSpec](https://github.com/Fission-AI/OpenSpec)-style SDD | Proposal/change folders with specs, design, tasks, apply, and archive | Shipshape avoids proposal/task progress and treats current executable Cucumber verification as the work source. |
-| [Tessl](https://tessl.io)-style SDD | Specs as primary artifacts, test links, and experiments toward spec/code sync or spec-as-source | Shipshape uses trace comments and disposable code/verification, but stays Cucumber-native and not codegen-first. |
-| [Superpowers](https://github.com/obra/superpowers)-style agent methodology | Skills and workflows that structure agentic coding | Shipshape is more prescriptive about role isolation, context disposal, and verification-discovered work. |
-| [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)-style agent teams | Agile-inspired specialist agents and lifecycle workflows | Shipshape keeps fewer roles and a smaller authoritative surface centred on executable specs. |
-| Memory banks | Preserving context across sessions | Shipshape discards chat context and keeps only durable repository artifacts. |
-| Plain agent coding | Fast implementation from prompt context | Shipshape preserves intent, isolates roles, and makes progress auditable through verification. |
+Shipshape combines four ideas: role custody, context aversion, verification as progress, and Cucumber-native traceability. These ideas overlap with other SDD and agent-workflow systems, but Shipshape uses them differently.
+
+### Spec-driven development tools
+
+[Kiro](https://kiro.dev), [Spec Kit](https://github.com/github/spec-kit), [OpenSpec](https://github.com/Fission-AI/OpenSpec), and [Tessl](https://tessl.io) explore structured specification before implementation. Shipshape shares the spec-first instinct, but rejects generated task-list progress. Product behaviour belongs in current Cucumber specs, and implementation work is driven by verification state.
+
+Kiro, Spec Kit, and OpenSpec use requirements, plans, proposals, tasks, or implementation phases to organise work. Shipshape uses current Cucumber specs as the behaviour contract and verification state as the work signal.
+
+Shipshape is not codegen-first. Tessl explores stronger links between specs, tests, and generated code. Shipshape keeps code and verification disposable from specs, but production code still changes through focused failing verification targets.
+
+For background, see Birgitta Böckeler’s article on SDD tools on Martin Fowler’s site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
+
+### Role-workflow and agent-team systems
+
+[BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD), [Superpowers](https://github.com/obra/superpowers), [Paperclip](https://paperclip.ing), [Fusion](https://runfusion.ai), companies.sh, [Gastown](https://github.com/gastownhall/gastown), and similar systems use agents, roles, teams, or named workflow positions to organise work.
+
+BMAD and Superpowers use role or workflow structure to guide agentic software work. Paperclip, Fusion, companies.sh, and Gastown go further toward agent teams, organisations, or named agent societies. Shipshape also uses roles, but the roles are not an organisation simulation or a cast of specialist personas. They are custody boundaries.
+
+Captain owns human discovery and specs. QM owns verification. Crew owns one production-code target. Bosun owns hygiene, verification recheck, and local commit custody.
+
+BMAD, Superpowers, Paperclip, Fusion, companies.sh, and Gastown use roles to model people, teams, processes, organisations, workflows, or agent societies. Shipshape uses roles to prevent context leakage and write-scope drift.
+
+### Context and authority
+
+Kiro, Spec Kit, OpenSpec, and Tessl structure more context through specs, plans, proposals, tasks, generated artifacts, or spec/code links. Shipshape tries to preserve less context, not more.
+
+Chat is discarded. Product behaviour lives in current `.feature` files. Assets are Captain-owned editable material, not hidden requirements. Tooling belongs in `AGENTS.md`. Directed work selection belongs in `watchbill.json`. History belongs in git.
+
+This keeps the authoritative surface small and current. It also prevents discovery chat, rationale, abandoned ideas, and stale plans from leaking into verification or code.
+
+### Verification as progress
+
+Kiro, Spec Kit, and OpenSpec organise progress through task lists, proposal states, implementation phases, or generated work plans. BMAD, Superpowers, Paperclip, Fusion, companies.sh, and Gastown may organise progress through agent reports, tickets, roles, process state, or team workflow.
+
+Shipshape treats those as weak evidence.
+
+In Shipshape, progress is tested. Progress means fewer undefined, unimplemented, or failing scenario targets. A claimed task completion is not progress unless verification can observe it.
+
+This does not mean Kiro, Spec Kit, OpenSpec, Tessl, BMAD, Superpowers, Paperclip, Fusion, companies.sh, or Gastown lack tests. The distinction is that Shipshape makes verification status the progress measure, not a generated worklist, proposal state, or agent status report.
+
+### Traceability without codegen
+
+Tessl explores stronger links between specs, tests, and generated code. Kiro, Spec Kit, and OpenSpec also keep structured links between requirements, plans, tasks, and implementation work. Shipshape uses lighter Cucumber-native trace comments instead.
+
+Trace links explain why code or support artifacts exist, but they do not define product intent, create work, or replace verification discovery.
 
 ## Enforcement and portability
 
