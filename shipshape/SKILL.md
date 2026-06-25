@@ -38,7 +38,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 1. **Durable artifacts outrank chat.** Binding product decisions live in valid `.feature` files and referenced `assets/**`. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
 2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
-4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `cycle.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour.
+4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour.
 5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous.
 6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
@@ -46,7 +46,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 9. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 10. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
 11. **Three layers.** Specs/assets are durable. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
-12. **Directed work uses `cycle.json`.** Captain MAY write fixed-shape `cycle.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered pass objects (`pass1`, `pass2`, etc.); each pass contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. No prose, metadata, work-type enums, or hidden context. `cycle.json` does not create work that verification cannot discover. Pass objects are ordering groups only. QM processes all passes in order unless verification, product intent, environment, or tooling blocks.
+12. **Directed work uses `watchbill.json`.** Captain MAY write fixed-shape `watchbill.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
 
@@ -92,7 +92,7 @@ A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling con
 - spec, implementation, verification, and asset directories;
 - verification discovery command, focused test command, broader test/typecheck/lint commands;
 - tier tags with tier definitions and service credentials or sandbox policy;
-- optional `cycle.json` location for selected ordered verification-discoverable work.
+- optional `watchbill.json` location for selected ordered verification-discoverable work.
 
 ## Project policies
 
@@ -112,6 +112,20 @@ Use project-specific commands:
 - static checks: typecheck and lint if available.
 
 Progress is measured by verification status, not by a separate checklist. Prefer fast focused checks. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results.
+
+### Traceability policy
+
+Trace links explain why implementation and support artifacts exist. They MUST NOT define product intent, create worklists, or replace verification discovery. Worklists still come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
+
+Use canonical scenario references in `<spec>.feature:<Scenario Name>` form, the same form used by `watchbill.json`.
+
+Use language-appropriate comments or metadata near the linked artifact:
+
+- `Shipshape implements: <spec>.feature:<Scenario Name>` — production code exists for scenario behaviour.
+- `Shipshape supports: <spec>.feature:<Scenario Name>` — helper, fixture, harness adapter, generated file, or asset supports scenario behaviour.
+- `Shipshape verifies: <spec>.feature:<Scenario Name>` — optional; use only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
+
+Do not trace ordinary plumbing, every branch, or reusable step definitions whose Gherkin binding is already clear. Add trace links at behaviour-bearing seams and support artifacts where they make deletion, coverage, or ownership clearer. Enforcing runtimes MAY later make these rules mechanical.
 
 ### Tier tags
 
@@ -151,7 +165,7 @@ Create `CAPTAIN.md` at project root if Captain wants non-binding notes:
 ## Access rule
 
 Only Captain MAY edit this file. Bosun MAY read it to evaluate spec quality
-and cycle completeness. Quartermaster and Crew Mate MUST NOT read it or use
+and watchbill completeness. Quartermaster and Crew Mate MUST NOT read it or use
 it as input.
 
 ## Purpose

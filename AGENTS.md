@@ -6,7 +6,7 @@ This repository **is** the Shipshape workflow tool. It does not use the Shipshap
 
 The entire repository is a single `assets/` directory. All content is Captain-owned, directly authored, and durable — exactly like the `assets/**` that Shipshape defines for adopting projects.
 
-There are no product specs, no verification harness, no project `cycle.json`, no implementation code, and no disposable layers. There is nothing for QM, Crew, or Bosun to do. The whole repository sits in the durable-Captain-authored layer.
+There are no product specs, no verification harness, no project `watchbill.json`, no implementation code, and no disposable layers. There is nothing for QM, Crew, or Bosun to do. The whole repository sits in the durable-Captain-authored layer.
 
 ## What lives here
 

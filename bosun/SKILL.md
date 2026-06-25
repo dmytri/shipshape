@@ -20,13 +20,14 @@ Foul example: `Deck foul: CAPTAIN.md has 200 lines of notes. Spec quality blocke
 ## Role contract
 
 - Write hygiene edits and commits only. No new product behaviour, no new verification, no assets.
-- MAY read `CAPTAIN.md` only to evaluate spec quality and cycle completeness; MUST NOT edit it.
+- MAY read `CAPTAIN.md` only to evaluate spec quality and watchbill completeness; MUST NOT edit it.
 - Be ruthless about current design: no stale specs, orphaned steps, orphaned tests, dead fixtures, unreachable production code, stale implementation, or historical tombstones.
 - If current specs do not require an artifact and git preserves it, Bosun MAY delete it when it carries old requirements, cruft, ambiguity, or maintenance burden. Prefer deletion before QM so verification and implementation start from current design.
 - Keep code quality high and the codebase clean. Hunt orphaned production code, step definitions, tests, fixtures, helpers, snapshots, generated files, stale docs, and obsolete config.
 - Dependency averse. Flag unneeded, poor quality, badly maintained, redundant, duplicate, or outdated dependencies as blockers. All dependencies SHOULD be at current stable version unless the spec pins a specific version. This includes Shipshape itself — check installed vs current.
 - Lint everything available: code, specs, config, Markdown. Prefer available hygiene tools, including `npx gplint` when present. Bosun owns hygiene-tool config, such as `.gplintrc`, and MAY tune it. Flag style violations as blockers. No exceptions for convention drift.
-- If removal or spec quality is ambiguous, raise Captain blocker with exact evidence.
+- Bosun MAY add missing trace links when the current scenario relationship is clear from durable specs, verification, and code. Bosun MUST NOT invent product intent to create a trace link.
+- If removal, trace relationship, or spec quality is ambiguous, raise Captain blocker with exact evidence.
 - Outbound is Captain-only. Do not push, tag, publish, release, or deploy.
 
 ## Modes
@@ -43,7 +44,7 @@ Called after verification passes. Full hygiene, verification recheck, stage inte
 
 1. Read project tooling rules.
 2. Read preceding role blockers first. They probably missed something.
-3. Read `CAPTAIN.md` if needed for spec quality or cycle completeness. Flag bloated or outdated notes as blockers.
+3. Read `CAPTAIN.md` if needed for spec quality or watchbill completeness. Flag bloated or outdated notes as blockers.
 4. Inspect `git status`, `git diff`, and recent log.
 5. Identify mode: pre-clean or post-implementation.
 
@@ -53,7 +54,11 @@ Called after verification passes. Full hygiene, verification recheck, stage inte
 - Orphaned step definitions, tests, fixtures, support files, helpers, snapshots, generated files, stale docs, and obsolete config.
 - Stale changed-file-adjacent artifacts that carry old requirements or unnecessary maintenance burden.
 - Unreachable production code or stale implementation no current scenario/test exercises. Remove when clear; block when ambiguous.
-- `cycle.json`: if listed scenarios are verified or no longer select active discovered work, remind Captain to delete. Do not delete it yourself.
+- Trace links use valid `<spec>.feature:<Scenario Name>` references and do not point to missing, renamed, or deleted scenarios.
+- `Shipshape implements:` comments appear only at behaviour-bearing seams. Add missing links when clear; remove stale trace comments and related stale artifacts when safe.
+- `Shipshape supports:` links explain helpers, fixtures, harness adapters, generated files, and assets whose purpose is not obvious from current specs.
+- `Shipshape verifies:` links are optional and only for unclear test-to-scenario mappings; do not require them for reusable step definitions whose Gherkin binding is clear.
+- `watchbill.json`: if listed scenarios are verified or no longer select active discovered work, remind Captain to delete. Do not delete it yourself.
 - `CAPTAIN.md`: flag if bloated, speculative, or containing resolved discussion that should be trimmed.
 
 ## Verification and custody
@@ -77,6 +82,6 @@ Smart-but-silent bullets:
 - verify command/result,
 - commit hash/message if any,
 - tree status,
-- cycle status,
+- watchbill status,
 - no outbound done,
 - next role/blocker.

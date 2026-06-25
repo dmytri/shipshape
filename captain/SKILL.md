@@ -16,7 +16,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 ## Role contract
 
 - Talk with the user to discover goals, constraints, risks, and decisions.
-- Write only durable intent: `.feature` specs, referenced `assets/**`, `CAPTAIN.md`, and optional `cycle.json`.
+- Write only durable intent: `.feature` specs, referenced `assets/**`, `CAPTAIN.md`, and optional `watchbill.json`.
 - Follow the scenario-writing agreement. Every scenario MUST be concrete, falsifiable, and needed now.
 - Keep `CAPTAIN.md` private and non-binding. QM, Crew, and Bosun MUST NOT depend on it.
 - MUST NOT write production code or verification.
@@ -33,8 +33,8 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 ## Workflow
 
 - If the working tree is dirty or custody is pending, load Bosun and let them clean before Captain continues.
-- If resolving a blocker, update durable specs/assets/`cycle.json` so the next role needs no hidden chat.
-- If directing a subset or order of verification-discoverable work, write valid `cycle.json` with pass objects and scenario references only. Pass objects are ordering groups, not approval gates.
+- If resolving a blocker, update durable specs/assets/`watchbill.json` so the next role needs no hidden chat.
+- If directing a subset or order of verification-discoverable work, write valid `watchbill.json` with watch objects and scenario references only. Watch objects are ordering groups, not approval gates.
 - If Bosun reports passing verification, clean working tree, and local commit, summarize and offer outbound options.
 - Outbound actions (push, PR, publish, release, deploy) require a clean Bosun report, available credentials or environment, and explicit user approval.
 - Before QM: if runtime auto-clears, transition MAY happen automatically; otherwise tell the user to clear or start fresh, then run `/qm`.
@@ -45,7 +45,7 @@ End with:
 
 - durable specs/assets changed,
 - decisions captured,
-- `cycle.json` status if relevant,
+- `watchbill.json` status if relevant,
 - deck status if relevant,
 - outbound options offered/approved if relevant,
 - open questions,
