@@ -1,32 +1,41 @@
-# Shipshape Repository
+# Agent Instructions for Shipshape
 
-This repository **is** the Shipshape workflow tool. It does not use the Shipshape workflow to develop itself.
+This repository contains the Shipshape skill package. These instructions are for agents editing this repository, not for projects using Shipshape.
 
-## Repository type: assets
+Agents using Shipshape should treat this entire repository as Captain/human-owned material, like `assets/**` in an adopting project: edit it only when explicitly asked, and do not treat it as disposable implementation or verification.
 
-The entire repository is a single `assets/` directory. All content is Captain-owned, directly authored, and durable — exactly like the `assets/**` that Shipshape defines for adopting projects.
+## Scope
 
-There are no product specs, no verification harness, no project `watchbill.json`, no implementation code, and no disposable layers. There is nothing for QM, Crew, or Bosun to do. The whole repository sits in the durable-Captain-authored layer.
+Shipshape is distributed as skill files:
 
-## What lives here
-
-All files are directly authored by Captain — edit anything, commit directly.
-
-| Path | What |
+| Path | Purpose |
 |---|---|
-| `captain/SKILL.md` | Captain role skill prompt |
-| `qm/SKILL.md` | Quartermaster role skill prompt |
-| `crew/SKILL.md` | Crew Mate role skill prompt |
-| `bosun/SKILL.md` | Bosun role skill prompt |
-| `shipshape/SKILL.md` | Orientation/router skill with embedded Project setup templates |
-| `README.md` | Public-facing project description |
-| `AGENTS.md` | This file — agent instructions for working on Shipshape |
+| `shipshape/SKILL.md` | Shared workflow rules and project setup templates |
+| `captain/SKILL.md` | Captain role skill |
+| `qm/SKILL.md` | Quartermaster role skill |
+| `crew/SKILL.md` | Crew Mate role skill |
+| `bosun/SKILL.md` | Bosun role skill |
+| `README.md` | Public project positioning and usage overview |
 | `skills.sh.json` | skills.sh registry metadata |
+| `AGENTS.md` | Repository-local agent instructions |
 
-## Key principle
+## Editing rules
 
-Shipshape skills are **declarations** that tell agents and runtimes what roles should and should not do. They cannot enforce anything alone. Enforcing runtimes implement the constraints. This repository ships the declarations.
+- Keep repository guidance separate from downstream Shipshape usage guidance.
+- Put public positioning in `README.md`.
+- Put shared workflow rules in `shipshape/SKILL.md`.
+- Put role-specific rules in the matching role skill.
+- Keep all role skills consistent with the Articles of Agreement in `shipshape/SKILL.md`.
+- Use Shipshape Controlled English in skill files: short sentences, precise subjects, RFC 2119 terms where useful, and Canadian spelling such as `behaviour`. Use `artifact`, not `artefact`.
+- Do not add project-specific assumptions from Jolly, Saleor, or other adopters to shared Shipshape rules.
+- Do not create binding repository artifacts such as roadmaps, memory banks, decision logs, constitutions, or task lists unless the user explicitly asks.
+- Do not update installed global skills or downstream project copies unless the user explicitly asks.
+- Do not commit or push unless the user explicitly asks.
 
-## Pronouns
+## Validation
 
-All roles referenced in skills and docs use they/them pronouns.
+Before reporting a documentation change as complete:
+
+- run diagnostics for changed Markdown files when available;
+- search for stale names or project-specific leakage when relevant;
+- check `git diff` for accidental duplication or unrelated edits.

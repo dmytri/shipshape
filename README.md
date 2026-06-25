@@ -68,12 +68,28 @@ If asset content must be protected as behaviour, specify that behaviour in a `.f
 Captain → clear context → QM → Crew → QM → Bosun → Captain
 ```
 
-- Captain discovers intent and writes current `.feature` specs, assets, `CAPTAIN.md`, and optional `watchbill.json`.
-- Quartermaster starts from fresh context and turns specs into executable verification.
-- Crew changes production code for one failing verification target.
-- Bosun removes stale artifacts, rechecks verification, and commits locally.
+Shipshape separates agent work by custody and context. Each role sees only the context needed for its job and writes only its own layer.
 
-Only Captain talks to the user. Internal roles report through durable artifacts, verification output, and role hand-offs.
+| Role | Owns | Does not own |
+|---|---|---|
+| Captain | Human-facing discovery, `.feature` specs, assets, `CAPTAIN.md`, optional `watchbill.json` | Production code, verification, hidden implementation instructions |
+| Quartermaster | Verification design, tests, fixtures, step definitions, harness support | Product intent, production code, Captain notes |
+| Crew | The smallest production-code change for one failing verification target | Specs, tests, broad refactors, product interpretation |
+| Bosun | Hygiene, stale artifact removal, verification recheck, local commit custody | New behaviour, product decisions, outbound actions |
+
+Only Captain talks to the user. QM, Crew, and Bosun are internal roles. They report through verification output, repository changes, and role hand-offs.
+
+The most important boundary is Captain → QM. Captain may use human conversation to discover intent, but QM starts from clean context and reads only durable repository artifacts. This prevents discovery chat, rationale, and abandoned ideas from leaking into tests or implementation.
+
+Role flow:
+
+1. Captain captures product behaviour in current `.feature` specs.
+2. Context clears.
+3. QM derives executable verification from the specs.
+4. Crew makes one focused production change for one failing target.
+5. QM reruns verification and may dispatch more Crew work.
+6. Bosun removes stale artifacts, checks hygiene, verifies, and commits locally.
+7. Captain reports back to the user and handles outbound decisions.
 
 ## Verification is progress
 
