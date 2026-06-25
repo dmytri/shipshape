@@ -52,18 +52,29 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 
 ## Scenario-writing agreement
 
-Follow this scenario-writing agreement, or a more specific project scenario policy if one is available:
+Follow this scenario-writing agreement. Shipshape uses specification by example: each scenario is a concrete example that defines the behaviour contract.
 
-- Every scenario describes one real, falsifiable behaviour needed by the current iteration.
+- Every feature file SHOULD describe one `Feature` unless project policy differs. Use stable vocabulary from the domain and product.
+- Format Gherkin with 2-space indentation SHOULD, one blank line between scenarios SHOULD, and no blank lines between steps MUST.
+- Every scenario describes one real, falsifiable behaviour needed by the current iteration. Keep titles single-line, behaviour-focused, and specific.
 - Each scenario is independent; no scenario depends on another scenario running first.
-- `Given` is concrete state, `When` is a named action or input, and `Then` is an observable assertion.
-- Assert outcomes, not mechanisms, unless the mechanism itself is the contract under test.
-- Use concrete data: real flags, commands, keys, hostnames, files, and asset paths. Avoid placeholders in final specs.
-- Write positive observables, not prohibitions: assert the state/output/permission/runtime field that proves the rule.
+- Write at the domain or product level. Do not specify UI, API, database, navigation, or harness plumbing unless that layer is the behaviour under test.
+- `Given` is concrete starting state, `When` is one named action or input, and `Then` is an observable assertion. Use strict `Given` → `When` → `Then` order with no repeated phases.
+- Use `And` and `But` sparingly for same-phase continuation. Do not use `Or`.
+- Use minimal sufficient `Given` state. Use `Background` only for shared starting state, not incidental setup.
+- Assert outcomes, not mechanisms, unless the mechanism itself is the contract under test. Prefer state over navigation.
+- Use concrete, realistic data: real flags, commands, keys, hostnames, files, asset paths, and example values. Avoid placeholders and avoid `foo`, `bar`, `test`, and `lorem` except for intentional invalid or nonsense values.
+- Write steps as third-person present-tense subject-predicate statements. Use double quotes for string parameters.
+- Do not combine multiple actions or assertions inside one step; split them into separate steps.
+- Write positive observable `Then` outcomes, not prohibitions: assert the state, output, permission, runtime field, file, or external observable that proves the rule.
+- Do not use vague outcomes such as "it works" or "it succeeds"; state the observable signal.
 - Testability, not subject, decides what can be specified. Product behaviour, harness conformance, agent behaviour, and runtime enforcement can all be scenarios if falsifiable.
+- Do not bundle unrelated quality concerns into one scenario. Aim for fewer than about 10 steps.
+- Use `Scenario Outline` only when the same behaviour is checked with input variations. Use tables for data instead of step spam, and doc strings for structured payloads.
+- Keep tables concise with descriptive headers. If a table does not fit one screen, split the behaviour or move data to an asset.
 - Avoid faux steps, abstract subjects, actor assertions, hedge words, and behaviour hidden in `Rule:` prose. `Rule:` prose SHOULD provide context only; executable requirements belong in scenarios.
 - Use `@property` for cross-cutting invariants, including agent-behaviour and runtime-enforcement invariants.
-- Real by default. Doubles only for justified exceptional conditions the real environment cannot produce on demand.
+- Real by default. Doubles only for narrow, justified exceptional conditions the real environment cannot produce on demand, and never for normal-path coverage.
 
 ## Role flow
 

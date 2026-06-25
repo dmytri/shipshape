@@ -6,6 +6,8 @@ Context-isolated, spec-driven development workflow for coding agents.
 
 **Specifications are durable. Code and verification are disposable. Agents are replaceable.**
 
+Shipshape keeps agent work aligned by moving product intent out of chat and into durable `.feature` specs, then isolating specification, verification, implementation, and cleanup across separate roles.
+
 ```bash
 npx skills add dmytri/shipshape --skill '*'
 ```
