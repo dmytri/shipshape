@@ -6,7 +6,7 @@ Shipshape is a portable skill set for coding agents.
 
 It turns product intent into durable Cucumber specs, derives work from failing verification, and isolates agent roles so context does not leak into implementation.
 
-**Specifications are durable. Code and verification are disposable. Agents are replaceable.**
+**Specifications are durable. Code and is disposable. Agents are replaceable.**
 
 ## Install
 
@@ -60,16 +60,6 @@ Shipshape answers those failure modes with a small, current-state workflow:
 - Context is cleared between Captain and Quartermaster.
 - Bosun removes stale artifacts.
 - `watchbill.json` selects and orders discovered work only; it does not create work.
-
-## Principles
-
-- Product behaviour lives in current `.feature` specs.
-- Chat context is disposable.
-- Roles write only their own layer.
-- Verification discovers work.
-- Passing checks are evidence, not proof.
-- Stale artifacts are removed, not memorialized.
-- Git preserves history. Current files describe current design.
 
 ## What Shipshape is
 
