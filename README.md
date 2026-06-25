@@ -2,7 +2,9 @@
 
 [![skills.sh](https://skills.sh/b/dmytri/shipshape)](https://skills.sh/dmytri/shipshape)
 
-Shipshape is a portable skill set for coding agents that turns product intent into durable Cucumber specs, derives work from failing verification, and keeps agent roles isolated so context does not leak into implementation.
+Shipshape is a portable skill set for coding agents.
+
+It turns product intent into durable Cucumber specs, derives work from failing verification, and isolates agent roles so context does not leak into implementation.
 
 **Specifications are durable. Code and verification are disposable. Agents are replaceable.**
 
@@ -12,7 +14,39 @@ Shipshape is a portable skill set for coding agents that turns product intent in
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-This installs all five skills: `/shipshape`, `/captain`, `/qm`, `/crew`, and `/bosun`. Start with Captain.
+This installs all five skills: `/shipshape`, `/captain`, `/qm`, `/crew`, and `/bosun`.
+
+## Quickstart
+
+1. Install all Shipshape skills:
+
+   ```bash
+   npx skills add dmytri/shipshape --skill '*'
+   ```
+
+2. Start with Captain:
+
+   ```text
+   /captain
+   ```
+
+3. Tell Captain the product behaviour you want.
+
+4. Captain writes or updates `.feature` specs and, when useful, `watchbill.json`.
+
+5. Clear the agent context, or use a runtime that clears context automatically.
+
+6. Start Quartermaster:
+
+   ```text
+   /qm
+   ```
+
+7. QM derives verification from durable repository artifacts and dispatches Crew against failing targets.
+
+8. Bosun performs hygiene, verification recheck, and local commit custody.
+
+9. Captain reports back and handles decisions such as push, PR, publish, release, or deploy.
 
 ## Why Shipshape exists
 
@@ -27,11 +61,21 @@ Shipshape answers those failure modes with a small, current-state workflow:
 - Bosun removes stale artifacts.
 - `watchbill.json` selects and orders discovered work only; it does not create work.
 
+## Principles
+
+- Product behaviour lives in current `.feature` specs.
+- Chat context is disposable.
+- Roles write only their own layer.
+- Verification discovers work.
+- Passing checks are evidence, not proof.
+- Stale artifacts are removed, not memorialized.
+- Git preserves history. Current files describe current design.
+
 ## What Shipshape is
 
 Shipshape is a disciplined workflow for keeping product intent durable, agent context disposable, and progress tied to verification.
 
-It uses Cucumber-native specifications as the durable product contract. It treats production code and verification as rebuildable from that contract. It separates human-facing discovery, verification design, implementation, and cleanup into roles with narrow write scopes.
+It uses Cucumber-native specifications as the durable product contract. It treats production code and verification as rebuildable from that contract. Disposable does not mean careless; it means code and tests must justify their existence against current executable behaviour. Shipshape separates human-facing discovery, verification design, implementation, and cleanup into roles with narrow write scopes.
 
 Shipshape is deliberately narrow. It is most opinionated about Cucumber-native executable specs, context-isolated roles, and verification-discovered work.
 
@@ -66,8 +110,26 @@ If asset content must be protected as behaviour, specify that behaviour in a `.f
 
 ## Workflow and roles
 
-```text
-Captain → clear context → QM → Crew → QM → Bosun → Captain
+```mermaid
+flowchart TD
+    Captain[Captain: discovery, specs, assets, watchbill]
+    Clear[Clear context]
+    QM[Quartermaster: fresh-context verification]
+    PreBosun[Bosun pre-clean]
+    Crew[Crew: one failing production target]
+    PostBosun[Bosun post-clean, verify, local commit]
+    Report[Captain: report and push, PR, publish, release, or deploy decisions]
+
+    Captain --> Clear
+    Clear --> QM
+    QM --> PreBosun
+    PreBosun --> QM
+    QM --> Crew
+    Crew --> QM
+    QM --> PostBosun
+    PostBosun --> Report
+
+    Clear -. context firewall .-> QM
 ```
 
 Shipshape separates agent work by custody and context. Each role sees only the context needed for its job and writes only its own layer.
@@ -77,7 +139,7 @@ Shipshape separates agent work by custody and context. Each role sees only the c
 | Captain | Human-facing discovery, `.feature` specs, assets, `CAPTAIN.md`, optional `watchbill.json` | Production code, verification, hidden implementation instructions |
 | Quartermaster | Verification design, tests, fixtures, step definitions, harness support | Product intent, production code, Captain notes |
 | Crew | The smallest production-code change for one failing verification target | Specs, tests, broad refactors, product interpretation |
-| Bosun | Hygiene, stale artifact removal, verification recheck, local commit custody | New behaviour, product decisions, outbound actions |
+| Bosun | Hygiene, stale artifact removal, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
 
 Only Captain talks to the user. QM, Crew, and Bosun are internal roles. They report through verification output, repository changes, and role hand-offs.
 
@@ -88,10 +150,86 @@ Role flow:
 1. Captain captures product behaviour in current `.feature` specs.
 2. Context clears.
 3. QM derives executable verification from the specs.
-4. Crew makes one focused production change for one failing target.
-5. QM reruns verification and may dispatch more Crew work.
-6. Bosun removes stale artifacts, checks hygiene, verifies, and commits locally.
-7. Captain reports back to the user and handles outbound decisions.
+4. Bosun may pre-clean stale artifacts before they shape verification or implementation.
+5. Crew makes one focused production change for one failing target.
+6. QM reruns verification and may dispatch more Crew work.
+7. Bosun removes stale artifacts, checks hygiene, verifies, and commits locally.
+8. Captain reports back to the user and handles decisions such as push, PR, publish, release, or deploy.
+
+## What a session looks like
+
+A user asks Captain:
+
+```text
+Let customers pay with a saved card at checkout.
+```
+
+Captain captures the behaviour as a durable scenario:
+
+```gherkin
+Feature: Saved card checkout
+
+  Scenario: Customer pays with a saved card
+    Given a customer has a saved card
+    And the checkout total is "$42.00"
+    When the customer pays with the saved card
+    Then the payment is authorized
+    And the order is confirmed
+```
+
+Captain may focus the next verification pass with `watchbill.json`:
+
+```json
+{
+  "watch1": {
+    "scenarios": [
+      "features/checkout/saved-card-checkout.feature:Customer pays with a saved card"
+    ]
+  }
+}
+```
+
+After context clears, QM reads only durable repository artifacts and runs focused verification. Exact commands depend on the adopting project's `AGENTS.md` tooling configuration.
+
+```text
+$ npm run test:bdd -- "features/checkout/saved-card-checkout.feature:Customer pays with a saved card"
+
+Undefined step:
+  When the customer pays with the saved card
+```
+
+QM adds or updates executable verification. If production behaviour fails, QM dispatches Crew with one target:
+
+```text
+Target:
+features/checkout/saved-card-checkout.feature:Customer pays with a saved card
+
+Failure:
+Expected payment status "authorized", received "requires_payment_method".
+```
+
+Crew makes the smallest production-code change:
+
+```diff
++ // Shipshape implements: features/checkout/saved-card-checkout.feature:Customer pays with a saved card
+  async function payWithSavedCard(checkout, savedCard) {
+-   return payments.createIntent({ amount: checkout.total });
++   return payments.createIntent({
++     amount: checkout.total,
++     paymentMethodId: savedCard.paymentMethodId,
++     confirm: true
++   });
+  }
+```
+
+QM reruns the focused check:
+
+```text
+1 scenario passed
+5 steps passed
+```
+
+Bosun removes stale artifacts, reruns configured verification, commits locally, and returns to Captain. Captain reports the result and asks whether to push, open a PR, publish, release, or deploy.
 
 ## Verification is progress
 
@@ -99,7 +237,6 @@ In Shipshape, progress is not a checked box in markdown. Progress is fewer undef
 
 - Verification discovers the worklist.
 - `watchbill.json` can select and order discovered scenario work.
-- `watchbill.json` cannot create work that verification cannot discover.
 - Passing checks are evidence, not proof.
 - QM should prefer Watchbill-selected and targeted focused runs over full tier runs when they are enough to advance the current target.
 - Full tier runs are boundary checks, not the default inner loop.
@@ -108,13 +245,32 @@ In Shipshape, progress is not a checked box in markdown. Progress is fewer undef
 
 ## Watchbill
 
-Captain SHOULD write `watchbill.json` to direct a subset of verification-discoverable work when QM or Crew work should be focused. Watchbill helps QM avoid wasteful full-tier loops by selecting the current scenario set. Watchbill is scenario-level only and uses scenario references in this form:
+`watchbill.json` lets Captain focus QM and Crew on a selected order of verification-discoverable scenarios. It does not create work; verification still decides what is undefined, unimplemented, failing, or passing.
 
-```text
-<spec>.feature:<Scenario Name>
+Example:
+
+```json
+{
+  "watch1": {
+    "scenarios": [
+      "features/checkout/card-payment.feature:Card payment is authorized"
+    ]
+  },
+  "watch2": {
+    "scenarios": [
+      "features/checkout/refund.feature:Refund returns captured funds"
+    ]
+  }
+}
 ```
 
-Watch objects such as `watch1` and `watch2` are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If Watchbill and verification disagree, verification wins.
+Rules:
+
+- Top-level keys are ordered watch groups such as `watch1`, `watch2`, and `watch3`.
+- Each watch contains only `scenarios`.
+- Each scenario reference uses `<spec>.feature:<Scenario Name>`.
+- QM processes watches in order unless verification, product intent, environment, or tooling blocks.
+- If Watchbill and verification disagree, verification wins.
 
 ## Traceability
 
@@ -135,51 +291,20 @@ Trace links explain why artifacts exist. They do not create work, replace verifi
 
 ## Related approaches
 
-Shipshape combines four ideas: role custody, context aversion, verification as progress, and Cucumber-native traceability. These ideas overlap with other SDD and agent-workflow systems, but Shipshape uses them differently.
+Shipshape overlaps with spec-driven development tools, memory-bank workflows, and agent-team systems, but makes different tradeoffs.
 
-### Spec-driven development tools
+| Approach | Common pattern | Shipshape difference |
+|---|---|---|
+| Spec-driven development tools | Requirements, plans, proposals, tasks, or implementation phases | Current Cucumber specs are the product contract; verification state discovers work. |
+| Memory banks | Preserve context across sessions | Chat context is discarded; durable repository artifacts carry current intent. |
+| Agent-team systems | Use roles, agents, or personas to organize work | Roles are custody boundaries, not an organization simulation. |
+| Codegen-first systems | Generate or synchronize code from specs | Code and verification are disposable from specs, but implementation changes through failing verification targets. |
 
-[Kiro](https://kiro.dev), [Spec Kit](https://github.com/github/spec-kit), [OpenSpec](https://github.com/Fission-AI/OpenSpec), and [Tessl](https://tessl.io) explore structured specification before implementation. Shipshape shares the spec-first instinct, but rejects generated task-list progress. Product behaviour belongs in current Cucumber specs, and implementation work is driven by verification state.
+Shipshape combines four ideas: role custody, context isolation, verification as progress, and Cucumber-native traceability.
 
-Kiro, Spec Kit, and OpenSpec use requirements, plans, proposals, tasks, or implementation phases to organise work. Shipshape uses current Cucumber specs as the behaviour contract and verification state as the work signal.
+Related systems include [Kiro](https://kiro.dev), [Spec Kit](https://github.com/github/spec-kit), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Tessl](https://tessl.io), [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD), [Superpowers](https://github.com/obra/superpowers), [Paperclip](https://paperclip.ing), [Fusion](https://runfusion.ai), companies.sh, [Gastown](https://github.com/gastownhall/gastown), and similar systems.
 
-Shipshape is not codegen-first. Tessl explores stronger links between specs, tests, and generated code. Shipshape keeps code and verification disposable from specs, but production code still changes through focused failing verification targets.
-
-For background, see Birgitta Böckeler’s article on SDD tools on Martin Fowler’s site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
-
-### Role-workflow and agent-team systems
-
-[BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD), [Superpowers](https://github.com/obra/superpowers), [Paperclip](https://paperclip.ing), [Fusion](https://runfusion.ai), companies.sh, [Gastown](https://github.com/gastownhall/gastown), and similar systems use agents, roles, teams, or named workflow positions to organise work.
-
-BMAD and Superpowers use role or workflow structure to guide agentic software work. Paperclip, Fusion, companies.sh, and Gastown go further toward agent teams, organisations, or named agent societies. Shipshape also uses roles, but the roles are not an organisation simulation or a cast of specialist personas. They are custody boundaries.
-
-Captain owns human discovery and specs. QM owns verification. Crew owns one production-code target. Bosun owns hygiene, verification recheck, and local commit custody.
-
-BMAD, Superpowers, Paperclip, Fusion, companies.sh, and Gastown use roles to model people, teams, processes, organisations, workflows, or agent societies. Shipshape uses roles to prevent context leakage and write-scope drift.
-
-### Context and authority
-
-Kiro, Spec Kit, OpenSpec, and Tessl structure more context through specs, plans, proposals, tasks, generated artifacts, or spec/code links. Shipshape tries to preserve less context, not more.
-
-Chat is discarded. Product behaviour lives in current `.feature` files. Assets are Captain-owned editable material, not hidden requirements. Tooling belongs in `AGENTS.md`. Directed work selection belongs in `watchbill.json`. History belongs in git.
-
-This keeps the authoritative surface small and current. It also prevents discovery chat, rationale, abandoned ideas, and stale plans from leaking into verification or code.
-
-### Verification as progress
-
-Kiro, Spec Kit, and OpenSpec organise progress through task lists, proposal states, implementation phases, or generated work plans. BMAD, Superpowers, Paperclip, Fusion, companies.sh, and Gastown may organise progress through agent reports, tickets, roles, process state, or team workflow.
-
-Shipshape treats those as weak evidence.
-
-In Shipshape, progress is tested. Progress means fewer undefined, unimplemented, or failing scenario targets. A claimed task completion is not progress unless verification can observe it.
-
-This does not mean Kiro, Spec Kit, OpenSpec, Tessl, BMAD, Superpowers, Paperclip, Fusion, companies.sh, or Gastown lack tests. The distinction is that Shipshape makes verification status the progress measure, not a generated worklist, proposal state, or agent status report.
-
-### Traceability without codegen
-
-Tessl explores stronger links between specs, tests, and generated code. Kiro, Spec Kit, and OpenSpec also keep structured links between requirements, plans, tasks, and implementation work. Shipshape uses lighter Cucumber-native trace comments instead.
-
-Trace links explain why code or support artifacts exist, but they do not define product intent, create work, or replace verification discovery.
+For background, see Birgitta Böckeler's article on SDD tools on Martin Fowler's site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
 
 ## Enforcement and portability
 
