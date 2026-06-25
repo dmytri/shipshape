@@ -46,7 +46,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 9. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 10. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
 11. **Three layers.** Specs and assets are durable artifacts. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
-12. **Directed work uses `watchbill.json`.** Captain MAY write fixed-shape `watchbill.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. `watchbill.json` is scenario-level only. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. Captain MAY update or remove `watchbill.json`.
+12. **Directed work uses `watchbill.json`.** Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused, save time, or save tokens. It selects and orders a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. `watchbill.json` is scenario-level only. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. Captain MAY update or remove `watchbill.json`.
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
 
@@ -90,7 +90,7 @@ If QM, Crew, or Bosun encounters missing or contradictory product intent, route 
 A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling configuration:
 
 - spec, implementation, verification, and asset directories;
-- verification discovery command, focused test command, broader test/typecheck/lint commands;
+- verification discovery command, focused target command, Watchbill-selected command if available, and broader test/typecheck/lint commands;
 - tier tags with tier definitions and service credentials or sandbox policy;
 - optional `watchbill.json` location for selected ordered verification-discoverable work.
 
@@ -115,11 +115,12 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 Use project-specific commands:
 
 - discovery: find undefined or unimplemented coverage;
-- tests: run the suite;
+- Watchbill-selected verification: run only selected scenario references when tooling supports it;
 - focused test: run one target;
+- broader tests: run suites or tiers as boundary checks;
 - static checks: typecheck and lint if available.
 
-Progress is measured by verification status, not by a separate checklist. Prefer fast focused checks. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results.
+Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs to save time and tokens. Full tier runs are boundary checks, not the default inner loop. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results. When Captain receives a clean hand-off with no remaining discovered work, Captain MUST offer to run the entire test suite across all tiers.
 
 ### Traceability policy
 

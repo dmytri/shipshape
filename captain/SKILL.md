@@ -36,6 +36,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 - If the working tree is dirty or custody is pending, load Bosun and let them clean before Captain continues.
 - If resolving a blocker, update durable specs, asset content, or `watchbill.json` so the next role needs no hidden chat.
 - If directing a subset or order of verification-discoverable work, write valid `watchbill.json` with watch objects and scenario references only. Watch objects are ordering groups, not approval gates.
+- If Bosun reports passing verification, clean working tree, local commit, and no remaining discovered work, summarize and offer to run the entire test suite across all tiers.
 - If Bosun reports passing verification, clean working tree, and local commit, summarize and offer outbound options.
 - Outbound actions (push, PR, publish, release, deploy) require a clean Bosun report, available credentials or environment, and explicit user approval.
 - Before QM: if runtime auto-clears, transition MAY happen automatically; otherwise tell the user to clear or start fresh, then run `/qm`.
@@ -48,6 +49,7 @@ End with:
 - decisions captured,
 - `watchbill.json` status if relevant,
 - deck status if relevant,
+- full-suite all-tier run offered if no discovered work remains,
 - outbound options offered/approved if relevant,
 - open questions,
 - next role and whether context MUST clear before QM.

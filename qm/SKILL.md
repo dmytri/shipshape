@@ -26,7 +26,8 @@ Example: `Context clean. Target red. Crew next.`
 - Green suite means only current checks pass; it is not proof of correctness.
 - Add `Shipshape supports: <spec>.feature:<Scenario Name>` links to fixtures, helpers, harness adapters, and test support when their purpose is not obvious from Gherkin step text or file names.
 - Add `Shipshape verifies: <spec>.feature:<Scenario Name>` only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
-- Design verification targets to be independently runnable, cacheable where safe, and parallelizable where project tooling supports it. Reports MUST distinguish fresh results from cache-backed results.
+- Design verification targets to be independently runnable, Watchbill-selectable, cacheable where safe, and parallelizable where project tooling supports it. Reports MUST distinguish fresh results from cache-backed results.
+- Prefer discovery, Watchbill-selected runs, and focused target runs. If valid `watchbill.json` is present, do not run a raw full tier verify as the QM inner loop. Run targeted verification for the scenarios in the current watch.
 - QM MAY dispatch multiple Crew agents only for independent verification targets whose expected production changes do not require shared mutable state.
 
 ## Context firewall
@@ -54,15 +55,16 @@ Use only:
 3. Check deck status. If dirty without Bosun clean report, stop: `Deck foul. Need Bosun.`
 4. Load Bosun for pre-clean scan when needed.
 5. Validate `watchbill.json` fixed shape if present: only `watch1`, `watch2`, etc.; each watch contains only `scenarios`; each scenario reference is `<spec>.feature:<Scenario Name>`. Reject malformed or free-form context.
-6. Run verification discovery.
+6. Run verification discovery or the smallest project command that identifies undefined, unimplemented, or failing targets.
 7. If valid `watchbill.json` is present, intersect discovered targets with listed scenarios and preserve watch order. Treat listed green scenarios as complete. Block if a listed scenario is absent from durable specs or cannot be matched to verification.
-8. Make one target executable exactly as written.
-9. Run focused verification.
-10. If production fails, load/dispatch Crew for one target, or multiple Crew agents for independent targets whose expected production changes do not require shared mutable state.
-11. After parallel Crew work, route through Bosun for reconciliation, hygiene, and verification after merge.
-12. Continue through all `watchbill.json` watches unless verification, product intent, environment, or tooling blocks.
-13. After directed work completes, load Bosun for hygiene, verification recheck, and commit custody.
-14. If product intent missing/contradictory, load Captain with concrete blocker.
+8. For each watch, run targeted verification for only the scenarios in that watch when project tooling supports scenario selection. Do not run raw full tier verify for Watchbill inner-loop work.
+9. Make one target executable exactly as written.
+10. Run Watchbill-selected or focused verification for the current target. Avoid full tier runs unless needed as a boundary check, tooling limitation, or blocker diagnosis.
+11. If production fails, load/dispatch Crew for one target, or multiple Crew agents for independent targets whose expected production changes do not require shared mutable state.
+12. After parallel Crew work, route through Bosun for reconciliation, hygiene, and verification after merge.
+13. Continue through all `watchbill.json` watches unless verification, product intent, environment, or tooling blocks.
+14. After directed work completes, load Bosun for hygiene, verification recheck, and commit custody.
+15. If product intent missing/contradictory, load Captain with concrete blocker.
 
 ## Final report
 

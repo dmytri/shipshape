@@ -101,11 +101,14 @@ In Shipshape, progress is not a checked box in markdown. Progress is fewer undef
 - `watchbill.json` can select and order discovered scenario work.
 - `watchbill.json` cannot create work that verification cannot discover.
 - Passing checks are evidence, not proof.
+- QM should prefer Watchbill-selected and targeted focused runs over full tier runs when they are enough to advance the current target.
+- Full tier runs are boundary checks, not the default inner loop.
+- When no discovered work remains, Captain must offer to run the entire test suite across all tiers.
 - Reports must distinguish fresh results from cache-backed results.
 
 ## Watchbill
 
-Captain may write `watchbill.json` to direct a subset of verification-discoverable work. Watchbill is scenario-level only and uses scenario references in this form:
+Captain SHOULD write `watchbill.json` to direct a subset of verification-discoverable work when QM or Crew work should be focused. Watchbill helps QM avoid wasteful full-tier loops by selecting the current scenario set. Watchbill is scenario-level only and uses scenario references in this form:
 
 ```text
 <spec>.feature:<Scenario Name>

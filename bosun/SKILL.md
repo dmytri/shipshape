@@ -66,7 +66,7 @@ Called after verification passes. Full hygiene, verification recheck, stage inte
 
 ## Verification and custody
 
-- Run focused and broader verification as configured and practical. Prefer fresh results; label cache-backed results.
+- Run focused, Watchbill-selected, and broader verification as configured and practical. Do not waste time or tokens on full tier runs when targeted evidence is enough for the current custody step. Prefer fresh results; label cache-backed results.
 - Stage intended changes only.
 - Commit locally in post-implementation mode only.
 - Confirm working tree clean or only unrelated user work remains unstaged.
