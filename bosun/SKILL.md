@@ -51,7 +51,7 @@ Called after verification passes. Full hygiene, verification recheck, stage inte
 - Orphaned step definitions/tests/fixtures/support files.
 - Stale changed-file-adjacent artifacts: snapshots, generated files, obsolete helpers.
 - Unreachable production code no current scenario/test exercises. Remove when clear; block when ambiguous.
-- `cycle.json`: if listed scenarios are verified, remind Captain to delete. Do not delete it yourself.
+- `cycle.json`: if listed scenarios are verified or no longer select active discovered work, remind Captain to delete. Do not delete it yourself.
 - `CAPTAIN.md`: flag if bloated, speculative, or containing resolved discussion that should be trimmed.
 
 ## Verification and custody

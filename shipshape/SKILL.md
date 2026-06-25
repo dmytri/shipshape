@@ -46,7 +46,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 9. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 10. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
 11. **Three layers.** Specs/assets are durable. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
-12. **Directed work uses `cycle.json`.** Captain MAY write fixed-shape `cycle.json` for refactor, conformance, feature, or fix passes. It contains only ordered pass objects (`pass1`, `pass2`, etc.); each pass contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. No prose, metadata, work-type enums, or hidden context.
+12. **Directed work uses `cycle.json`.** Captain MAY write fixed-shape `cycle.json` to select and order a subset of verification-discoverable scenario work. It contains only ordered pass objects (`pass1`, `pass2`, etc.); each pass contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. No prose, metadata, work-type enums, or hidden context. `cycle.json` does not create work that verification cannot discover. Pass objects are ordering groups only. QM processes all passes in order unless verification, product intent, environment, or tooling blocks.
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
 
@@ -83,7 +83,7 @@ Captain -- clear/start fresh or runtime auto-clear --> QM
 QM -> Bosun (pre-clean) -> QM <-> Crew -> QM -> Bosun (post-clean) -> Captain
 ```
 
-If QM, Crew, or Bosun encounters missing or contradictory product intent, route to Captain with concrete blocker evidence. After Captain resolves product or specification intent, auto-clear or clear/start fresh before QM.
+If QM, Crew, or Bosun encounters missing or contradictory product intent, route to Captain with concrete blocker evidence in the role hand-off. After Captain resolves product or specification intent, auto-clear or clear/start fresh before QM.
 
 ## Project configuration
 
@@ -92,7 +92,7 @@ A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling con
 - spec, implementation, verification, and asset directories;
 - verification discovery command, focused test command, broader test/typecheck/lint commands;
 - tier tags with tier definitions and service credentials or sandbox policy;
-- optional `cycle.json` location.
+- optional `cycle.json` location for selected ordered verification-discoverable work.
 
 ## Project policies
 
@@ -100,7 +100,7 @@ These policies apply to all Shipshape project work.
 
 ### Blocker policy
 
-If QM, Crew, or Bosun encounters missing or contradictory product intent, they load Captain with concrete blocker evidence. Captain updates durable specs or instructions. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
+If QM, Crew, or Bosun encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs or assets. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
 
 ### Verification policy
 
@@ -161,19 +161,7 @@ promoted to executable `.feature` specs or referenced `assets/**` before
 Quartermaster runs.
 ```
 
-### Blocker report
 
-QM, Crew, or Bosun creates this when product intent is missing:
-
-```markdown
-## Blocker
-
-**Role:** `<Quartermaster | Crew Mate | Bosun>`
-**Target:** `<feature / scenario / test>`
-**Exact blocker:** `<one sentence>`
-**Why I cannot continue:** `<one sentence about the missing decision>`
-**Suggested Captain resolution:** `<what durable artifact to update>`
-```
 
 ### Feature file
 

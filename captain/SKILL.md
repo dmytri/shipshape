@@ -34,7 +34,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 
 - If the working tree is dirty or custody is pending, load Bosun and let them clean before Captain continues.
 - If resolving a blocker, update durable specs/assets/`cycle.json` so the next role needs no hidden chat.
-- If directing work that cannot be discovered from failing verification, write valid `cycle.json` with pass objects and scenario references only.
+- If directing a subset or order of verification-discoverable work, write valid `cycle.json` with pass objects and scenario references only. Pass objects are ordering groups, not approval gates.
 - If Bosun reports passing verification, clean working tree, and local commit, summarize and offer outbound options.
 - Outbound actions (push, PR, publish, release, deploy) require a clean Bosun report, available credentials or environment, and explicit user approval.
 - Before QM: if runtime auto-clears, transition MAY happen automatically; otherwise tell the user to clear or start fresh, then run `/qm`.
