@@ -33,6 +33,8 @@ Shipshape is a disciplined workflow for keeping product intent durable, agent co
 
 It uses Cucumber-native specifications as the durable product contract. It treats production code and verification as rebuildable from that contract. It separates human-facing discovery, verification design, implementation, and cleanup into roles with narrow write scopes.
 
+Shipshape is deliberately narrow. It is most opinionated about Cucumber-native executable specs, context-isolated roles, and verification-discovered work.
+
 ## What Shipshape is not
 
 Shipshape is not:
@@ -130,13 +132,16 @@ Trace links explain why artifacts exist. They do not create work, replace verifi
 
 ## Comparison with related approaches
 
-| Approach | What it does | Shipshape difference |
+| Approach | What it optimizes for | Shipshape difference |
 |---|---|---|
-| Kiro-style SDD | Requirements, design, task lists, IDE execution | Shipshape rejects task-list progress; verification discovers work. |
-| Spec Kit-style SDD | Constitution, plans, tasks, generated markdown workflow | Shipshape keeps the authoritative surface small and current-state only. |
-| Tessl-style spec/code linking | Specs tied to tests/code, sometimes toward code generation | Shipshape uses trace comments but remains Cucumber-native and not codegen-first. |
-| Memory banks | Preserve context across sessions | Shipshape discards chat context and keeps only durable artifacts. |
-| Plain agent coding | Agent writes from prompt context | Shipshape preserves intent and makes progress auditable. |
+| [Kiro](https://kiro.dev)-style SDD | IDE/CLI-guided requirements, design, tasks, and implementation phases | Shipshape is lighter, skill-based, and rejects task-list progress; verification discovers work. |
+| [Spec Kit](https://github.com/github/spec-kit)-style SDD | Agent-agnostic Markdown specs, plans, tasks, and templates | Shipshape keeps the authoritative surface small: Cucumber specs, current assets, and verification output. |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec)-style SDD | Change proposals, specs, design, and tasks in the repository | Shipshape avoids proposal/task progress and makes executable Cucumber verification the work source. |
+| [Tessl](https://tessl.io)-style skill governance | Skill packaging, context governance, evals, registries, and agent rails | Shipshape is narrower: a Cucumber-native workflow skill set with trace comments, not a broad registry or codegen platform. |
+| [Superpowers](https://github.com/obra/superpowers)-style agent methodology | Skills and workflows that structure agentic coding | Shipshape is more prescriptive about role isolation, context disposal, and verification-discovered work. |
+| [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)-style agent teams | Agile-inspired specialist agents and lifecycle workflows | Shipshape keeps fewer roles and a smaller authoritative surface centred on executable specs. |
+| Memory banks | Preserving context across sessions | Shipshape discards chat context and keeps only durable repository artifacts. |
+| Plain agent coding | Fast implementation from prompt context | Shipshape preserves intent, isolates roles, and makes progress auditable through verification. |
 
 ## Enforcement and portability
 
