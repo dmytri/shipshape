@@ -78,7 +78,6 @@ Follow this scenario-writing agreement. Shipshape uses specification by example:
 - Keep tables concise with descriptive headers. If a table does not fit one screen, split the behaviour or move data to an asset.
 - Avoid faux steps, abstract subjects, actor assertions, hedge words, and behaviour hidden in `Rule:` prose. `Rule:` prose MAY provide context only when it helps QM or Crew understand durable constraints that do not fit cleanly in steps; executable requirements belong in scenarios.
 - Use `@property` for cross-cutting invariants, including agent-behaviour and runtime-enforcement invariants.
-- Real by default. Doubles only for narrow, justified exceptional conditions the real environment cannot produce on demand, and never for normal-path coverage.
 
 ## Role flow
 
