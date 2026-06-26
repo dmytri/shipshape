@@ -103,25 +103,25 @@ If asset or catalog content must be protected as behaviour, specify that behavio
 ## Workflow and roles
 
 ```mermaid
-flowchart TD
-    Captain[Captain: discovery, specs, assets, watchbill]
-    Clear[Clear context]
-    QM[Quartermaster: fresh-context verification]
-    PreBosun[Bosun pre-clean]
-    Crew[Crew: one failing production target]
-    PostBosun[Bosun post-clean, verify, local commit]
-    Report[Captain: report and push, PR, publish, release, or deploy decisions]
+sequenceDiagram
+    participant User
+    participant Captain
+    participant QM
+    participant Bosun
+    participant Crew
 
-    Captain --> Clear
-    Clear --> QM
-    QM --> PreBosun
-    PreBosun --> QM
-    QM --> Crew
-    Crew --> QM
-    QM --> PostBosun
-    PostBosun --> Report
-
-    Clear -. context firewall .-> QM
+    User->>Captain: Describe product intent
+    Captain->>Captain: Write .feature specs, watchbill.json
+    Note over Captain,QM: Context clears
+    QM->>QM: Run verification discovery
+    QM->>Bosun: Pre-clean scan
+    Bosun->>QM: Stale artifacts removed
+    QM->>Crew: Dispatch failing target
+    Crew->>Crew: Smallest production change
+    Crew->>QM: Target pass
+    QM->>Bosun: Post-implementation hygiene, verify
+    Bosun->>Captain: Deck clean, verify pass, committed
+    Captain->>User: Report result, offer outbound
 ```
 
 Shipshape separates agent work by custody and context. Each role sees only the context needed for its job and writes only its own layer.
@@ -269,6 +269,18 @@ Rules:
 ## Harbour mode
 
 When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour — Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@shipwright`-tagged scenario skeletons. Captain reviews each with the user before promoting to binding specs. QM ignores `@shipwright` until Captain promotes.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Shipwright
+    participant Captain
+
+    User->>Shipwright: /shipwright, scan this codebase
+    Shipwright->>Shipwright: Run c8, scan for violations
+    Shipwright->>Captain: @shipwright scenarios written
+    Captain->>User: Review each scenario, promote/discard
+```
 
 ## Traceability
 

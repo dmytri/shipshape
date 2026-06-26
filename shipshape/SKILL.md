@@ -81,9 +81,26 @@ Follow this scenario-writing agreement. Shipshape uses specification by example:
 
 ## Role flow
 
-```text
-Captain -- clear/start fresh or runtime auto-clear --> QM
-QM -> Bosun (pre-clean) -> QM <-> Crew -> QM -> Bosun (post-clean) -> Captain
+```mermaid
+sequenceDiagram
+    participant User
+    participant Captain
+    participant QM
+    participant Bosun
+    participant Crew
+
+    User->>Captain: Describe product intent
+    Captain->>Captain: Write .feature specs, watchbill.json
+    Note over Captain,QM: Context clears
+    QM->>QM: Run verification discovery
+    QM->>Bosun: Pre-clean scan
+    Bosun->>QM: Stale artifacts removed
+    QM->>Crew: Dispatch failing target
+    Crew->>Crew: Smallest production change
+    Crew->>QM: Target pass
+    QM->>Bosun: Post-implementation hygiene, verify
+    Bosun->>Captain: Deck clean, verify pass, committed
+    Captain->>User: Report result, offer outbound
 ```
 
 If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product intent, route to Captain with concrete blocker evidence in the role hand-off. After Captain resolves product or specification intent, auto-clear or clear/start fresh before QM.
@@ -94,6 +111,18 @@ Shipwright works in-harbour: existing-codebase onboarding and maintenance betwee
 
 ```text
 Captain → clear context → Shipwright → Captain (review, promote/discard)
+```
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Shipwright
+    participant Captain
+
+    User->>Shipwright: /shipwright, scan this codebase
+    Shipwright->>Shipwright: Run c8, scan for violations
+    Shipwright->>Captain: @shipwright scenarios written
+    Captain->>User: Review each scenario, promote/discard
 ```
 
 After Captain promotes `@shipwright` scenarios to binding specs, normal flow resumes.
