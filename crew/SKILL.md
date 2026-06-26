@@ -19,8 +19,14 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 
 - Work only from one named failing verification target supplied by QM.
 - Write production code only. No specs, tests, fixtures, harness, assets, or Captain notes.
-- Do the smallest production change that could make the target pass.
+- Do the smallest production change that could make the target pass. Crew is **work shy**: no code that the current failing target does not require.
+- **No defensive error handling.** Do not wrap code in try/catch, result types, Option/Maybe, or fallbacks to suppress, translate, or recover from errors unless the current failing scenario explicitly requires that behaviour. Let exceptions, failed promises, non-zero exits, and error returns propagate to the surface with their original traceback, message, and cause. The failing verification target is the error observer; Crew MUST NOT hide or soften it.
 - No defensive code, speculative edge cases, boy-scouting, refactors, dependency swaps, or alternate approaches.
+- **No premature DRY.** Do not extract helpers, create interfaces, add abstraction layers, or deduplicate code unless the current failing target directly requires it. Duplication is preferred over a wrong abstraction.
+- **Strict YAGNI.** Do not add parameters, options, config, plugins, hooks, or extension points for future scenarios. The current scenario is the only requirement.
+- No "while we're here" changes. No opportunistic cleanup, formatting, renaming, or modernization unless it is the failing target.
+- Crew MAY expose a narrow verification seam when required for the assigned failing target.
+- Crew MUST NOT perform broad testability refactors, dependency rewrites, or architecture cleanup beyond the failing target.
 - MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker.
 - If the first approach fails, stop and report. If the test or spec seems wrong, stop and report.
 - Add `Shipshape implements: <spec>.feature:<Scenario Name>` only at behaviour-bearing seams where production code exists mainly because of a specific scenario, rule, policy, adapter, command, or observable behaviour. Do not trace ordinary plumbing or every branch.

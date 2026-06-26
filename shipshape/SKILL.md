@@ -36,11 +36,11 @@ Internal roles (QM, Crew, Bosun) use smart-but-silent voice:
 These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline.
 
 1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are Captain-owned editable artifacts. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
-2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible.
+2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain→QM boundary is a violation.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
 4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour.
 5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous.
-6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change.
+6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY (extracting helpers, creating interfaces, adding abstraction before the scenario demands it) and YAGNI violations (parameters, options, config, hooks, extension points for imagined futures) are forbidden.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
 8. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline (for example `@exceptional-double`). It MUST never replace normal-path real coverage.
 9. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
@@ -49,6 +49,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 12. **Directed work uses `watchbill.json`.** Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused, save time, or save tokens. It selects and orders a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. `watchbill.json` is scenario-level only. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. Captain MAY update or remove `watchbill.json`.
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
+15. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, or harness-only behaviour.
 
 ## Scenario-writing agreement
 
@@ -92,7 +93,10 @@ A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling con
 - spec, implementation, verification, and asset directories;
 - verification discovery command, focused target command, Watchbill-selected command if available, and broader test/typecheck/lint commands;
 - tier tags with tier definitions and service credentials or sandbox policy;
-- optional `watchbill.json` location for selected ordered verification-discoverable work.
+- optional `watchbill.json` location for selected ordered verification-discoverable work;
+- known false-failure modes and how to confirm or dismiss them before routing a product defect (e.g., harness timing races, stale environment references, registry propagation delays);
+- release/distribution artifact verification commands or policy (e.g., verify published npm package, Docker image, deploy artifact — not only local source);
+- optional sandbox provisioning policy: when safe sandbox provisioning is available, project tooling SHOULD derive or create missing disposable test resources instead of skipping; provisioned resources MUST follow harmless-by-design rules (namespace, teardown, never touch resources the run did not create).
 
 ## Project policies
 
@@ -121,6 +125,45 @@ Use project-specific commands:
 - static checks: typecheck and lint if available.
 
 Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs to save time and tokens. Full tier runs are boundary checks, not the default inner loop. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results. When Captain receives a clean hand-off with no remaining discovered work, Captain MUST offer to run the entire test suite across all tiers.
+
+Skipped verification is not passing verification. Reports MUST identify skipped targets and their reasons (absent credential, absent capability, environment limitation). A skipped target remains unverified until the required credential, capability, or environment is present and the target runs. If a target is persistently skipped for reasons that cannot be resolved by the project, Captain SHOULD escalate or remove the scenario.
+
+When project configuration enables sandbox provisioning, tooling SHOULD derive or create missing disposable test resources instead of skipping. Provisioned resources MUST follow harmless-by-design rules: namespace every created resource, register idempotent teardown, never modify or delete resources the run did not create. An environment-limit rejection is NOT a skip if the project owns capacity reclamation.
+
+### Verification-shaped code policy
+
+Production code SHOULD be shaped so QM can verify scenario behaviour through narrow, observable seams and Crew can make the smallest production change for one failing target.
+
+Verification-shaped code is not mock-shaped code. It isolates side effects so real behaviour can be exercised deliberately. It MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, simulated CLIs, `.invalid` endpoints, dummy credentials, or harness-only behaviour.
+
+Prefer:
+
+- domain or product logic separated from UI, framework, network, filesystem, clock, database, and other side effects;
+- dependencies passed through explicit parameters, constructors, factories, or project-approved dependency mechanisms;
+- stable interfaces, ports, adapters, facades, selectors, reducers, or pure functions where they make behaviour easier to verify;
+- explicit inputs and observable outputs or state changes;
+- small modules with one clear responsibility;
+- boring constructors that assign dependencies and do not perform real work;
+- error paths that return, throw, log, emit, or persist observable signals that verification can assert.
+
+Avoid:
+
+- hidden product behaviour in constructors, global state, static initialization, singletons, registries, service locators, or framework lifecycle hooks;
+- production code that creates hard dependencies internally when project policy allows injection;
+- digging through collaborator object graphs to reach hidden dependencies;
+- broad modules whose purpose requires "and" to describe;
+- side effects mixed into domain logic when they can be isolated behind a seam;
+- test-only branches, fake normal paths, or production changes made only to satisfy harness convenience.
+
+Crew MAY refactor production code to expose a verification seam only when that is the smallest sufficient change for the assigned failing target. Crew MUST NOT perform broad testability refactors, dependency rewrites, or architecture cleanup without a failing verification target.
+
+QM SHOULD verify observable behaviour through real paths. QM MUST NOT couple tests to private implementation details unless the project's public contract is at that layer. If production code hides scenario behaviour behind global state, constructors, static initialization, service locators, or tangled side effects, QM reports a Crew target or Captain blocker with evidence.
+
+Bosun SHOULD flag hidden global state, stale seams, service locators, broad side-effectful modules, test-only branches, and untraceable behaviour when they make verification brittle or obscure current design.
+
+### Outbound verification policy
+
+Captain handles outbound decisions (push, PR, publish, release, deploy). Outbound SHOULD verify the artifact or channel that users consume, not only the local source tree. If the project distributes via package registry, Docker registry, deploy preview, or app store, the release artifact SHOULD be verified or the project policy MUST state that local verification is sufficient. Local green tree is not evidence that a published artifact is correct unless verified.
 
 ### Traceability policy
 
@@ -185,20 +228,28 @@ npx skills add dmytri/shipshape --skill '*'
 Create `CAPTAIN.md` at project root if Captain wants non-binding notes:
 
 ```markdown
-# Captain Notes — Captain only, stop reading now
+<!-- ============================================================= -->
+<!-- STOP. CAPTAIN ROLE ONLY.                                      -->
+<!-- If you are NOT running as the Captain — i.e. you are the      -->
+<!-- Quartermaster, Crew Mate, Bosun, or any other role — do NOT   -->
+<!-- read past this line. Close this file now. Its contents are    -->
+<!-- Captain-only working context and must never enter another     -->
+<!-- role's context. You were not given this file by your role.    -->
+<!-- ============================================================= -->
+
+> **STOP — CAPTAIN ROLE ONLY.** If you are not the Captain, close this file now. Binding behaviour lives in `.feature` specs and referenced `assets/**`, never here.
+
+# Captain Notes — Captain only, non-binding
+
+Captain-only working memory. Binding behaviour lives in `.feature` specs and referenced `assets/**`; history lives in git. These notes carry only what the next cycle needs — current design pointers, in-flight work, and watch items.
 
 ## Access rule
 
-Only Captain MAY edit this file. Bosun MAY read it to evaluate spec quality
-and watchbill completeness. Quartermaster and Crew Mate MUST NOT read it or use
-it as input.
+Only Captain MAY edit this file. Bosun MAY read it to evaluate spec quality and watchbill completeness. Quartermaster and Crew Mate MUST NOT read it or use it as input.
 
 ## Purpose
 
-`CAPTAIN.md` does not define product behaviour. Binding behaviour MUST be
-promoted to executable `.feature` specs before Quartermaster runs. Assets MAY
-be referenced by scenarios or verification, but assets do not define hidden
-requirements.
+`CAPTAIN.md` does not define product behaviour. Binding behaviour MUST be promoted to executable `.feature` specs before Quartermaster runs. Assets MAY be referenced by scenarios or verification, but assets do not define hidden requirements.
 ```
 
 

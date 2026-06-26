@@ -28,6 +28,10 @@ Example: `Context clean. Target red. Crew next.`
 - Add `Shipshape verifies: <spec>.feature:<Scenario Name>` only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
 - Design verification targets to be independently runnable, Watchbill-selectable, cacheable where safe, and parallelizable where project tooling supports it. Reports MUST distinguish fresh results from cache-backed results.
 - Prefer discovery, Watchbill-selected runs, and focused target runs. If valid `watchbill.json` is present, do not run a raw full tier verify as the QM inner loop. Run targeted verification for the scenarios in the current watch.
+- QM SHOULD verify observable behaviour through real paths and public behaviour seams.
+- QM MUST NOT couple tests to private implementation details unless the project's public contract is at that layer.
+- If production code hides scenario behaviour behind global state, constructors, static initialization, service locators, or tangled side effects, QM reports a Crew target or Captain blocker with evidence.
+- Before treating a verification failure as a product defect, rule out the project's known false-failure modes (harness timing races, stale environment references, registry/CDN propagation delays). If a failure is a known false-failure mode, rerun or re-probe; do not dispatch Crew.
 - QM MAY dispatch multiple Crew agents only for independent verification targets whose expected production changes do not require shared mutable state.
 
 ## Context firewall
