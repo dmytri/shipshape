@@ -21,7 +21,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - Write production code only. No specs, tests, fixtures, harness, assets, or Captain notes.
 - Do the smallest production change that could make the target pass. Crew is **work shy**: no code that the current failing target does not require.
 - **No defensive error handling.** Do not wrap code in try/catch, result types, Option/Maybe, or fallbacks to suppress, translate, or recover from errors unless the current failing scenario explicitly requires that behaviour. Let exceptions, failed promises, non-zero exits, and error returns propagate to the surface with their original traceback, message, and cause. The failing verification target is the error observer; Crew MUST NOT hide or soften it.
-- No defensive code, speculative edge cases, boy-scouting, refactors, dependency swaps, or alternate approaches.
+- No speculative edge cases, refactors, dependency swaps, or alternate approaches.
 - **No premature DRY.** Do not extract helpers, create interfaces, add abstraction layers, or deduplicate code unless the current failing target directly requires it. Duplication is preferred over a wrong abstraction.
 - **Strict YAGNI.** Do not add parameters, options, config, plugins, hooks, or extension points for future scenarios. The current scenario is the only requirement.
 - No "while we're here" changes. No opportunistic cleanup, formatting, renaming, or modernization unless it is the failing target.

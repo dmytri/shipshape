@@ -38,7 +38,7 @@ Shipwright SHOULD use when available (prefer `npx` forms):
 
 ## Tag
 
-`@shipwright`, discovered from code, not yet accepted as product intent. QM ignores it. Bosun protects the described code. Captain promotes by removing the tag, or discards by deleting the scenario. One tag only; no sub-tags. Shipwright reports findings by category in the final report, not in tags.
+`@shipwright`, discovered from code, not yet accepted as product intent. QM ignores it. Bosun protects the described code. Captain promotes by removing the tag, or discards by deleting the scenario. One tag only; no sub-tags. In the final report, group findings by category: behaviour (existing code behaviour), gap (behaviour implied but not implemented), violation (a policy breach), unclear (code too complex to characterize confidently).
 
 ## Work loop
 
