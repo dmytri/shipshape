@@ -46,7 +46,7 @@ Shipwright SHOULD use when available (prefer `npx` forms):
 2. Identify scope, Captain-assigned module/directory, or full codebase if onboarding.
 3. Run coverage analysis on the target area.
 4. Cross-reference production imports with cucumber step definitions to find uncovered modules.
-5. Add `Shipshape implements` trace links to every production-code module and export. Trace to existing scenario where possible. For code with no scenario, create a `@shipwright` scenario and trace to it.
+5. Add `Shipshape implements` trace links to every production-code module and export. Trace to existing scenario where possible. For code with no scenario, create a `@shipwright` scenario and trace to it. For code with trace links pointing to deleted or renamed scenarios, correct the link if the scenario still exists under a new name, or create a `@shipwright` scenario and retrace if the original scenario is gone.
 6. Scan for policy violations:
    - **Content catalog violations:** hardcoded product-facing strings (labels, messages, emails, UI copy, error messages shown to users) that should live in assets or content catalogs per the Asset policy.
    - **Hidden behaviour:** product logic in constructors, global state, static initialization, singletons, registries, service locators, framework lifecycle hooks.

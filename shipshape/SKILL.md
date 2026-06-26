@@ -52,6 +52,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard; no em dashes, smart quotes, or other non-ASCII punctuation; avoid parenthetical asides. If a sentence needs a dash, comma-pair, or parenthetical break, rewrite it as two sentences.
 15. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, or harness-only behaviour.
 16. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles. Do not pause to ask whether to continue when the next step is obvious. Captain batches all known work into the current pass. Shipwright completes the full harbour inventory. QM finishes the current watch. Crew finishes the assigned target or reports a real blocker. Bosun finishes hygiene and verification recheck. Reserve a stop for an actual blocker, missing tool, contradictory spec, absent credential, and name it plainly.
+17. **Every line of production code traces to a scenario.** No production code exists without a `Shipshape implements` link to a current scenario. Untraced code is dead and MUST be removed. Shipwright traces existing code during harbour. Crew traces changed code. Bosun removes untraced code. Trace links that point to deleted or renamed scenarios are stale and MUST be corrected or the code removed.
 
 ## Scenario-writing agreement
 
@@ -107,7 +108,7 @@ If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product in
 
 ### Harbour flow
 
-Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code only and produces non-binding `@shipwright` scenario skeletons. Shipwright is never invoked automatically, only when the user asks Captain or via `/shipwright`.
+Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code, adds trace links, and produces non-binding `@shipwright` scenario skeletons. Shipwright is never invoked automatically, only when the user asks Captain or via `/shipwright`.
 
 ```text
 Captain → clear context → Shipwright → Captain (review, promote/discard)
@@ -146,7 +147,7 @@ These policies apply to all Shipshape project work.
 
 ### Blocker policy
 
-If QM, Crew, or Bosun encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
+If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
 
 ### Asset policy
 
@@ -287,7 +288,7 @@ Captain-only working memory. Binding behaviour lives in `.feature` specs and ref
 
 ## Access rule
 
-Only Captain MAY edit this file. Bosun MAY read it to evaluate spec quality and watchbill completeness. Quartermaster and Crew Mate MUST NOT read it or use it as input.
+Only Captain MAY edit this file. Bosun MAY read it to evaluate spec quality and watchbill completeness. Quartermaster, Crew Mate, and Shipwright MUST NOT read it or use it as input.
 
 ## Purpose
 
