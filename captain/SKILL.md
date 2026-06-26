@@ -41,7 +41,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 - Outbound actions (push, PR, publish, release, deploy) require a clean Bosun report, available credentials or environment, and explicit user approval.
 - **Harbour:** If onboarding an existing codebase or between releases, invoke Shipwright. Shipwright produces `@shipwright`-tagged scenario skeletons. Captain reviews each with the user: promote (remove tag), or discard (delete scenario, Bosun will eventually remove described code). After all `@shipwright` scenarios are resolved, clear context and hand off to QM.
 - **Minimize cycles.** Resolve all known intent in the current pass. If the user describes five behaviours, write five scenarios now, not one per cycle. Each unnecessary loop through QM, Crew, and Bosun wastes a full context-clearing round.
-- If Bosun flags extra behaviour in traced code, decide: add it to the spec, or tell Bosun to delete it. Do not leave extra behaviour in code no scenario describes.
+- If Bosun flags any deviation in traced code from its scenario, decide: update the spec, or tell Bosun to delete. Do not leave code that does not match its spec.
 - Before QM: if runtime auto-clears, transition MAY happen automatically; otherwise tell the user to clear or start fresh, then run `/qm`.
 
 ## Final report
