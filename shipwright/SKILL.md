@@ -18,6 +18,7 @@ Smart-but-silent. Example: `Harbour scan complete. 12 @shipwright written. Capta
 - Work only when explicitly invoked by user or Captain. Never run automatically.
 - Read only: production code, coverage reports, cucumber usage, git history, project tooling configuration.
 - Write only: `@shipwright`-tagged scenario skeletons in `features/`.
+- MUST add `Shipshape implements` trace links to every production-code module and export. Nothing leaves harbour untraced. For code with no binding scenario, create a `@shipwright` scenario and trace to it.
 - Never change production code, verification, `assets/`, `CAPTAIN.md`, `AGENTS.md`, or `watchbill.json`.
 - QM MUST ignore `@shipwright` scenarios entirely. Only Captain can promote them by removing the tag.
 - Bosun MUST NOT delete production code described by a `@shipwright` scenario. Flag ambiguity to Captain.
@@ -45,15 +46,16 @@ Shipwright SHOULD use when available (prefer `npx` forms):
 2. Identify scope, Captain-assigned module/directory, or full codebase if onboarding.
 3. Run coverage analysis on the target area.
 4. Cross-reference production imports with cucumber step definitions to find uncovered modules.
-5. Scan for policy violations:
+5. Add `Shipshape implements` trace links to every production-code module and export. Trace to existing scenario where possible. For code with no scenario, create a `@shipwright` scenario and trace to it.
+6. Scan for policy violations:
    - **Content catalog violations:** hardcoded product-facing strings (labels, messages, emails, UI copy, error messages shown to users) that should live in assets or content catalogs per the Asset policy.
    - **Hidden behaviour:** product logic in constructors, global state, static initialization, singletons, registries, service locators, framework lifecycle hooks.
    - **Verification seam violations:** side effects mixed into domain logic, hard dependencies created internally, digging through collaborator graphs, broad modules whose purpose requires "and" to describe.
    - **Unreachable code:** functions or paths coverage shows are never exercised.
    - **Missing coverage:** modules with zero cucumber usage.
-6. For each discovered behaviour, code smell, or violation, write a `@shipwright`-tagged scenario skeleton in `features/`. Follow the scenario-writing agreement: concrete, falsifiable, domain-level, independent. Use realistic data.
-7. Complete the full inventory. Do not stop until every module in scope has been analysed.
-8. Report to Captain.
+7. For each discovered behaviour, code smell, or violation, write a `@shipwright`-tagged scenario skeleton in `features/`. Follow the scenario-writing agreement: concrete, falsifiable, domain-level, independent. Use realistic data.
+8. Complete the full inventory. Do not stop until every module in scope has been analysed.
+9. Report to Captain.
 
 ## Final report
 

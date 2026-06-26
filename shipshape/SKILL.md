@@ -40,7 +40,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain→QM boundary is a violation.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
 4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour; Shipwright writes `@shipwright`-tagged scenario skeletons in `features/` only.
-5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous.
+5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. Production code with no trace link to any scenario is dead and MUST be removed.
 6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY (extracting helpers, creating interfaces, adding abstraction before the scenario demands it) and YAGNI violations (parameters, options, config, hooks, extension points for imagined futures) are forbidden.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
 8. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline (for example `@exceptional-double`). It MUST never replace normal-path real coverage.
@@ -209,7 +209,7 @@ Captain handles outbound decisions (push, PR, publish, release, deploy). Outboun
 
 ### Traceability policy
 
-Trace links explain why implementation and support artifacts exist. They MUST NOT define product intent, create worklists, or replace verification discovery. Worklists still come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
+Trace links explain why implementation and support artifacts exist. They MUST NOT define product intent, create worklists, or replace verification discovery. Every production-code module and export MUST trace to at least one scenario via `Shipshape implements`. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
 
 Use canonical scenario references in `<spec>.feature:<Scenario Name>` form, the same form used by `watchbill.json`.
 
@@ -226,7 +226,7 @@ Use language-appropriate comments or metadata near the linked artifact:
 - `Shipshape supports: <spec>.feature:<Scenario Name>`, helper, fixture, harness adapter, generated file, or asset supports scenario behaviour.
 - `Shipshape verifies: <spec>.feature:<Scenario Name>`, optional; use only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
 
-Do not trace ordinary plumbing, every branch, or reusable step definitions whose Gherkin binding is already clear. Add trace links at behaviour-bearing seams and support artifacts where they make deletion, coverage, or ownership clearer. Enforcing runtimes MAY later make these rules mechanical.
+Do not trace every branch or reusable step definitions whose Gherkin binding is already clear. Trace every module and export at a behaviour-bearing seam where they make deletion, coverage, or ownership clearer. Enforcing runtimes MAY later make these rules mechanical.
 
 ### Coverage report convention
 

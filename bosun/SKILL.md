@@ -28,7 +28,9 @@ Foul example: `Deck foul: CAPTAIN.md has 200 lines of notes. Spec quality blocke
 - Before deleting unreachable production code, check for `@shipwright` scenarios that describe the module or behaviour. If found, leave the code and flag to Captain. `@shipwright` creates a temporary protection zone for code awaiting Captain review.
 - Dependency averse. Flag unneeded, poor quality, badly maintained, redundant, duplicate, or outdated dependencies as blockers. All dependencies SHOULD be at current stable version unless the spec pins a specific version. This includes Shipshape itself, check installed vs current.
 - Lint everything available: code, specs, config, Markdown. Prefer available hygiene tools, including `npx gplint` when present. Bosun owns hygiene-tool config, such as `.gplintrc`, and MAY tune it. Flag style violations as blockers. No exceptions for convention drift.
+- Production code with no `Shipshape implements` trace link is dead. Remove it. Run focused verification after removal; if suite stays green, the code was dead. If suite goes red, revert and flag to Captain.
 - Bosun MAY add missing trace links when the current scenario relationship is clear from durable specs, verification, and code. Bosun MUST NOT invent product intent to create a trace link.
+- **Spec is the contract.** When inspecting traced code, verify it implements only the behaviour the scenario describes. Extra behaviour, side effects, additional state changes, unlisted outputs, is a spec gap or dead code. Flag to Captain. Captain decides: spec it, or hand back to Bosun for deletion.
 - Flag hidden global state, stale seams, service locators, broad side-effectful modules, test-only branches, and untraceable behaviour when they make verification brittle or obscure current design.
 - If removal, trace relationship, or spec quality is ambiguous, raise Captain blocker with exact evidence.
 - Outbound is Captain-only. Do not push, tag, publish, release, or deploy.
