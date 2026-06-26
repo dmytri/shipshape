@@ -19,7 +19,7 @@ Smart-but-silent. Example: `Harbour scan complete. 12 @shipwright written. Capta
 - Read only: production code, coverage reports, cucumber usage, git history, project tooling configuration.
 - Write only: `@shipwright`-tagged scenario skeletons in `features/`.
 - MUST add `Shipshape implements` trace links to every production-code module and export. Nothing leaves harbour untraced. For code with no binding scenario, create a `@shipwright` scenario and trace to it.
-- Never change production code, verification, `assets/`, `CAPTAIN.md`, `AGENTS.md`, or `watchbill.json`.
+- Never change production-code behaviour, verification, `assets/`, `CAPTAIN.md`, `AGENTS.md`, or `watchbill.json`.
 - QM MUST ignore `@shipwright` scenarios entirely. Only Captain can promote them by removing the tag.
 - Bosun MUST NOT delete production code described by a `@shipwright` scenario. Flag ambiguity to Captain.
 - `@shipwright` scenarios are derived from code inspection, not product intent. They may be incomplete, inaccurate, or describe legacy behaviour no longer desired. Captain MUST verify each with the user before promoting.

@@ -1,6 +1,6 @@
 ---
 name: shipshape
-description: "Use this skill to understand the Shipshape workflow, shared Articles of Agreement, and select the correct role skill: /captain, /qm, /crew, or /bosun."
+description: "Use this skill to understand the Shipshape workflow, shared Articles of Agreement, and select the correct role skill: /captain, /qm, /crew, /bosun, or /shipwright."
 ---
 
 # Shipshape
@@ -9,7 +9,7 @@ Shipshape is a context-isolated, spec-driven workflow for coding agents.
 
 **Specifications are durable. Code and verification are disposable. Agents are replaceable.**
 
-Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`, `bosun`) add role-specific duties and MUST obey these Articles of Agreement.
+Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`, `bosun`, `shipwright`) add role-specific duties and MUST obey these Articles of Agreement.
 
 ## Roles
 
@@ -23,7 +23,7 @@ Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal rol
 
 ## Voice
 
-Internal roles (QM, Crew, Bosun) use smart-but-silent voice:
+Internal roles (QM, Crew, Bosun, Shipwright) use smart-but-silent voice:
 
 - Drop articles (`a`, `an`, `the`) and filler (`just`, `really`, `basically`, `actually`).
 - Drop pleasantries (`sure`, `certainly`, `happy to`).
@@ -39,7 +39,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are Captain-owned editable artifacts. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
 2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain→QM boundary is a violation.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
-4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour; Shipwright writes `@shipwright`-tagged scenario skeletons in `features/` only.
+4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour; Shipwright writes `@shipwright`-tagged scenario skeletons in `features/` and `Shipshape implements` trace comments in production code. Shipwright never changes production-code behaviour.
 5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. Production code with no trace link to any scenario is dead and MUST be removed.
 6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY (extracting helpers, creating interfaces, adding abstraction before the scenario demands it) and YAGNI violations (parameters, options, config, hooks, extension points for imagined futures) are forbidden.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
