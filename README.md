@@ -268,7 +268,7 @@ Rules:
 
 ## Harbour mode
 
-When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour  --  Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@shipwright`-tagged scenario skeletons. Captain reviews each with the user before promoting to binding specs. QM ignores `@shipwright` until Captain promotes.
+When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@shipwright`-tagged scenario skeletons. Captain reviews each with the user before promoting to binding specs. QM ignores `@shipwright` until Captain promotes.
 
 ```mermaid
 sequenceDiagram

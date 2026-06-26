@@ -13,11 +13,11 @@ Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`,
 
 ## Roles
 
-- `/captain`  --  human-facing discovery, durable specs/assets, Captain-only notes, blocker resolution, outbound decisions.
-- `/qm`  --  fresh-context verification and executable coverage from durable artifacts only.
-- `/crew`  --  the smallest production change for one failing target.
-- `/bosun`  --  hygiene, verification recheck, and local commit custody.
-- `/shipwright`  --  in-harbour code archaeology; discovers existing behaviour and policy violations from production code, writes `@shipwright`-tagged scenario skeletons for Captain review.
+- `/captain`, human-facing discovery, durable specs/assets, Captain-only notes, blocker resolution, outbound decisions.
+- `/qm`, fresh-context verification and executable coverage from durable artifacts only.
+- `/crew`, the smallest production change for one failing target.
+- `/bosun`, hygiene, verification recheck, and local commit custody.
+- `/shipwright`, in-harbour code archaeology; discovers existing behaviour and policy violations from production code, writes `@shipwright`-tagged scenario skeletons for Captain review.
 
 Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles; they report through durable artifacts, verification output, and role hand-offs.
 
@@ -49,9 +49,9 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 11. **Three layers.** Specs and assets are durable artifacts. Production code is disposable from specs. Verification/harness is also disposable from specs and has its own conformance obligations.
 12. **Directed work uses `watchbill.json`.** Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused, save time, or save tokens. It selects and orders a subset of verification-discoverable scenario work. It contains only ordered watch objects (`watch1`, `watch2`, etc.); each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form. `watchbill.json` is scenario-level only. No prose, metadata, work-type enums, or hidden context. `watchbill.json` does not create work that verification cannot discover. Watch objects are ordering groups only. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. Captain MAY update or remove `watchbill.json`.
 13. **Use they/them pronouns** for all roles and agents.
-14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard (ASCII hyphen, double-hyphen for dash; no em dashes, smart quotes, or other non-ASCII punctuation).
+14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard (comma, semicolon, colon, or parentheses for dashes; no em dashes, smart quotes, or other non-ASCII punctuation).
 15. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, or harness-only behaviour.
-16. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Shipwright completes the full harbour inventory before reporting to Captain. QM finishes the current watch before stopping. Crew finishes the assigned target or reports a real blocker. Bosun finishes hygiene and verification recheck. Reserve a stop for an actual blocker  --  missing tool, contradictory spec, absent credential  --  and name it plainly, never a manufactured safety rationale.
+16. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Shipwright completes the full harbour inventory before reporting to Captain. QM finishes the current watch before stopping. Crew finishes the assigned target or reports a real blocker. Bosun finishes hygiene and verification recheck. Reserve a stop for an actual blocker, missing tool, contradictory spec, absent credential, and name it plainly, never a manufactured safety rationale.
 
 ## Scenario-writing agreement
 
@@ -107,7 +107,7 @@ If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product in
 
 ### Harbour flow
 
-Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code only and produces non-binding `@shipwright` scenario skeletons. Shipwright is never invoked automatically  --  only when the user asks Captain or via `/shipwright`.
+Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code only and produces non-binding `@shipwright` scenario skeletons. Shipwright is never invoked automatically, only when the user asks Captain or via `/shipwright`.
 
 ```text
 Captain → clear context → Shipwright → Captain (review, promote/discard)
@@ -136,7 +136,7 @@ A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling con
 - tier tags with tier definitions and service credentials or sandbox policy;
 - optional `watchbill.json` location for selected ordered verification-discoverable work;
 - known false-failure modes and how to confirm or dismiss them before routing a product defect (e.g., harness timing races, stale environment references, registry propagation delays);
-- release/distribution artifact verification commands or policy (e.g., verify published npm package, Docker image, deploy artifact  --  not only local source);
+- release/distribution artifact verification commands or policy (e.g., verify published npm package, Docker image, deploy artifact, not only local source);
 - optional sandbox provisioning policy: when safe sandbox provisioning is available, project tooling SHOULD derive or create missing disposable test resources instead of skipping; provisioned resources MUST follow harmless-by-design rules (namespace, teardown, never touch resources the run did not create);
 - shipwright discovery commands: coverage collection and report (`npx c8 npx cucumber-js`), cucumber usage report, static analysis tools (grep, AST inspection), content-catalog violation detection.
 
@@ -222,9 +222,9 @@ Step-level trace detail SHOULD be added when it makes deletion, ownership, or be
 
 Use language-appropriate comments or metadata near the linked artifact:
 
-- `Shipshape implements: <spec>.feature:<Scenario Name>`  --  production code exists for scenario behaviour.
-- `Shipshape supports: <spec>.feature:<Scenario Name>`  --  helper, fixture, harness adapter, generated file, or asset supports scenario behaviour.
-- `Shipshape verifies: <spec>.feature:<Scenario Name>`  --  optional; use only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
+- `Shipshape implements: <spec>.feature:<Scenario Name>`, production code exists for scenario behaviour.
+- `Shipshape supports: <spec>.feature:<Scenario Name>`, helper, fixture, harness adapter, generated file, or asset supports scenario behaviour.
+- `Shipshape verifies: <spec>.feature:<Scenario Name>`, optional; use only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
 
 Do not trace ordinary plumbing, every branch, or reusable step definitions whose Gherkin binding is already clear. Add trace links at behaviour-bearing seams and support artifacts where they make deletion, coverage, or ownership clearer. Enforcing runtimes MAY later make these rules mechanical.
 
@@ -272,18 +272,18 @@ Create `CAPTAIN.md` at project root if Captain wants non-binding notes:
 ```markdown
 <!-- ============================================================= -->
 <!-- STOP. CAPTAIN ROLE ONLY.                                      -->
-<!-- If you are NOT running as the Captain  --  i.e. you are the      -->
-<!-- Quartermaster, Crew Mate, Bosun, or any other role  --  do NOT   -->
+<!-- If you are NOT running as the Captain, i.e. you are the      -->
+<!-- Quartermaster, Crew Mate, Bosun, or any other role, do NOT   -->
 <!-- read past this line. Close this file now. Its contents are    -->
 <!-- Captain-only working context and must never enter another     -->
 <!-- role's context. You were not given this file by your role.    -->
 <!-- ============================================================= -->
 
-> **STOP  --  CAPTAIN ROLE ONLY.** If you are not the Captain, close this file now. Binding behaviour lives in `.feature` specs and referenced `assets/**`, never here.
+> **STOP, CAPTAIN ROLE ONLY.** If you are not the Captain, close this file now. Binding behaviour lives in `.feature` specs and referenced `assets/**`, never here.
 
-# Captain Notes  --  Captain only, non-binding
+# Captain Notes, Captain only, non-binding
 
-Captain-only working memory. Binding behaviour lives in `.feature` specs and referenced `assets/**`; history lives in git. These notes carry only what the next cycle needs  --  current design pointers, in-flight work, and watch items.
+Captain-only working memory. Binding behaviour lives in `.feature` specs and referenced `assets/**`; history lives in git. These notes carry only what the next cycle needs, current design pointers, in-flight work, and watch items.
 
 ## Access rule
 
