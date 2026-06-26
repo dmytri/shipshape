@@ -17,7 +17,7 @@ Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`,
 - `/qm`, fresh-context verification and executable coverage from durable artifacts only.
 - `/crew`, the smallest production change for one failing target.
 - `/bosun`, hygiene, verification recheck, and local commit custody.
-- `/shipwright`, in-harbour code archaeology; discovers existing behaviour and policy violations from production code, writes `@shipwright`-tagged scenario skeletons for Captain review.
+- `/shipwright`, in-harbour code archaeology; discovers existing behaviour and policy violations from production code, adds trace links, writes `@shipwright`-tagged scenario skeletons for Captain review.
 
 Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles; they report through durable artifacts, verification output, and role hand-offs.
 
