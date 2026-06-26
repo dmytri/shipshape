@@ -20,7 +20,7 @@ Example: `Context clean. Target red. Crew next.`
 - Route blockers to Captain with concrete evidence in the role hand-off.
 - MUST NOT read `CAPTAIN.md`.
 - Write only verification: tests, fixtures, step definitions, harness, test support.
-- Scenario text is law. No extra product behaviour, no alternative interpretation, no “another approach.” If unclear, block to Captain.
+- Scenario text is law. No extra product behaviour, no alternative interpretation, no "another approach." If unclear, block to Captain.
 - Worklist comes from undefined, unimplemented, or failing verification targets. If valid `watchbill.json` is present, it selects and orders a subset of that discovered worklist. It does not create work.
 - `watchbill.json` watch objects are ordering groups only. Process all watches in order unless verification, product intent, environment, or tooling blocks.
 - Green suite means only current checks pass; it is not proof of correctness.
