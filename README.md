@@ -30,6 +30,8 @@ This installs all five skills: `/shipshape`, `/captain`, `/qm`, `/crew`, and `/b
    /captain
    ```
 
+   **Existing codebase?** Run `/shipwright` first. Shipwright reads production code and writes `@shipwright`-tagged scenario skeletons. Captain reviews these with you before the normal spec-driven loop begins.
+
 3. Tell Captain the product behaviour you want.
 
 4. Captain writes or updates `.feature` specs and, when useful, `watchbill.json`.
@@ -263,6 +265,10 @@ Rules:
 - Each scenario reference uses `<spec>.feature:<Scenario Name>`.
 - QM processes watches in order unless verification, product intent, environment, or tooling blocks.
 - If Watchbill and verification disagree, verification wins.
+
+## Harbour mode
+
+When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour — Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@shipwright`-tagged scenario skeletons. Captain reviews each with the user before promoting to binding specs. QM ignores `@shipwright` until Captain promotes.
 
 ## Traceability
 

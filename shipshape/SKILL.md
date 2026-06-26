@@ -17,8 +17,9 @@ Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`,
 - `/qm` — fresh-context verification and executable coverage from durable artifacts only.
 - `/crew` — the smallest production change for one failing target.
 - `/bosun` — hygiene, verification recheck, and local commit custody.
+- `/shipwright` — in-harbour code archaeology; discovers existing behaviour and policy violations from production code, writes `@shipwright`-tagged scenario skeletons for Captain review.
 
-Only Captain talks to the user. QM, Crew, and Bosun are internal roles; they report through durable artifacts, verification output, and role hand-offs.
+Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles; they report through durable artifacts, verification output, and role hand-offs.
 
 ## Voice
 
@@ -38,7 +39,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are Captain-owned editable artifacts. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
 2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain→QM boundary is a violation.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
-4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour.
+4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour; Shipwright writes `@shipwright`-tagged scenario skeletons in `features/` only.
 5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous.
 6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY (extracting helpers, creating interfaces, adding abstraction before the scenario demands it) and YAGNI violations (parameters, options, config, hooks, extension points for imagined futures) are forbidden.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
@@ -50,6 +51,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 13. **Use they/them pronouns** for all roles and agents.
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
 15. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, or harness-only behaviour.
+16. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Shipwright completes the full harbour inventory before reporting to Captain. QM finishes the current watch before stopping. Crew finishes the assigned target or reports a real blocker. Bosun finishes hygiene and verification recheck. Reserve a stop for an actual blocker — missing tool, contradictory spec, absent credential — and name it plainly, never a manufactured safety rationale.
 
 ## Scenario-writing agreement
 
@@ -84,7 +86,17 @@ Captain -- clear/start fresh or runtime auto-clear --> QM
 QM -> Bosun (pre-clean) -> QM <-> Crew -> QM -> Bosun (post-clean) -> Captain
 ```
 
-If QM, Crew, or Bosun encounters missing or contradictory product intent, route to Captain with concrete blocker evidence in the role hand-off. After Captain resolves product or specification intent, auto-clear or clear/start fresh before QM.
+If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product intent, route to Captain with concrete blocker evidence in the role hand-off. After Captain resolves product or specification intent, auto-clear or clear/start fresh before QM.
+
+### Harbour flow
+
+Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code only and produces non-binding `@shipwright` scenario skeletons. Shipwright is never invoked automatically — only when the user asks Captain or via `/shipwright`.
+
+```text
+Captain → clear context → Shipwright → Captain (review, promote/discard)
+```
+
+After Captain promotes `@shipwright` scenarios to binding specs, normal flow resumes.
 
 ## Project configuration
 
@@ -96,7 +108,8 @@ A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling con
 - optional `watchbill.json` location for selected ordered verification-discoverable work;
 - known false-failure modes and how to confirm or dismiss them before routing a product defect (e.g., harness timing races, stale environment references, registry propagation delays);
 - release/distribution artifact verification commands or policy (e.g., verify published npm package, Docker image, deploy artifact — not only local source);
-- optional sandbox provisioning policy: when safe sandbox provisioning is available, project tooling SHOULD derive or create missing disposable test resources instead of skipping; provisioned resources MUST follow harmless-by-design rules (namespace, teardown, never touch resources the run did not create).
+- optional sandbox provisioning policy: when safe sandbox provisioning is available, project tooling SHOULD derive or create missing disposable test resources instead of skipping; provisioned resources MUST follow harmless-by-design rules (namespace, teardown, never touch resources the run did not create);
+- shipwright discovery commands: coverage collection and report (`npx c8 npx cucumber-js`), cucumber usage report, static analysis tools (grep, AST inspection), content-catalog violation detection.
 
 ## Project policies
 

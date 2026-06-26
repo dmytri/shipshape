@@ -5,7 +5,14 @@
         {
             "title": "Agent Workflows",
             "description": "Context-isolated spec-driven development workflows for coding agents.",
-            "skills": ["shipshape", "captain", "qm", "crew", "bosun"]
+            "skills": [
+                "shipshape",
+                "captain",
+                "qm",
+                "crew",
+                "bosun",
+                "shipwright"
+            ]
         }
     ]
 }

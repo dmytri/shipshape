@@ -33,6 +33,7 @@ Example: `Context clean. Target red. Crew next.`
 - If production code hides scenario behaviour behind global state, constructors, static initialization, service locators, or tangled side effects, QM reports a Crew target or Captain blocker with evidence.
 - Before treating a verification failure as a product defect, rule out the project's known false-failure modes (harness timing races, stale environment references, registry/CDN propagation delays). If a failure is a known false-failure mode, rerun or re-probe; do not dispatch Crew.
 - QM MAY dispatch multiple Crew agents only for independent verification targets whose expected production changes do not require shared mutable state.
+- Ignore `@shipwright`-tagged scenarios. They are non-binding until Captain promotes them. Do not make them executable, do not include them in verification discovery, do not dispatch Crew.
 
 ## Context firewall
 
