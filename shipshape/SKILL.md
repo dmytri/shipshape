@@ -104,7 +104,7 @@ If QM, Crew, or Bosun encounters missing or contradictory product intent, they r
 
 ### Asset policy
 
-`assets/**` are Captain-owned editable artifacts: content, media, examples, fixtures, screenshots, pages, copy, or other materials. Some assets may ship as product material, and some may support verification. Assets are not an instruction layer or a second specification surface. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
+`assets/**` are Captain-owned editable artifacts: content, media, examples, fixtures, screenshots, pages, copy, or other materials. Some assets may ship as product material, and some may support verification. Product-facing content SHOULD live in Captain-owned assets or project-approved content catalogs, not hidden in production code. Projects MAY use tools such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Code MAY render catalog entries; Captain owns content changes. Assets are not an instruction layer or a second specification surface. If asset content or exact catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
 
 ### Artifact authority policy
 
