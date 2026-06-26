@@ -30,7 +30,7 @@ This installs all five skills: `/shipshape`, `/captain`, `/qm`, `/crew`, and `/b
    /captain
    ```
 
-   **Existing codebase?** Run `/shipwright` first. Shipwright reads production code and writes `@shipwright`-tagged scenario skeletons. Captain reviews these with you before the normal spec-driven loop begins.
+   **Existing codebase?** Run `/shipwright` first. It is thorough and slow, but required: every module is traced, every uncovered behaviour inventoried. Captain reviews the results with you before the normal spec-driven loop begins.
 
 3. Tell Captain the product behaviour you want.
 
@@ -269,6 +269,8 @@ Rules:
 ## Harbour mode
 
 When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@shipwright`-tagged scenario skeletons. Captain reviews each with the user before promoting to binding specs. QM ignores `@shipwright` until Captain promotes.
+
+On an existing codebase, this is a long and painful process. Every module is traced, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is fully traced to scenarios and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
 
 ```mermaid
 sequenceDiagram
