@@ -58,9 +58,9 @@ Called after verification passes. Full hygiene, verification recheck, stage inte
 - Touched `.feature` files: concrete, executable, current, not padded. Do not let Captain pass weak, vague, stale, or non-falsifiable specs.
 - Orphaned step definitions, tests, fixtures, support files, helpers, snapshots, generated files, stale docs, and obsolete config.
 - Stale changed-file-adjacent artifacts that carry old requirements or unnecessary maintenance burden.
-- Unreachable production code or stale implementation no current scenario/test exercises. Remove when clear; block when ambiguous.
 - Trace links use valid `<spec>.feature:<Scenario Name>` references and do not point to missing, renamed, or deleted scenarios.
-- `Shipshape implements:` comments appear only at behaviour-bearing seams. Add missing links when clear; remove stale trace comments and related stale artifacts when safe.
+- `Shipshape implements:` comments at every module and export. Add missing links when clear; remove stale trace comments and related stale artifacts when safe.
+- Verify traced code implements exactly the behaviour its scenario describes. Any deviation is a spec gap or dead code. Flag to Captain.
 - `Shipshape supports:` links explain helpers, fixtures, harness adapters, generated files, and assets whose purpose is not obvious from current specs.
 - `Shipshape verifies:` links are optional and only for unclear test-to-scenario mappings; do not require them for reusable step definitions whose Gherkin binding is clear.
 - If QM dispatched parallel Crew agents, reconcile their changes before final verification.
