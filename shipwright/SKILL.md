@@ -44,7 +44,7 @@ Shipwright SHOULD use when available (prefer `npx` forms):
 
 1. Load `shipshape` skill. Read `AGENTS.md` for project tooling configuration.
 2. Identify scope, Captain-assigned module/directory, or full codebase if onboarding.
-3. Run coverage analysis on the target area.
+3. Run coverage analysis. If `npx c8` is available, use per-file and per-line output to prioritize: 100%-covered files with no trace comments need only backfill, partially-covered files need backfill plus `@shipwright` gaps, 0%-covered files need full `@shipwright` scenarios.
 4. Cross-reference production imports with cucumber step definitions to find uncovered modules.
 5. Add `Shipshape implements` trace links to every production-code module and export. Trace to existing scenario where possible. For code with no scenario, create a `@shipwright` scenario and trace to it. For code with trace links pointing to deleted or renamed scenarios, correct the link if the scenario still exists under a new name, or create a `@shipwright` scenario and retrace if the original scenario is gone.
 6. Scan for policy violations:
