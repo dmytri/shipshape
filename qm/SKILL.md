@@ -24,8 +24,8 @@ Example: `Context clean. Target red. Crew next.`
 - Worklist comes from undefined, unimplemented, or failing verification targets. If valid `watchbill.json` is present, it selects and orders a subset of that discovered worklist. It does not create work.
 - `watchbill.json` watch objects are ordering groups only. Process all watches in order unless verification, product intent, environment, or tooling blocks.
 - Green suite means only current checks pass; it is not proof of correctness.
-- Add `Shipshape supports: <spec>.feature:<Scenario Name>` links to fixtures, helpers, harness adapters, and test support when their purpose is not obvious from Gherkin step text or file names.
-- Add `Shipshape verifies: <spec>.feature:<Scenario Name>` only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
+- Map current Gherkin step text to step definitions. Do not require every step to have Planks; setup and assertion steps often use only verification support.
+- Report missing or stale `@planks(...)` annotations when verification exposes a production seam relationship clearly.
 - Design verification targets to be independently runnable, Watchbill-selectable, cacheable where safe, and parallelizable where project tooling supports it. Reports MUST distinguish fresh results from cache-backed results.
 - Prefer discovery, Watchbill-selected runs, and focused target runs. If valid `watchbill.json` is present, do not run a raw full tier verify as the QM inner loop. Run targeted verification for the scenarios in the current watch.
 - QM SHOULD verify observable behaviour through real paths and public behaviour seams.
@@ -33,7 +33,7 @@ Example: `Context clean. Target red. Crew next.`
 - If production code hides scenario behaviour behind global state, constructors, static initialization, service locators, or tangled side effects, QM reports a Crew target or Captain blocker with evidence.
 - Before treating a verification failure as a product defect, rule out the project's known false-failure modes (harness timing races, stale environment references, registry/CDN propagation delays). If a failure is a known false-failure mode, rerun or re-probe; do not dispatch Crew.
 - QM MAY dispatch multiple Crew agents only for independent verification targets whose expected production changes do not require shared mutable state.
-- Ignore `@shipwright`-tagged scenarios. They are non-binding until Captain promotes them. Do not make them executable, do not include them in verification discovery, do not dispatch Crew.
+- Ignore `@captain`-tagged scenarios. They are non-binding until Captain promotes them. Do not make them executable, do not include them in verification discovery, do not dispatch Crew.
 
 ## Context firewall
 
@@ -60,7 +60,7 @@ Use only:
 3. Check deck status. If dirty without Bosun clean report, stop: `Deck foul. Need Bosun.`
 4. Load Bosun for pre-clean scan when needed.
 5. Validate `watchbill.json` fixed shape if present: only `watch1`, `watch2`, etc.; each watch contains only `scenarios`; each scenario reference is `<spec>.feature:<Scenario Name>`. Reject malformed or free-form context.
-6. Run verification discovery or the smallest project command that identifies undefined, unimplemented, or failing targets.
+6. Run verification discovery or the smallest project command that identifies undefined, unimplemented, or failing targets. ALL verification commands MUST exclude `@captain`-tagged scenarios (e.g. `--tags "not @captain"`).
 7. If valid `watchbill.json` is present, intersect discovered targets with listed scenarios and preserve watch order. Treat listed green scenarios as complete. Block if a listed scenario is absent from durable specs or cannot be matched to verification.
 8. For each watch, run targeted verification for only the scenarios in that watch when project tooling supports scenario selection. Do not run raw full tier verify for Watchbill inner-loop work.
 9. Make one target executable exactly as written.

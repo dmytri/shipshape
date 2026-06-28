@@ -17,7 +17,7 @@ Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`,
 - `/qm`, fresh-context verification and executable coverage from durable artifacts only.
 - `/crew`, the smallest production change for one failing target.
 - `/bosun`, hygiene, verification recheck, and local commit custody.
-- `/shipwright`, in-harbour code archaeology; discovers existing behaviour and policy violations from production code, adds trace links, writes `@shipwright`-tagged scenario skeletons for Captain review.
+- `/shipwright`, in-harbour code archaeology; discovers existing behaviour and policy violations from production code, adds `@planks(...)` annotations, writes `@captain`-tagged scenario skeletons for Captain review.
 
 Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles; they report through durable artifacts, verification output, and role hand-offs.
 
@@ -37,10 +37,10 @@ Internal roles (QM, Crew, Bosun, Shipwright) use smart-but-silent voice:
 These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline.
 
 1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are Captain-owned editable artifacts. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent.
-2. **Context firewall.** Captain → QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain→QM boundary is a violation.
+2. **Context firewall.** Captain to QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain to QM boundary is a violation.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
-4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour; Shipwright writes `@shipwright`-tagged scenario skeletons in `features/` and `Shipshape implements` trace comments in production code. Shipwright never changes production-code behaviour.
-5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. Production code with no trace link to any scenario is dead and MUST be removed.
+4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Bosun writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons in `features/` and `@planks(...)` trace annotations on production seams. Shipwright never changes production-code behaviour.
+5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. Production seams with no `@planks(...)` link to any Gherkin step are dead and MUST be flagged for removal. Shipwright removes flagged code during harbour. Bosun limits hygiene to the current watchbill scope, verification dry-run output, and uncommitted changes. Bosun does not sweep the entire codebase. Bosun flags dead production code but does not delete it.
 6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY (extracting helpers, creating interfaces, adding abstraction before the scenario demands it) and YAGNI violations (parameters, options, config, hooks, extension points for imagined futures) are forbidden.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
 8. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline (for example `@exceptional-double`). It MUST never replace normal-path real coverage.
@@ -52,7 +52,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 14. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use a light nautical tone only in headings, greetings, and role names; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard; no em dashes, smart quotes, or other non-ASCII punctuation; avoid parenthetical asides. If a sentence needs a dash, comma-pair, or parenthetical break, rewrite it as two sentences.
 15. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, or harness-only behaviour.
 16. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles. Do not pause to ask whether to continue when the next step is obvious. Captain batches all known work into the current pass. Shipwright completes the full harbour inventory. QM finishes the current watch. Crew finishes the assigned target or reports a real blocker. Bosun finishes hygiene and verification recheck. Reserve a stop for an actual blocker, missing tool, contradictory spec, absent credential, and name it plainly.
-17. **Every line of production code traces to a scenario.** No production code exists without a `Shipshape implements` link to a current scenario. Untraced code is dead and MUST be removed. Shipwright traces existing code during harbour. Crew traces changed code. Bosun removes untraced code. Trace links that point to deleted or renamed scenarios are stale and MUST be corrected or the code removed.
+17. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour with `@planks("<Gherkin step>")`. Not every step requires Planks, but every production seam MUST have at least one `@planks(...)` annotation. A seam MUST NOT contain behaviour outside its related step contracts. Extra behaviour is missing specification, misplaced code, or dead code.
 
 ## Scenario-writing agreement
 
@@ -63,7 +63,7 @@ Follow this scenario-writing agreement. Shipshape uses specification by example:
 - Every scenario describes one real, falsifiable behaviour needed by the current iteration. Keep titles single-line, behaviour-focused, and specific.
 - Each scenario is independent; no scenario depends on another scenario running first.
 - Write at the domain or product level. Do not specify UI, API, database, navigation, or harness plumbing unless that layer is the behaviour under test.
-- `Given` is concrete starting state, `When` is one named action or input, and `Then` is an observable assertion. Use strict `Given` → `When` → `Then` order with no repeated phases.
+- `Given` is concrete starting state, `When` is one named action or input, and `Then` is an observable assertion. Use strict `Given`, `When`, `Then` order with no repeated phases.
 - Use `And` and `But` sparingly for same-phase continuation. Do not use `Or`.
 - Use minimal sufficient `Given` state. Use `Background` only for shared starting state, not incidental setup.
 - Assert outcomes, not mechanisms, unless the mechanism itself is the contract under test. Prefer state over navigation.
@@ -94,7 +94,7 @@ sequenceDiagram
     Note over Captain,QM: Context clears
     QM->>QM: Run verification discovery
     QM->>Bosun: Pre-clean scan
-    Bosun->>QM: Stale artifacts removed
+    Bosun->>QM: Stale artifacts flagged
     QM->>Crew: Dispatch failing target
     Crew->>Crew: Smallest production change
     Crew->>QM: Target pass
@@ -107,10 +107,10 @@ If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product in
 
 ### Harbour flow
 
-Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code, adds trace links, and produces non-binding `@shipwright` scenario skeletons. Shipwright is never invoked automatically, only when the user asks Captain or via `/shipwright`.
+Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code, adds `@planks(...)` annotations, and produces non-binding `@captain` scenario skeletons. Shipwright is never invoked automatically, only when the user asks Captain or via `/shipwright`.
 
 ```text
-Captain → clear context → Shipwright → Captain (review, promote/discard)
+Captain to clear context to Shipwright to Captain review, promote, or discard
 ```
 
 ```mermaid
@@ -120,25 +120,25 @@ sequenceDiagram
     participant Captain
 
     User->>Shipwright: /shipwright, scan this codebase
-    Shipwright->>Shipwright: Run c8, scan for violations
-    Shipwright->>Captain: @shipwright scenarios written
+    Shipwright->>Shipwright: Run coverage, scan for violations
+    Shipwright->>Captain: @captain scenarios written
     Captain->>User: Review each scenario, promote/discard
 ```
 
-After Captain promotes `@shipwright` scenarios to binding specs, normal flow resumes.
+After Captain promotes `@captain` scenarios to binding specs, normal flow resumes.
 
 ## Project configuration
 
 A Shipshape project SHOULD define these in `AGENTS.md` or equivalent tooling configuration:
 
 - spec, implementation, verification, and asset directories;
-- verification discovery command, focused target command, Watchbill-selected command if available, and broader test/typecheck/lint commands;
+- verification discovery command, focused target command, Watchbill-selected command if available, and broader test/typecheck/lint commands; ALL verification commands MUST exclude `@captain`-tagged scenarios (e.g. `--tags "not @captain"` for Cucumber runners);
 - tier tags with tier definitions and service credentials or sandbox policy;
 - optional `watchbill.json` location for selected ordered verification-discoverable work;
 - known false-failure modes and how to confirm or dismiss them before routing a product defect (e.g., harness timing races, stale environment references, registry propagation delays);
 - release/distribution artifact verification commands or policy (e.g., verify published npm package, Docker image, deploy artifact, not only local source);
 - optional sandbox provisioning policy: when safe sandbox provisioning is available, project tooling SHOULD derive or create missing disposable test resources instead of skipping; provisioned resources MUST follow harmless-by-design rules (namespace, teardown, never touch resources the run did not create);
-- shipwright discovery commands: coverage collection and report (`npx c8 npx cucumber-js`), cucumber usage report, static analysis tools (grep, AST inspection), content-catalog violation detection.
+- shipwright discovery commands: coverage collection and report (example for Node.js: `npx c8 npx cucumber-js`; projects substitute their own runner), cucumber usage report, static analysis tools (grep, AST inspection), content-catalog violation detection. Shipwright MUST also exclude `@captain`-tagged scenarios from verification runs during harbour.
 
 ## Project policies
 
@@ -166,6 +166,8 @@ Use project-specific commands:
 - broader tests: run suites or tiers as boundary checks;
 - static checks: typecheck and lint if available.
 
+All verification commands MUST exclude `@captain`-tagged scenarios. For Cucumber runners, use `--tags "not @captain"`.
+
 Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs to save time and tokens. Full tier runs are boundary checks, not the default inner loop. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results. When Captain receives a clean hand-off with no remaining discovered work, Captain MUST offer to run the entire test suite across all tiers.
 
 Skipped verification is not passing verification. Reports MUST identify skipped targets and their reasons (absent credential, absent capability, environment limitation). A skipped target remains unverified until the required credential, capability, or environment is present and the target runs. If a target is persistently skipped for reasons that cannot be resolved by the project, Captain SHOULD escalate or remove the scenario.
@@ -177,6 +179,8 @@ When project configuration enables sandbox provisioning, tooling SHOULD derive o
 Production code SHOULD be shaped so QM can verify scenario behaviour through narrow, observable seams and Crew can make the smallest production change for one failing target.
 
 Verification-shaped code is not mock-shaped code. It isolates side effects so real behaviour can be exercised deliberately. It MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, simulated CLIs, `.invalid` endpoints, dummy credentials, or harness-only behaviour.
+
+A seam is a stable production boundary where behaviour can be entered, observed, or owned. Shipshape uses seams for real verification and Planks traceability, not for mocks, fakes, test-only branches, or harness-only code.
 
 Prefer:
 
@@ -209,31 +213,34 @@ Captain handles outbound decisions (push, PR, publish, release, deploy). Outboun
 
 ### Traceability policy
 
-Trace links explain why implementation and support artifacts exist. They MUST NOT define product intent, create worklists, or replace verification discovery. Every production-code module and export MUST trace to at least one scenario via `Shipshape implements`. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
+Feature files are canon. Shipshape derives trace from current feature files, through scenarios and steps, into step definitions and production seams. Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
 
-Use canonical scenario references in `<spec>.feature:<Scenario Name>` form, the same form used by `watchbill.json`.
+Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
 
-Step-level trace detail SHOULD be added when it makes deletion, ownership, or behaviour mapping clearer. The canonical trace target remains the scenario reference.
+Use docblock syntax where the language supports docblocks:
 
 ```ts
-// Shipshape implements: features/checkout/card-payment.feature:Card payment is authorized
-// Step: Then the payment is authorized
+/**
+ * @planks("When the customer pays with the saved card")
+ * @planks("Then the payment is authorized")
+ */
+export async function payWithSavedCard(checkout, savedCard) {}
 ```
 
-Use language-appropriate comments or metadata near the linked artifact:
+`@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
 
-- `Shipshape implements: <spec>.feature:<Scenario Name>`, production code exists for scenario behaviour.
-- `Shipshape supports: <spec>.feature:<Scenario Name>`, helper, fixture, harness adapter, generated file, or asset supports scenario behaviour.
-- `Shipshape verifies: <spec>.feature:<Scenario Name>`, optional; use only when a test-to-scenario mapping is not already clear from Gherkin step text, test name, or harness structure.
+Not every step requires Planks. Setup and assertion steps often use only verification support. Every production seam MUST have at least one `@planks(...)` annotation.
 
-Do not trace every branch or reusable step definitions whose Gherkin binding is already clear. Trace every module and export at a behaviour-bearing seam where they make deletion, coverage, or ownership clearer. Enforcing runtimes MAY later make these rules mechanical.
+A seam MAY carry Planks for several steps. A step MAY be carried by several seams. A seam MUST NOT contain behaviour outside its related step contracts. Extra behaviour is missing specification, misplaced code, or dead code.
+
+Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping. Support artifacts MAY use project-appropriate comments when ownership or deletion is unclear, but they MUST NOT define product intent.
 
 ### Coverage report convention
 
 Generated coverage reports MAY summarize current trace and verification state:
 
 ```text
-feature/scenario → verifies → implements/supports → verification status
+feature scenario to step to step definition to planked seam to verification status
 ```
 
 Coverage reports are transient verification output. They MUST NOT define product intent, create work, or become durable planning artifacts.

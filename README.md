@@ -8,13 +8,17 @@ It turns product intent into durable Cucumber specs, derives work from failing v
 
 **Specifications are durable. Code is disposable. Agents are replaceable.**
 
+The Ship of Theseus is an old problem about identity through change. Plutarch's ship is preserved by repair. Rotten timber is removed, new timber is fitted, and the vessel remains in service until none of the first planks remain. Is it still the same ship?
+
+Shipshape asks the same question of software.
+
 ## Install
 
 ```bash
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-This installs all five skills: `/shipshape`, `/captain`, `/qm`, `/crew`, and `/bosun`.
+This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/bosun`, and `/shipwright`.
 
 ## Quickstart
 
@@ -30,7 +34,7 @@ This installs all five skills: `/shipshape`, `/captain`, `/qm`, `/crew`, and `/b
    /captain
    ```
 
-   **Existing codebase?** Run `/shipwright` first. It is thorough and slow, but required: every module is traced, every uncovered behaviour inventoried. Captain reviews the results with you before the normal spec-driven loop begins.
+   **Existing codebase?** Run `/shipwright` first. It is thorough and slow, but required: every production seam is planked, every uncovered behaviour inventoried. Captain reviews the results with you before the normal spec-driven loop begins.
 
 3. Tell Captain the product behaviour you want.
 
@@ -60,7 +64,7 @@ Shipshape answers those failure modes with a small, current-state workflow:
 - Work comes from undefined, unimplemented, or failing verification.
 - Roles have strict custody over specs, verification, implementation, and hygiene.
 - Context is cleared between Captain and Quartermaster.
-- Bosun removes stale artifacts.
+- Bosun flags stale production artifacts and cleans non-code cruft.
 - `watchbill.json` selects and orders discovered work only; it does not create work.
 
 ## What Shipshape is
@@ -95,7 +99,7 @@ Shipshape keeps the authoritative surface small:
 - `AGENTS.md` or equivalent tooling config defines project tooling and agent configuration.
 - `CAPTAIN.md`, if present, contains Captain-only non-binding notes.
 - `watchbill.json` selects and orders verification-discovered work only.
-- Trace comments explain why code or support artifacts exist; they do not define product intent.
+- `@planks(...)` annotations explain why production seams exist; they do not define product intent.
 - Git history preserves history. Current files describe current design.
 
 If asset or catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
@@ -115,7 +119,7 @@ sequenceDiagram
     Note over Captain,QM: Context clears
     QM->>QM: Run verification discovery
     QM->>Bosun: Pre-clean scan
-    Bosun->>QM: Stale artifacts removed
+    Bosun->>QM: Stale artifacts flagged
     QM->>Crew: Dispatch failing target
     Crew->>Crew: Smallest production change
     Crew->>QM: Target pass
@@ -131,11 +135,11 @@ Shipshape separates agent work by custody and context. Each role sees only the c
 | Captain | Human-facing discovery, `.feature` specs, assets, `CAPTAIN.md`, optional `watchbill.json` | Production code, verification, hidden implementation instructions |
 | Quartermaster | Verification design, tests, fixtures, step definitions, harness support | Product intent, production code, Captain notes |
 | Crew | The smallest production-code change for one failing verification target | Specs, tests, broad refactors, product interpretation |
-| Bosun | Hygiene, stale artifact removal, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
+| Bosun | Hygiene, stale artifact flagging, non-code cleanup, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
 
 Only Captain talks to the user. QM, Crew, and Bosun are internal roles. They report through verification output, repository changes, and role hand-offs.
 
-The most important boundary is Captain → QM. Captain may use human conversation to discover intent, but QM starts from clean context and reads only durable repository artifacts. This prevents discovery chat, rationale, and abandoned ideas from leaking into tests or implementation.
+The most important boundary is Captain to QM. Captain may use human conversation to discover intent, but QM starts from clean context and reads only durable repository artifacts. This prevents discovery chat, rationale, and abandoned ideas from leaking into tests or implementation.
 
 Role flow:
 
@@ -145,7 +149,7 @@ Role flow:
 4. Bosun may pre-clean stale artifacts before they shape verification or implementation.
 5. Crew makes one focused production change for one failing target.
 6. QM reruns verification and may dispatch more Crew work.
-7. Bosun removes stale artifacts, checks hygiene, verifies, and commits locally.
+7. Bosun flags stale artifacts, cleans non-code cruft, checks hygiene, verifies, and commits locally.
 8. Captain reports back to the user and handles decisions such as push, PR, publish, release, or deploy.
 
 ## What a session looks like
@@ -203,7 +207,9 @@ Expected payment status "authorized", received "requires_payment_method".
 Crew makes the smallest production-code change:
 
 ```diff
-+ // Shipshape implements: features/checkout/saved-card-checkout.feature:Customer pays with a saved card
++ /**
++  * @planks("When the customer pays with the saved card")
++  */
   async function payWithSavedCard(checkout, savedCard) {
 -   return payments.createIntent({ amount: checkout.total });
 +   return payments.createIntent({
@@ -221,7 +227,7 @@ QM reruns the focused check:
 5 steps passed
 ```
 
-Bosun removes stale artifacts, reruns configured verification, commits locally, and returns to Captain. Captain reports the result and asks whether to push, open a PR, publish, release, or deploy.
+Bosun flags stale artifacts, cleans non-code cruft, reruns configured verification, commits locally, and returns to Captain. Captain reports the result and asks whether to push, open a PR, publish, release, or deploy.
 
 ## Verification is progress
 
@@ -268,9 +274,9 @@ Rules:
 
 ## Harbour mode
 
-When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@shipwright`-tagged scenario skeletons. Captain reviews each with the user before promoting to binding specs. QM ignores `@shipwright` until Captain promotes.
+When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user before promoting to binding specs. QM ignores `@captain` until Captain promotes.
 
-On an existing codebase, this is a long and painful process. Every module is traced, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is fully traced to scenarios and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
+On an existing codebase, this is a long and painful process. Every production seam is planked, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is traced to feature-file steps and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
 
 ```mermaid
 sequenceDiagram
@@ -279,27 +285,37 @@ sequenceDiagram
     participant Captain
 
     User->>Shipwright: /shipwright, scan this codebase
-    Shipwright->>Shipwright: Run c8, scan for violations
-    Shipwright->>Captain: @shipwright scenarios written
+    Shipwright->>Shipwright: Run coverage, scan for violations
+    Shipwright->>Captain: @captain scenarios written
     Captain->>User: Review each scenario, promote/discard
 ```
 
 ## Traceability
 
-Shipshape uses lightweight trace comments when they make ownership, deletion, or behaviour mapping clearer:
+Feature files are canon. Shipshape derives the map from current feature files, through scenarios and steps, into step definitions and production seams.
+
+A seam is a stable production boundary where behaviour can be entered, observed, or owned. Shipshape uses seams for real verification and Planks traceability, not for mocks, fakes, test-only branches, or harness-only code. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
+
+Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour.
 
 ```ts
-// Shipshape implements: features/checkout/card-payment.feature:Card payment is authorized
-// Step: Then the payment is authorized
+/**
+ * @planks("When the customer pays with the saved card")
+ * @planks("Then the payment is authorized")
+ */
+export async function payWithSavedCard(checkout, savedCard) {
+  // production behaviour
+}
 ```
 
-- `implements` links production code to scenario behaviour.
-- `supports` links helpers, fixtures, generated files, or assets to scenario behaviour.
-- `verifies` is optional when a test-to-scenario mapping is not already clear.
-- The canonical target is `<spec>.feature:<Scenario Name>`.
-- Optional `Step:` detail is human-readable extra context.
+- `@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step.
+- Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
+- Not every step requires Planks. Every production seam does.
+- A seam may carry Planks for several steps. One step may be carried by several seams.
+- A seam must not contain behaviour outside its related step contracts. Extra behaviour is missing specification, misplaced code, or dead code.
+- Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping.
 
-Trace links explain why artifacts exist. They do not create work, replace verification discovery, or define product intent.
+Trace annotations explain why production seams exist. They do not create work, replace verification discovery, or define product intent.
 
 ## Related approaches
 
@@ -316,11 +332,11 @@ Shipshape combines four ideas: role custody, context isolation, verification as 
 
 Related systems include [Kiro](https://kiro.dev), [Spec Kit](https://github.com/github/spec-kit), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Tessl](https://tessl.io), [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD), [Superpowers](https://github.com/obra/superpowers), [Paperclip](https://paperclip.ing), [Fusion](https://runfusion.ai), companies.sh, [Gastown](https://github.com/gastownhall/gastown), and similar systems.
 
-For background, see Birgitta Böckeler's article on SDD tools on Martin Fowler's site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
+For background, see Birgitta Bockeler's article on SDD tools on Martin Fowler's site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
 
 ## Enforcement and portability
 
-Shipshape skills work anywhere a coding agent can read repository files and follow role instructions. The workflow is portable by design: Cucumber specs, verification output, trace comments, and git history carry the durable state.
+Shipshape skills work anywhere a coding agent can read repository files and follow role instructions. The workflow is portable by design: Cucumber specs, verification output, `@planks(...)` annotations, and git history carry the durable state.
 
 Skill-only agents follow the rules by explicit discipline. Enforcing runtimes can turn the same rules into mechanical checks.
 
