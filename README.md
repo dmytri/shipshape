@@ -136,8 +136,9 @@ Shipshape separates agent work by custody and context. Each role sees only the c
 | Quartermaster | Verification design, tests, fixtures, step definitions, harness support | Product intent, production code, Captain notes |
 | Crew | The smallest production-code change for one failing verification target | Specs, tests, broad refactors, product interpretation |
 | Bosun | Hygiene, stale artifact flagging, non-code cleanup, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
+| Shipwright | In-harbour code archaeology, `@captain` candidate scenarios, `@planks(...)` annotations, safe removal of `@shipwright`-flagged code | Product intent, production-code behaviour changes |
 
-Only Captain talks to the user. QM, Crew, and Bosun are internal roles. They report through verification output, repository changes, and role hand-offs.
+Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles. They report through verification output, repository changes, and role hand-offs.
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent, but QM starts from clean context and reads only durable repository artifacts. This prevents discovery chat, rationale, and abandoned ideas from leaking into tests or implementation.
 
