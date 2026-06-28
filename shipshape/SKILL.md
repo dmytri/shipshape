@@ -180,7 +180,7 @@ Use project-specific commands:
 
 All verification commands MUST exclude `@captain`-tagged scenarios. For Cucumber runners, use `--tags "not @captain"`.
 
-Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs to save time and tokens. Full tier runs are boundary checks, not the default inner loop. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results. When Captain receives a clean hand-off with no remaining discovered work, Captain MUST offer to run the entire test suite across all tiers.
+Progress is measured by verification status, not by a separate checklist. Agents hold no planned work in memory. Human edits between cycles are expected; the next verification run discovers whatever is true now. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs to save time and tokens. Full tier runs are boundary checks, not the default inner loop. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results. When Captain receives a clean hand-off with no remaining discovered work, Captain MUST offer to run the entire test suite across all tiers.
 
 Skipped verification is not passing verification. Reports MUST identify skipped targets and their reasons (absent credential, absent capability, environment limitation). A skipped target remains unverified until the required credential, capability, or environment is present and the target runs. If a target is persistently skipped for reasons that cannot be resolved by the project, Captain SHOULD escalate or remove the scenario.
 

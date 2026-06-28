@@ -75,6 +75,8 @@ It uses Cucumber-native specifications as the durable product contract. It treat
 
 Shipshape is deliberately narrow. It is most opinionated about Cucumber-native executable specs, context-isolated roles, and verification-discovered work.
 
+Humans edit code at any time. Shipshape has no backlog, no task list, and no agent memory of planned work. Agents derive their next action only from current verification state. If you fix a bug by hand, QM sees it pass and moves on. If you break something, QM flags it. There is no stale plan to reconcile.
+
 ## What Shipshape is not
 
 Shipshape is not:
