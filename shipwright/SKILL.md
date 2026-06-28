@@ -54,7 +54,8 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 8. Add `@planks(...)` annotations to every production seam. Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual expressions, branches, or helper fragments. For covered code, use the step text saved from step 4. For uncovered code, use the step text from the `@captain` scenarios you wrote in step 7. For `@planks(...)` annotations pointing to deleted or renamed steps, correct the annotation if the step still exists under new text, or create a `@captain` scenario and replank if the original step is gone.
 9. Process `@shipwright`-flagged code. Grep for `@shipwright` docblock tags to find flagged seams. Inspect each flagged item. Remove safely when the suite stays green. If a removal breaks verification, revert and flag to Captain. ALL verification commands during harbour MUST exclude `@captain`-tagged scenarios (e.g. `--tags "not @captain"`).
 10. Complete the full inventory. Do not stop until every module in scope has been analysed and all `@shipwright`-flagged code has been processed.
-11. Report to Captain.
+11. Run the full test suite across all tiers as a boundary check. The harbour session reconstitutes the codebase; verify nothing broke. ALL verification commands MUST exclude `@captain`-tagged scenarios.
+12. Report to Captain.
 
 ## Final report
 
