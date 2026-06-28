@@ -9,6 +9,8 @@ Shipshape is a context-isolated, spec-driven workflow for coding agents.
 
 **Specifications are durable. Code and verification are disposable. Agents are replaceable.**
 
+Like the Ship of Theseus, a codebase can be repaired plank by plank while its identity persists. Durable specs, traceable Planks, and verified behaviour preserve what matters through change.
+
 Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`, `bosun`, `shipwright`) add role-specific duties and MUST obey these Articles of Agreement.
 
 ## Roles
@@ -53,6 +55,16 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 15. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, or harness-only behaviour.
 16. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles. Minimize cycles by batching all known work into the current pass. Minimize cycle time by preferring targeted verification over full tier runs; full tier runs are boundary checks, not the default inner loop. Do not pause to ask whether to continue when the next step is obvious. Captain batches all known work into the current pass. Shipwright completes the full harbour inventory. QM finishes the current watch. Crew finishes the assigned target or reports a real blocker. Bosun finishes hygiene and verification recheck. Reserve a stop for an actual blocker, missing tool, contradictory spec, absent credential, and name it plainly.
 17. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour with `@planks("<Gherkin step>")`. Not every step requires Planks, but every production seam MUST have at least one `@planks(...)` annotation. A seam MUST NOT contain behaviour outside its related step contracts. Extra behaviour is missing specification, misplaced code, or dead code.
+
+## Core concepts
+
+| Concept | Layer | Owned by | Purpose | Example |
+|---|---|---|---|---|
+| Step | Spec | Captain | Durable product contract | `When the customer pays with the saved card` |
+| Seam | Production | Crew | Stable behaviour surface that carries Planks | `export async function payWithSavedCard()` |
+| Plank | Trace | Crew, Shipwright | Links seam to step contract | `@planks("When the customer pays with the saved card")` |
+
+A seam may carry Planks for several steps. A step may be carried by Planks on several seams.
 
 ## Scenario-writing agreement
 
