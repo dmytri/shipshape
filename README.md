@@ -311,6 +311,12 @@ export async function payWithSavedCard(checkout, savedCard) {
 }
 ```
 
+| Concept | Layer | Purpose | Example |
+|---|---|---|---|
+| Step | Spec | Durable product contract | `When the customer pays with the saved card` |
+| Seam | Production | Stable behaviour surface | `export async function payWithSavedCard()` |
+| Plank | Trace | Links seam to step | `@planks("When the customer pays with the saved card")` |
+
 - `@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step.
 - Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
 - Not every step requires Planks. Every production seam does.
