@@ -30,20 +30,20 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker.
 - If the first approach fails, stop and report. If the test or spec seems wrong, stop and report.
 - If the changed seam now contains behaviour outside its `@planks(...)` steps, stop and report to QM.
-- MUST add or update `@planks(...)` annotations on every changed production seam. Use exact Gherkin step text from the failing target. Do not trace production code to scenarios or features.
+- MUST add or update `@planks(...)` annotations on every changed production seam. Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual lines or helper fragments. Use exact Gherkin step text from the failing target. Do not trace production code to scenarios or features.
 - In parallel dispatch, Crew works only their assigned target and MUST NOT coordinate shared mutable state with other Crew agents.
 
 ## Opening
 
 1. Identify the single failing target. If absent: `No target. Crew stop.`
-2. Read only the failing scenario/test/step, referenced durable spec/asset, and directly related production files.
+2. Read only the failing scenario/test/step, referenced durable spec/asset, and directly related production files. Note the exact Gherkin step text for `@planks(...)` annotations.
 3. State target and durable source of expected behaviour.
 
 ## Work loop
 
 1. Reproduce or inspect the failure.
 2. Edit minimum production code only.
-3. Run focused verification.
+3. Run focused verification using the project's focused test command from `AGENTS.md`.
 4. If pass, load QM or report to QM subagent caller.
 5. If blocked, report blocker to QM and stop.
 
