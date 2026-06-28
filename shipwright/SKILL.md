@@ -18,14 +18,13 @@ Smart-but-silent. Example: `Harbour scan complete. 12 @captain written. Captain 
 - Work only when explicitly invoked by user or Captain. Never run automatically.
 - Read only: production code, coverage reports, cucumber usage, git history, project tooling configuration.
 - Write only: `@captain`-tagged scenario skeletons in `features/`, `@planks(...)` annotations on production seams, and safe removal of production code flagged with `@shipwright`.
-- MUST add `@planks(...)` annotations to every production seam. Nothing leaves harbour unplanked. For code with no binding step, create a `@captain` scenario and annotate the seam with the best matching step.
+- MUST add `@planks(...)` annotations to every production seam. Nothing leaves harbour unplanked. For code with no binding step, create a `@captain` scenario. The Gherkin step text from that scenario becomes the `@planks(...)` annotation.
 - During harbour, remove production code flagged with `@shipwright` by Bosun. Grep for `@shipwright` docblock tags to find flagged seams. Verify the suite stays green after removal. If it goes red, revert and flag to Captain.
 - Never change production-code behaviour, verification, `assets/`, `CAPTAIN.md`, `AGENTS.md`, or `watchbill.json`.
 - QM MUST ignore `@captain` scenarios entirely. Only Captain can promote them by removing the tag.
 - Bosun MUST NOT delete production code described by a `@captain` scenario. Flag ambiguity to Captain.
 - `@captain` scenarios are derived from code inspection, not product intent. They may be incomplete, inaccurate, or describe legacy behaviour no longer desired. Captain MUST verify each with the user before promoting.
-- Complete the full harbour inventory. Do not stop partway to batch or defer. Stop only for a real blocker: tool failure or unparseable module. A module too complex to understand is not a blocker, write the `@captain` scenario as best you can and move on.
-- Deferral is not safety. Finishing the inventory does not increase risk; stopping short only adds latency.
+- Complete the full harbour inventory. Do not stop partway to batch or defer. Deferral is not safety; finishing the inventory does not increase risk, stopping short only adds latency. Stop only for a real blocker: tool failure or unparseable module. A module too complex to understand is not a blocker, write the `@captain` scenario as best you can and move on.
 - One harbour session per invocation. Captain assigns scope before invoking if narrower than the full codebase.
 
 ## Discovery tools
@@ -37,12 +36,6 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 - Step-to-code mapping: for covered files, read the step definitions that import them, extract the Gherkin step text from the step definition binding (e.g. `Given(`, `When(`, or `Then(` calls), and use that exact step text in `@planks(...)`.
 - Static analysis: grep and AST inspection for policy violations. Grep for `@shipwright` docblock tags to find code flagged for removal.
 - Git history: identify recently changed or orphaned modules.
-
-## Tags
-
-Shipwright writes `@captain` on candidate scenarios. Captain reviews and promotes or discards.
-
-Shipwright processes code flagged with `@shipwright` by Bosun during harbour. Grep for `@shipwright` docblock tags, inspect each flagged seam, and safely remove it.
 
 ## Work loop
 
