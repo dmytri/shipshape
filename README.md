@@ -98,7 +98,8 @@ Shipshape keeps the authoritative surface small:
 
 - `.feature` files define binding product behaviour.
 - `assets/**` are Captain-owned editable artifacts: product material, examples, fixtures, content, media, or other support material. Product-facing content should live in assets or project-approved content catalogs, such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Assets and catalogs are not instructions, backlog, rationale, project memory, or hidden requirements.
-- `AGENTS.md` or equivalent tooling config defines project tooling and agent configuration.
+- `AGENTS.md` is the human-facing agent entry document.
+- `RIGGING.md` holds project tooling values such as stack, directories, and commands.
 - `CAPTAIN.md`, if present, contains Captain-only non-binding notes.
 - `watchbill.json` selects and orders verification-discovered work only.
 - `@planks(...)` annotations explain why production seams exist; they do not define product intent.

@@ -35,15 +35,15 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 
 ## Opening
 
-1. Identify the single failing target. If absent: `No target. Crew stop.`
-2. Read only the failing scenario/test/step, referenced durable spec/asset, and directly related production files. Note the exact Gherkin step text for `@planks(...)` annotations.
+1. Identify the single failing target. If absent: `No target. Crew stop.` A valid target carries a scenario reference and the observed failure. If failure evidence is missing, request it from QM and stop.
+2. Read `RIGGING.md` for stack, implementation directory, and the focused command. Then read only the failing scenario/test/step, referenced durable spec/asset, and directly related production files. Note the exact Gherkin step text for `@planks(...)` annotations.
 3. State target and durable source of expected behaviour.
 
 ## Work loop
 
 1. Reproduce or inspect the failure.
 2. Edit minimum production code only.
-3. Run focused verification using the project's focused test command from `AGENTS.md`.
+3. Run focused verification using the `focused` command from `RIGGING.md`.
 4. If pass, load QM or report to QM subagent caller.
 5. If blocked, report blocker to QM and stop.
 
