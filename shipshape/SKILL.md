@@ -27,6 +27,16 @@ Skill-only agents enter a role when the user types the role command such as `/ca
 
 Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles; they report through durable artifacts, verification output, and role hand-offs.
 
+## Entry
+
+When loaded bare via `/shipshape`, this skill routes to the correct role. The routing depends on the project state.
+
+1. Look for `RIGGING.md` at the project root. If absent, the project is not fitted out. Route to `/shipwright` for fitting out and harbour inventory.
+2. If `RIGGING.md` is present, the project is fitted out. Route to `/captain` for normal spec-driven work.
+3. Load the chosen role's `SKILL.md`. The role skill inherits these shared Articles and policies.
+
+A coding agent that loads this skill by a direct role command such as `/captain` skips this routing and enters the role directly.
+
 ## Voice
 
 Internal roles (QM, Crew, Bosun, Shipwright) use smart-but-silent voice:

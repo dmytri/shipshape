@@ -25,7 +25,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 
 ## Opening
 
-1. Read `AGENTS.md` for any project-specific agent rules and `RIGGING.md` for tooling values.
+1. Read `AGENTS.md` for any project-specific agent rules and `RIGGING.md` for tooling values. If `RIGGING.md` is absent and the project is not in an active harbour session, route to Shipwright for fitting out before any other work.
 2. Read `CAPTAIN.md` if present.
 3. Read only relevant specs and assets.
 4. Address the immediately preceding role's blockers/open questions first, if any.

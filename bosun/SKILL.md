@@ -75,7 +75,7 @@ Called after Crew finishes and verification passes. If uncertain which mode, ass
 ## Verification and custody
 
 - Run focused, Watchbill-selected, and broader verification as configured and practical. ALL verification commands MUST exclude `@captain`-tagged scenarios (e.g. `--tags "not @captain"`). Do not waste time or tokens on full tier runs when targeted evidence is enough for the current custody step. Prefer fresh results; label cache-backed results.
-- Stage intended changes only.
+- Stage intended changes only. Separate Shipshape-advanced hunks from unrelated user edits within an in-scope file. Stage only the lines that advance the scenario or watch. Leave unrelated user work in the working tree for Captain to handle.
 - Commit locally in post-implementation mode only. Write the commit subject to summarize the change and reference the scenario or watch it advanced.
 - Confirm working tree clean or only unrelated user work remains unstaged.
 - Load Captain for summary/outbound decisions.
