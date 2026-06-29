@@ -84,7 +84,7 @@ Follow this scenario-writing agreement. Shipshape uses specification by example:
 - Do not combine multiple actions or assertions inside one step; split them into separate steps.
 - Write positive observable `Then` outcomes, not prohibitions: assert the state, output, permission, runtime field, file, or external observable that proves the rule.
 - Do not use vague outcomes such as "it works" or "it succeeds"; state the observable signal.
-- Testability, not subject, decides what can be specified. Product behaviour, harness conformance, agent behaviour, and runtime enforcement can all be scenarios if falsifiable.
+- Testability, not subject, decides what can be specified. Product behaviour, harness conformance, agent behaviour, and runtime enforcement can all be scenarios if falsifiable. Performance budgets, authorization invariants, accessibility requirements, and other cross-cutting concerns are expressible as scenarios and become discoverable when they fail.
 - Do not bundle unrelated quality concerns into one scenario. Aim for fewer than about 10 steps.
 - Use `Scenario Outline` only when the same behaviour is checked with input variations. Use tables for data instead of step spam, and doc strings for structured payloads.
 - Keep tables concise with descriptive headers. If a table does not fit one screen, split the behaviour or move data to an asset.
@@ -162,7 +162,7 @@ If QM, Crew, Bosun, or Shipwright encounters missing or contradictory product in
 
 ### Asset policy
 
-`assets/**` are Captain-owned editable artifacts: content, media, examples, fixtures, screenshots, pages, copy, or other materials. Some assets may ship as product material, and some may support verification. Product-facing content SHOULD live in Captain-owned assets or project-approved content catalogs, not hidden in production code. Projects MAY use tools such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Code MAY render catalog entries; Captain owns content changes. Assets are not an instruction layer or a second specification surface. If asset content or exact catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
+`assets/**` are Captain-owned editable artifacts: content, media, examples, fixtures, screenshots, pages, copy, or other materials. Some assets may ship as product material, and some may support verification. Assets MAY also hold design documents, architecture decision records, or project rationale, but agents MUST NOT derive work from them. Only `.feature` specs and verification output create work. Product-facing content SHOULD live in Captain-owned assets or project-approved content catalogs, not hidden in production code. Projects MAY use tools such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Code MAY render catalog entries; Captain owns content changes. Assets are not an instruction layer or a second specification surface. If asset content or exact catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
 
 ### Artifact authority policy
 

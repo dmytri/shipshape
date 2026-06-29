@@ -349,6 +349,10 @@ Shipshape skills work anywhere a coding agent can read repository files and foll
 
 Skill-only agents follow the rules by explicit discipline. Enforcing runtimes can turn the same rules into mechanical checks.
 
+## Maturity
+
+Shipshape is pre-validation. It has a single author, no published case studies, and relies on voluntary agent discipline that runtimes can enforce but skills alone cannot. It inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
+
 ## Origin
 
 Shipshape was extracted from work done at [Saleor](https://saleor.io), an open-source, headless GraphQL e-commerce platform.
