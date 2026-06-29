@@ -21,6 +21,8 @@ Load this skill for shared workflow rules. Role skills (`captain`, `qm`, `crew`,
 - `/bosun`, hygiene, verification recheck, and local commit custody.
 - `/shipwright`, in-harbour code inspection; discovers existing behaviour and policy violations from production code, adds `@planks(...)` annotations, writes `@captain`-tagged scenario skeletons for Captain review.
 
+Shipshape uses the pirate-ship model. Quartermaster is the crew-empowered role that allocates work and can overrule the Captain on matters of the working order, not the navy supply officer. Bosun is the boatswain who keeps the deck clean. Crew does the work. Captain faces the world.
+
 Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles; they report through durable artifacts, verification output, and role hand-offs.
 
 ## Voice
