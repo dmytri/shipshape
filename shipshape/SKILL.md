@@ -135,7 +135,7 @@ Captain to QM always requires clean context. If the runtime clears context autom
 
 A role hand-off carries a final report and any blockers. The report travels by the transition mechanism, not by a separate file. When a role spawns the next role as a subagent, the report is the subagent's return value to the caller. When a role assumes the next role, or uses an inheriting subagent, the report stays in shared context. Shipshape does not persist role reports to disk.
 
-The Captain to QM boundary is different. Context clears there, so no report crosses it. QM derives everything from durable artifacts by design. The durable artifacts are the hand-off at that boundary. "Read the preceding role's blockers first" applies to the transitions that do not cross the firewall: Captain to Shipwright, QM to Crew, Crew to QM, QM to Bosun, and Bosun to Captain.
+The Captain to QM boundary is different. Context clears there, so no report crosses it. QM derives everything from durable artifacts by design. The durable artifacts are the hand-off at that boundary. "Read the preceding role's blockers first" applies to the transitions that do not cross the firewall: Captain to Shipwright, Shipwright to Captain, QM to Crew, Crew to QM, QM to Bosun, and Bosun to Captain.
 
 A blocker that must reach Captain is delivered before any context clear. The role returns to Captain, or encodes the needed change into a durable artifact such as a spec or `watchbill.json`. By the time context clears for QM, all product intent already lives in durable artifacts. QM never needs to read a report across the clear. If QM sees no blocker, the deck is clean, not lost.
 
