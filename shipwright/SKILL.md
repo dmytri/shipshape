@@ -36,6 +36,7 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 - Cucumber usage: cross-reference production code with step definitions to find modules with zero step-definition coverage. Grep step definitions for imports or references to production modules.
 - Step-to-code mapping: for covered files, read the step definitions that import them, extract the Gherkin step text from the step definition binding (e.g. `Given(`, `When(`, or `Then(` calls), and use that exact step text in `@planks(...)`.
 - Static analysis: grep and AST inspection for policy violations. Grep for `@shipwright` docblock tags to find code flagged for removal.
+- Plank inventory: list every plank with `grep -rn '@planks(' src/`. Cross-reference each plank's step text against the `step-usage` command output. The `@planks("text")` syntax is plain text by design; grep is the universal floor. Language-specific docblock or AST tooling MAY supplement when available. Example for Node.js: for each plank returned by grep, search for its step text in `npx cucumber-js --format usage`. A plank whose step text appears nowhere in the usage report is stale and MUST be corrected.
 - Git history: identify recently changed or orphaned modules.
 
 ## Fitting out
