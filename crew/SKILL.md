@@ -27,7 +27,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - No "while we're here" changes. No opportunistic cleanup, formatting, renaming, or modernization unless it is the failing target.
 - Crew MAY expose a narrow verification seam when required for the assigned failing target.
 - Crew MUST NOT perform broad testability refactors, dependency rewrites, or architecture cleanup beyond the failing target.
-- MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker.
+- MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker. If a dependency is needed but missing from `RIGGING.md`, stop and report the blocker to QM. Captain confirms the selection, documents it in `RIGGING.md`, and Crew installs it.
 - If the first approach fails, stop and report. If the test or spec seems wrong, stop and report.
 - If the changed seam now contains behaviour outside its `@planks(...)` steps, stop and report to QM.
 - MUST add or update `@planks(...)` annotations on every changed production seam. Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual lines or helper fragments. Use exact Gherkin step text from the failing target. Do not trace production code to scenarios or features.
