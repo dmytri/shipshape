@@ -44,10 +44,11 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 Fitting out is first-run setup of a project for Shipshape. It is a harbour activity. Shipwright derives the project tooling values from the repository and scaffolds the config files. Shipwright never asks the user. It derives from the repository, or it raises a Captain blocker.
 
 1. If `AGENTS.md` or `RIGGING.md` is absent, fit out before the inventory.
-13. Derive `RIGGING.md` values from the repository. Read the package manager from the lockfile and `package.json`, the language and runtime from `package.json` and source file extensions, the commands from `package.json` scripts and test-runner config, the directories from the project layout, and the lint and typecheck commands from their config.
-3. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the fixed `RIGGING.md` shape in the `shipshape` skill.
-4. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker. The required values are `language`, `implementation`, and `focused`. Captain discovers the missing value with the user and writes it. Do not guess.
-5. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
+2. Derive `RIGGING.md` values from the repository. Read the package manager from the lockfile and `package.json`, the language and runtime from `package.json` and source file extensions, the commands from `package.json` scripts and test-runner config, the directories from the project layout, and the lint and typecheck commands from their config.
+3. Verify the project tooling is runnable. For Node.js, confirm `package.json` exists and the package manager is installed. If the project init file is missing or the runtime is not installed, raise a Captain blocker. Do not write `RIGGING.md` until tooling is verified.
+4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the fixed `RIGGING.md` shape in the `shipshape` skill.
+5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker. The required values are `language`, `implementation`, and `focused`. Captain discovers the missing value with the user and writes it. Do not guess.
+6. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
 
 ### AGENTS.md template
 
