@@ -108,6 +108,7 @@ Procedure lives in the skills. Every role reads this on open.
 ## Dependencies
 
 - policy: locked; no new dependencies without a spec
+- yaml (example: write only the dependency name; do not pin a version without a reason)
 
 ## Outbound
 
