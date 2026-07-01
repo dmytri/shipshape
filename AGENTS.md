@@ -32,6 +32,10 @@ Shipshape is distributed as skill files:
 - Do not update installed global skills or downstream project copies unless the user explicitly asks.
 - Do not commit or push unless the user explicitly asks.
 
+## Commit attribution
+
+Do not add agent-specific authorship, committer identity, or `Co-authored-by` trailers for coding agents. Commits should use `Dmytri Kleiner <dev@dmytri.to>` unless the maintainer explicitly instructs otherwise.
+
 ## Validation
 
 Before reporting a documentation change as complete:
