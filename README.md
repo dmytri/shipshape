@@ -18,7 +18,7 @@ Shipshape asks the same question of software.
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/bosun`, and `/shipwright`.
+This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/boatswain`, and `/shipwright`.
 
 ## Quickstart
 
@@ -50,7 +50,7 @@ This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/bosun`
 
 7. QM derives verification from durable repository artifacts and dispatches Crew against failing targets.
 
-8. Bosun performs hygiene, verification recheck, and local commit custody.
+8. Boatswain performs hygiene, verification recheck, and local commit custody.
 
 9. Captain reports back and handles decisions such as push, PR, publish, release, or deploy.
 
@@ -64,7 +64,7 @@ Shipshape answers those failure modes with a small, current-state workflow:
 - Work comes from undefined, unimplemented, or failing verification.
 - Roles have strict custody over specs, verification, implementation, and hygiene.
 - Context is cleared between Captain and Quartermaster.
-- Bosun flags stale production artifacts and cleans non-code cruft.
+- Boatswain flags stale production artifacts and cleans non-code cruft.
 - `watchbill.json` selects and orders discovered work only; it does not create work.
 
 ## What Shipshape is
@@ -114,20 +114,20 @@ sequenceDiagram
     participant User
     participant Captain
     participant QM
-    participant Bosun
+    participant Boatswain
     participant Crew
 
     User->>Captain: Describe product intent
     Captain->>Captain: Write .feature specs, watchbill.json
     Note over Captain,QM: Context clears
     QM->>QM: Run verification discovery
-    QM->>Bosun: Pre-clean scan
-    Bosun->>QM: Stale artifacts flagged
+    QM->>Boatswain: Pre-clean scan
+    Boatswain->>QM: Stale artifacts flagged
     QM->>Crew: Dispatch failing target
     Crew->>Crew: Smallest production change
     Crew->>QM: Target pass
-    QM->>Bosun: Post-implementation hygiene, verify
-    Bosun->>Captain: Deck clean, verify pass, committed
+    QM->>Boatswain: Post-implementation hygiene, verify
+    Boatswain->>Captain: Deck clean, verify pass, committed
     Captain->>User: Report result, offer outbound
 ```
 
@@ -138,10 +138,10 @@ Shipshape separates agent work by custody and context. Each role sees only the c
 | Captain | Human-facing discovery, `.feature` specs, assets, `CAPTAIN.md`, optional `watchbill.json` | Production code, verification, hidden implementation instructions |
 | Quartermaster | Verification design, tests, fixtures, step definitions, harness support | Product intent, production code, Captain notes |
 | Crew | The smallest production-code change for one failing verification target | Specs, tests, broad refactors, product interpretation |
-| Bosun | Hygiene, stale artifact flagging, non-code cleanup, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
+| Boatswain | Hygiene, stale artifact flagging, non-code cleanup, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
 | Shipwright | In-harbour code inspection, `@captain` candidate scenarios, `@planks(...)` annotations, safe removal of `@shipwright`-flagged code | Product intent, production-code behaviour changes |
 
-Only Captain talks to the user. QM, Crew, Bosun, and Shipwright are internal roles. They report through verification output, repository changes, and role hand-offs.
+Only Captain talks to the user. QM, Crew, Boatswain, and Shipwright are internal roles. They report through verification output, repository changes, and role hand-offs.
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent, but QM starts from clean context and reads only durable repository artifacts. This prevents discovery chat, rationale, and abandoned ideas from leaking into tests or implementation.
 
@@ -150,10 +150,10 @@ Role flow:
 1. Captain captures product behaviour in current `.feature` specs.
 2. Context clears.
 3. QM derives executable verification from the specs.
-4. Bosun may pre-clean stale artifacts before they shape verification or implementation.
+4. Boatswain may pre-clean stale artifacts before they shape verification or implementation.
 5. Crew makes one focused production change for one failing target.
 6. QM reruns verification and may dispatch more Crew work.
-7. Bosun flags stale artifacts, cleans non-code cruft, checks hygiene, verifies, and commits locally.
+7. Boatswain flags stale artifacts, cleans non-code cruft, checks hygiene, verifies, and commits locally.
 8. Captain reports back to the user and handles decisions such as push, PR, publish, release, or deploy.
 
 ## What a session looks like
@@ -231,7 +231,7 @@ QM reruns the focused check:
 5 steps passed
 ```
 
-Bosun flags stale artifacts, cleans non-code cruft, reruns configured verification, commits locally, and returns to Captain. Captain reports the result and asks whether to push, open a PR, publish, release, or deploy.
+Boatswain flags stale artifacts, cleans non-code cruft, reruns configured verification, commits locally, and returns to Captain. Captain reports the result and asks whether to push, open a PR, publish, release, or deploy.
 
 ## Verification is progress
 

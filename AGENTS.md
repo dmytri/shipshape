@@ -14,7 +14,7 @@ Shipshape is distributed as skill files:
 | `captain/SKILL.md` | Captain role skill |
 | `qm/SKILL.md` | Quartermaster role skill |
 | `crew/SKILL.md` | Crew Mate role skill |
-| `bosun/SKILL.md` | Bosun role skill |
+| `boatswain/SKILL.md` | Boatswain role skill |
 | `README.md` | Public project positioning and usage overview |
 | `skills.sh.json` | skills.sh registry metadata |
 | `AGENTS.md` | Repository-local agent instructions |

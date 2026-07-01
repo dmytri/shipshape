@@ -54,8 +54,8 @@ Use only:
 
 1. Enforce context firewall.
 2. Read preceding role blockers first.
-3. Check deck status. Run `git status`. If the working tree is dirty and Bosun has not left a clean report, stop: `Deck foul. Need Bosun.`
-4. Load Bosun for pre-clean scan when needed.
+3. Check deck status. Run `git status`. If the working tree is dirty and Boatswain has not left a clean report, stop: `Deck foul. Need Boatswain.`
+4. Load Boatswain for pre-clean scan when needed.
 5. Validate `watchbill.json` fixed shape if present: only `watch1`, `watch2`, etc.; each watch contains only `scenarios`; each scenario reference is `<spec>.feature:<Scenario Name>`. Reject malformed or free-form context.
 6. Run the `discover` command from `RIGGING.md` to identify undefined, unimplemented, or failing targets. If `RIGGING.md` defines no `discover` command, infer one from the project stack, fall back to per-scenario `focused` runs across all spec files, or block to Captain as a configuration blocker. ALL verification commands MUST exclude `@captain`-tagged scenarios (e.g. `--tags "not @captain"`).
 7. If valid `watchbill.json` is present, filter discovered targets to only scenarios listed in the current watch, preserving watch order. Treat listed green scenarios as complete. Block if a listed scenario is absent from durable specs or cannot be matched to verification.
@@ -63,9 +63,9 @@ Use only:
 9. Make one target pass. Write or update step definitions for the current target so its undefined or failing steps become executable. Follow the scenario text exactly.
 10. Run the `focused` command from `RIGGING.md` for the current target, or for each Watchbill-selected scenario. Avoid full tier runs unless needed as a boundary check, tooling limitation, or blocker diagnosis.
 11. If production fails, load/dispatch Crew for one target, or multiple Crew agents for independent targets whose expected production changes do not require shared mutable state. The dispatch carries the target scenario reference and the observed failure evidence only. No product interpretation.
-12. After parallel Crew work, route through Bosun for reconciliation, hygiene, and verification after merge.
+12. After parallel Crew work, route through Boatswain for reconciliation, hygiene, and verification after merge.
 13. Continue through all `watchbill.json` watches unless verification, product intent, environment, or tooling blocks.
-14. After directed work completes, load Bosun for hygiene, verification recheck, and commit custody.
+14. After directed work completes, load Boatswain for hygiene, verification recheck, and commit custody.
 15. If product intent missing/contradictory, load Captain with concrete blocker.
 
 ## Final report
