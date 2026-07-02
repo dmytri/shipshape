@@ -97,7 +97,7 @@ Shipshape is the portable skill layer. Enforcing runtimes can make the rules mec
 Shipshape keeps the authoritative surface small:
 
 - `.feature` files define binding product behaviour.
-- `assets/**` are Captain-owned editable artifacts: product material, examples, fixtures, content, media, or other support material. Product-facing content should live in assets or project-approved content catalogs, such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Assets and catalogs are not instructions, backlog, rationale, project memory, or hidden requirements.
+- `assets/**` are human-owned product material under Captain custody during Shipshape work: examples, fixtures, content, media, or other support material. Product-facing content should live in assets or project-approved content catalogs, such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Assets and catalogs are not instructions, backlog, rationale, project memory, or hidden requirements.
 - `AGENTS.md` is the human-facing agent entry document.
 - `RIGGING.md` holds project tooling values such as stack, directories, and commands.
 - `CAPTAIN.md`, if present, contains Captain-only non-binding notes.

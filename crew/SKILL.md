@@ -25,7 +25,9 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - **No premature DRY.** Do not extract helpers, create interfaces, add abstraction layers, or deduplicate code unless the current failing target directly requires it. Duplication is preferred over a wrong abstraction.
 - **Strict YAGNI.** Do not add parameters, options, config, plugins, hooks, or extension points for future scenarios. The current scenario is the only requirement.
 - No "while we're here" changes. No opportunistic cleanup, formatting, renaming, or modernization unless it is the failing target.
+- **Perturbation targets.** If the failure evidence is the `PERTURBATION` message, the fix is reimplementation of the seam from current durable context: feature `Rule:` prose, `AGENTS.md` standards, and `RIGGING.md` values. The perturbation statement leaves with the reimplemented seam.
 - Crew MAY expose a narrow verification seam when required for the assigned failing target.
+- Crew MUST NOT hide product behaviour in constructors, global state, static initialization, service locators, test-only branches, or harness-only paths.
 - Crew MUST NOT perform broad testability refactors, dependency rewrites, or architecture cleanup beyond the failing target.
 - MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker. If a dependency is needed but missing from `RIGGING.md`, stop and report the blocker to QM. Captain confirms the selection, documents it in `RIGGING.md`, and Crew installs it.
 - If the first approach fails, stop and report. If the test or spec seems wrong, stop and report.

@@ -52,10 +52,10 @@ Internal roles (QM, Crew, Boatswain, Shipwright) use smart-but-silent voice:
 
 These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline.
 
-1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are Captain-owned editable artifacts. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent. `RIGGING.md` holds project tooling values such as stack, directories, and commands; it is tooling configuration, not product intent.
+1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are human-owned product material under Captain custody during Shipshape work. Assets MAY be referenced by scenarios or verification, but they MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. If asset content must be protected as behaviour, specify that behaviour in a `.feature` scenario. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` is agent/tooling configuration, not product intent. `RIGGING.md` holds project tooling values such as stack, directories, and commands; it is tooling configuration, not product intent.
 2. **Context firewall.** Captain to QM requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start a fresh session before `/qm`; QM refuses if Captain or human discovery context is visible. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this firewall. Product intent MUST exist only in durable repository artifacts (`.feature` specs, `assets/**`, `watchbill.json`); any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain to QM boundary is a violation.
 3. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
-4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams.
+4. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. Captain MAY add a perturbation when current durable context needs production attention and verification still passes. This is the only Captain exception to production-code custody. Captain uses the `fail-fast` value from `RIGGING.md`.
 5. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. A production seam with no `@planks(...)` link is either unspecified behaviour or dead code. In harbour, Shipwright planks unspecified behaviour by writing a `@captain` scenario. Boatswain flags a seam it judges dead with `@shipwright`. Shipwright removes flagged code during harbour. Boatswain limits hygiene to the current watchbill scope, verification dry-run output, and uncommitted changes. Boatswain flags dead code but does not sweep the entire codebase or delete production code.
 6. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY (extracting helpers, creating interfaces, adding abstraction before the scenario demands it) and YAGNI violations (parameters, options, config, hooks, extension points for imagined futures) are forbidden.
 7. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
@@ -82,7 +82,7 @@ A seam may carry Planks for several steps. A step may be carried by Planks on se
 
 ## Scenario-writing agreement
 
-Follow this scenario-writing agreement. Shipshape uses specification by example: each scenario is a concrete example that defines the behaviour contract.
+Follow this scenario-writing agreement. Shipshape uses specification by example: each scenario is a concrete example that defines the behaviour contract. Captain and Shipwright MUST apply this agreement when writing binding or `@captain` scenarios. QM and Boatswain use it to evaluate scenario quality.
 
 - Every feature file SHOULD describe one `Feature` unless project policy differs. Use stable vocabulary from the domain and product.
 - Format Gherkin with 2-space indentation SHOULD, one blank line between scenarios SHOULD, and no blank lines between steps MUST.
@@ -151,36 +151,7 @@ A blocker that must reach Captain is delivered before any context clear. The rol
 
 ### Harbour flow
 
-Shipwright works in-harbour: existing-codebase onboarding and maintenance between releases. Crew is off deck. Shipwright reads production code, adds `@planks(...)` annotations, and produces non-binding `@captain` scenario skeletons. Shipwright is never invoked automatically, only when the user asks Captain or via `/shipwright`.
-
-```text
-Captain to clear context to Shipwright to Captain review, promote, or discard
-```
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Shipwright
-    participant Captain
-
-    User->>Shipwright: /shipwright, scan this codebase
-    Shipwright->>Shipwright: Run coverage, scan for violations
-    Shipwright->>Captain: @captain scenarios written
-    Captain->>User: Review each scenario, promote/discard
-```
-
-After Captain promotes `@captain` scenarios to binding specs, normal flow resumes.
-
-### Harbour state
-
-Harbour state is derived, not stored. Do not record it in a file or in agent memory. Derive it from durable signals: working tree cleanliness, whether local commits are ahead of upstream, the presence of `@shipwright`-flagged code, the presence of unresolved `@captain` scenarios, and Shipwright's last full-tier boundary check.
-
-Captain owns two transition guards.
-
-- Enter harbour only when the voyage is quiescent. The working tree MUST be clean and outbound MUST NOT be pending. Pending outbound means local commits ahead of upstream or an unmerged release branch. Harbour reconstitutes the codebase, so a pending release MUST ship or be abandoned before harbour begins.
-- Resume the voyage only when the harbour inventory is complete. No `@shipwright`-flagged code remains and Shipwright's full-tier boundary check is green. Unresolved `@captain` scenarios do not block resuming the voyage. QM ignores them and Boatswain protects their code.
-
-While Shipwright issues remain unresolved, the ship stays in harbour. Captain holds at harbour and opens no new feature voyage until the inventory is complete.
+Shipwright handles harbour work: existing-codebase onboarding and maintenance between releases. Shipwright inventories production code, adds `@planks(...)`, writes non-binding `@captain` scenarios, and returns to Captain for review. QM ignores `@captain` scenarios until Captain promotes them. Harbour procedure and guards live in the Shipwright skill.
 
 ## Project configuration
 
@@ -193,12 +164,13 @@ While Shipwright issues remain unresolved, the ship stays in harbour. Captain ho
 - `## Stack`: `language`, `runtime`, and `packageManager`.
 - `## Directories`: `implementation`, `specs`, `verification`, and `assets` paths.
 - `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. All verification commands MUST exclude `@captain`-tagged scenarios.
+- `## Perturbation`: the stable `message` and project-specific `fail-fast` statement.
 - `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
 - `## Dependencies`: the dependency `policy`.
 - `## Outbound`: the release or distribution artifact verification command or policy, when the project ships an artifact.
 - `## Known false-failure modes`: short notes a role rules out before routing a product defect.
 
-A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` under `## Directories`, and `focused` under `## Commands`. Other sections are optional but SHOULD be present when the project needs them. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. Keep narrative short. Long rationale belongs in `AGENTS.md`, not `RIGGING.md`.
+A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` under `## Directories`, `focused` under `## Commands`, and `fail-fast` under `## Perturbation`. Other sections are optional but SHOULD be present when the project needs them. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. Keep narrative short. Long rationale belongs in `AGENTS.md`, not `RIGGING.md`.
 
 ## Project policies
 
@@ -210,7 +182,9 @@ If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory produc
 
 ### Asset policy
 
-`assets/**` are Captain-owned editable artifacts: content, media, examples, fixtures, screenshots, pages, copy, or other materials. Some assets may ship as product material, and some may support verification. Assets MAY also hold design documents, architecture decision records, or project rationale, but agents MUST NOT derive work from them. Only `.feature` specs and verification output create work. Product-facing content SHOULD live in Captain-owned assets or project-approved content catalogs, not hidden in production code. Projects MAY use tools such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Code MAY render catalog entries; Captain owns content changes. Assets are not an instruction layer or a second specification surface. If asset content or exact catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
+`assets/**` are human-owned product material under Captain custody during Shipshape work. The human operator owns product decisions and content. Captain MAY edit assets to capture approved product material, examples, fixtures, screenshots, pages, copy, media, or other support material.
+
+Assets MAY be referenced by scenarios or verification. Assets MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. Only `.feature` specs and verification output create agent work. Product-facing content SHOULD live in assets or project-approved content catalogs. If asset content or exact catalog content must be protected as behaviour, Captain specifies that behaviour in a `.feature` scenario.
 
 ### Artifact authority policy
 
@@ -218,54 +192,15 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 ### Verification policy
 
-Use project-specific commands:
+Use project-specific commands from `RIGGING.md`. All verification commands MUST exclude `@captain`-tagged scenarios. Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs. Full tier runs are boundary checks, not the default inner loop. Passing checks are evidence, not proof. Skipped verification is unverified. Reports MUST distinguish fresh results from cache-backed results. QM owns verification procedure details.
 
-- discovery: find undefined or unimplemented coverage;
-- Watchbill-selected verification: run only selected scenario references when tooling supports it;
-- focused test: run one target;
-- broader tests: run suites or tiers as boundary checks;
-- static checks: typecheck and lint if available.
+### Perturbation policy
 
-All verification commands MUST exclude `@captain`-tagged scenarios. For Cucumber runners, use `--tags "not @captain"`.
-
-Progress is measured by verification status, not by a separate checklist. Agents hold no planned work in memory. Human edits between cycles are expected; the next verification run discovers whatever is true now. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs to save time and tokens. Full tier runs are boundary checks, not the default inner loop. Isolate slow checks. Reports MUST distinguish fresh results from cache-backed results. When Captain receives a clean hand-off with no remaining discovered work, Captain MUST offer to run the entire test suite across all tiers.
-
-Skipped verification is not passing verification. Reports MUST identify skipped targets and their reasons (absent credential, absent capability, environment limitation). A skipped target remains unverified until the required credential, capability, or environment is present and the target runs. If a target is persistently skipped for reasons that cannot be resolved by the project, Captain SHOULD escalate or remove the scenario.
-
-When project configuration enables sandbox provisioning, tooling SHOULD derive or create missing disposable test resources instead of skipping. Provisioned resources MUST follow harmless-by-design rules: namespace every created resource, register idempotent teardown, never modify or delete resources the run did not create. An environment-limit rejection is NOT a skip if the project owns capacity reclamation.
+A perturbation marks a behaviour-stable seam for reimplementation. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `fail-fast` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other failing target. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit.
 
 ### Verification-shaped code policy
 
-Production code SHOULD be shaped so QM can verify scenario behaviour through narrow, observable seams and Crew can make the smallest production change for one failing target.
-
-Verification-shaped code is not mock-shaped code. It isolates side effects so real behaviour can be exercised deliberately. It MUST NOT replace normal-path real coverage with mocks, fakes, test-only branches, simulated CLIs, `.invalid` endpoints, dummy credentials, or harness-only behaviour.
-
-A seam is a stable production boundary where behaviour can be entered, observed, or owned. Shipshape uses seams for real verification and Planks traceability, not for mocks, fakes, test-only branches, or harness-only code.
-
-Prefer:
-
-- domain or product logic separated from UI, framework, network, filesystem, clock, database, and other side effects;
-- dependencies passed through explicit parameters, constructors, factories, or project-approved dependency mechanisms;
-- stable interfaces, ports, adapters, facades, selectors, reducers, or pure functions where they make behaviour easier to verify;
-- explicit inputs and observable outputs or state changes;
-- small modules with one clear responsibility;
-- boring constructors that assign dependencies and do not perform real work;
-- error paths that return, throw, log, emit, or persist observable signals that verification can assert.
-
-Avoid:
-
-- hidden product behaviour in constructors, global state, static initialization, singletons, registries, service locators, or framework lifecycle hooks;
-- production code that creates hard dependencies internally when project policy allows injection;
-- digging through collaborator object graphs to reach hidden dependencies;
-- broad modules whose purpose requires "and" to describe;
-- side effects mixed into domain logic when they can be isolated behind a seam;
-- test-only branches, fake normal paths, or production changes made only to satisfy harness convenience.
-
-Crew MAY refactor production code to expose a verification seam only when that is the smallest sufficient change for the assigned failing target. Crew MUST NOT perform broad testability refactors, dependency rewrites, or architecture cleanup without a failing verification target.
-
-QM SHOULD verify observable behaviour through real paths. QM MUST NOT couple tests to private implementation details unless the project's public contract is at that layer. If production code hides scenario behaviour behind global state, constructors, static initialization, service locators, or tangled side effects, QM reports a Crew target or Captain blocker with evidence.
-
-Boatswain SHOULD flag hidden global state, stale seams, service locators, broad side-effectful modules, test-only branches, and untraceable behaviour when they make verification brittle or obscure current design.
+Production code SHOULD expose narrow, observable seams for real scenario behaviour. Verification seams MUST support real behaviour, not mocks, fakes, test-only branches, simulated CLIs, `.invalid` endpoints, dummy credentials, or harness-only behaviour. Crew MAY refactor production code to expose a verification seam only when that is the smallest sufficient change for the assigned failing target. Role-specific seam guidance lives in QM, Crew, Boatswain, and Shipwright.
 
 ### Outbound verification policy
 
@@ -277,17 +212,7 @@ Feature files are canon. Shipshape derives trace from current feature files, thr
 
 Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
 
-Use docblock syntax where the language supports docblocks:
-
-```ts
-/**
- * @planks("When the customer pays with the saved card")
- * @planks("Then the payment is authorized")
- */
-export async function payWithSavedCard(checkout, savedCard) {}
-```
-
-`@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
+Use the project comment form for trace annotations. `@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
 
 Not every step requires Planks. Setup and assertion steps often use only verification support. Every production seam MUST have at least one `@planks(...)` annotation.
 
@@ -297,13 +222,7 @@ Do not trace production code to features or scenarios. Scenario coverage is deri
 
 ### Coverage report convention
 
-Generated coverage reports MAY summarize current trace and verification state:
-
-```text
-feature scenario to step to step definition to planked seam to verification status
-```
-
-Coverage reports are transient verification output. They MUST NOT define product intent, create work, or become durable planning artifacts.
+Generated coverage reports are transient verification output. They MUST NOT define product intent, create work, or become durable planning artifacts.
 
 ### Tier tags
 

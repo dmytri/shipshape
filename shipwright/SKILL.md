@@ -30,13 +30,13 @@ Smart-but-silent. Example: `Harbour scan complete. 12 @captain written. Captain 
 
 ## Discovery tools
 
-Shipwright SHOULD use when available. Tools depend on the project language and test runner. Examples below assume a Node.js Cucumber project; substitute equivalents for other stacks.
+Shipwright SHOULD use when available. Tools depend on the project language and test runner. Use commands from `RIGGING.md` when present.
 
-- Coverage collection: run the project's test suite with coverage enabled. One example for Node.js: `npx c8 --reporter=text npx cucumber-js`. Use coverage output to identify files with zero, partial, or full coverage. If no test suite exists, note it as a blocker.
+- Coverage collection: run the `coverage` command from `RIGGING.md`. Use coverage output to identify files with zero, partial, or full coverage. If no test suite exists, note it as a blocker.
 - Cucumber usage: cross-reference production code with step definitions to find modules with zero step-definition coverage. Grep step definitions for imports or references to production modules.
-- Step-to-code mapping: for covered files, read the step definitions that import them, extract the Gherkin step text from the step definition binding (e.g. `Given(`, `When(`, or `Then(` calls), and use that exact step text in `@planks(...)`.
+- Step-to-code mapping: for covered files, read the step definitions that import them, extract the Gherkin step text from the step definition binding, and use that exact step text in `@planks(...)`.
 - Static analysis: grep and AST inspection for policy violations. Grep for `@shipwright` docblock tags to find code flagged for removal.
-- Plank inventory: list every plank with `grep -rn '@planks(' src/`. Cross-reference each plank's step text against the `step-usage` command output. The `@planks("text")` syntax is plain text by design; grep is the universal floor. Language-specific docblock or AST tooling MAY supplement when available. Example for Node.js: for each plank returned by grep, search for its step text in `npx cucumber-js --format usage`. A plank whose step text appears nowhere in the usage report is stale and MUST be corrected.
+- Plank inventory: list every plank with a project-appropriate text search. Cross-reference each plank's step text against the `step-usage` command output. The `@planks("text")` syntax is plain text by design; text search is the universal floor. Language-specific docblock or AST tooling MAY supplement when available. A plank whose step text appears nowhere in the usage report is stale and MUST be corrected.
 - Git history: identify recently changed or orphaned modules.
 
 ## Fitting out
@@ -44,10 +44,10 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 Fitting out is first-run setup of a project for Shipshape. It is a harbour activity. Shipwright derives the project tooling values from the repository and scaffolds the config files. Shipwright never asks the user. It derives from the repository, or it raises a Captain blocker.
 
 1. If `AGENTS.md` or `RIGGING.md` is absent, fit out before the inventory.
-2. Derive `RIGGING.md` values from the repository. Read the package manager from the lockfile and `package.json`, the language and runtime from `package.json` and source file extensions, the commands from `package.json` scripts and test-runner config, the directories from the project layout, and the lint and typecheck commands from their config.
-3. Verify the project tooling is runnable. For Node.js, confirm `package.json` exists and the package manager is installed. If the project init file is missing or the runtime is not installed, raise a Captain blocker. Do not write `RIGGING.md` until tooling is verified.
+2. Derive `RIGGING.md` values from the repository. Read the language, runtime, package manager, commands, directories, dependency policy, perturbation syntax, and tooling checks from project files and configuration.
+3. Verify the project tooling is runnable. Confirm the project init file, runtime, and package manager for the derived stack. If the project init file is missing or the runtime is not installed, raise a Captain blocker. Do not write `RIGGING.md` until tooling is verified.
 4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the fixed `RIGGING.md` shape in the `shipshape` skill.
-5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker. The required values are `language`, `implementation`, and `focused`. Captain discovers the missing value with the user and writes it. Do not guess.
+5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker. The required values are `language`, `implementation`, `focused`, and perturbation `fail-fast`. Captain discovers the missing value with the user and writes it. Do not guess.
 6. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
 
 ### AGENTS.md template
@@ -80,45 +80,58 @@ Procedure lives in the skills. Every role reads this on open.
 
 ## Stack
 
-- language: typescript
-- runtime: node@20
-- packageManager: pnpm
+- language: <derived>
+- runtime: <derived or none>
+- packageManager: <derived or none>
 
 ## Directories
 
-- implementation: src/
-- specs: features/
-- verification: features/steps/, features/support/
-- assets: assets/
+- implementation: <derived>
+- specs: <derived>
+- verification: <derived or none>
+- assets: <derived or none>
 
 ## Commands
 
-- discover: `pnpm cucumber-js --dry-run --tags "not @captain"`
-- focused: `pnpm cucumber-js "{scenario}" --tags "not @captain"`
-- broad: `pnpm cucumber-js --tags "not @captain"`
-- coverage: `pnpm c8 cucumber-js --tags "not @captain"`
-- step-usage: `pnpm cucumber-js --format usage`
-- typecheck: `pnpm tsc --noEmit`
-- lint: `pnpm eslint .`
+- discover: `<derived or none>`
+- focused: `<derived command with {scenario}>`
+- broad: `<derived or none>`
+- coverage: `<derived or none>`
+- step-usage: `<derived or none>`
+- typecheck: `<derived or none>`
+- lint: `<derived or none>`
+
+## Perturbation
+
+- message: `PERTURBATION: consider current durable context; remove when fixed`
+- fail-fast: `<host-language fail-fast statement using the message>`
 
 ## Tiers
 
-- default: @logic
-- sandbox: @sandbox; requires test API keys in the environment
+- default: <derived or @logic>
+- sandbox: <derived or none>
 
 ## Dependencies
 
-- policy: locked; no new dependencies without a spec
-- yaml (example: write only the dependency name; do not pin a version without a reason)
+- policy: <derived or locked>
+- <selected dependency names, if any>
 
 ## Outbound
 
-- policy: verify the published npm package, not only the local source
+- policy: <derived or none>
 
 ## Known false-failure modes
 
-- First run after install can race the build. Rerun once before treating red as a defect.
+- <derived or none>
 ````
+
+For JavaScript and TypeScript, derive this perturbation value:
+
+```markdown
+- fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+```
+
+For other languages, use the normal fail-fast statement for that language. If the value is not clear, raise a Captain blocker.
 
 ### README.md block
 
@@ -146,8 +159,8 @@ For workflow instructions, load the Shipshape skill or visit the repository.
 1. Verify the harbour-entry guard. The working tree MUST be clean and outbound MUST NOT be pending. Pending outbound means local commits ahead of upstream. If the guard fails, block to Captain and stop. Do not begin harbour work on a dirty or unshipped tree.
 2. Load `shipshape` skill. Read `RIGGING.md` for project tooling values and `AGENTS.md` for any project-specific agent rules. If `RIGGING.md` or `AGENTS.md` is absent, fit out first. See Fitting out.
 3. Identify scope, Captain-assigned module/directory, or full codebase if onboarding.
-4. Run coverage analysis. Run the `coverage` command from `RIGGING.md` to get per-file line coverage. One example for Node.js: `npx c8 --reporter=text npx cucumber-js`. If `RIGGING.md` defines no coverage command, infer one from the project stack, else block to Captain as a configuration blocker. Use per-file and per-line output to prioritize: 100%-covered files with no `@planks(...)` annotations need only backfill, partially-covered files need backfill plus `@captain` gaps, 0%-covered files need full `@captain` scenarios.
-5. Map covered code to step text. For each covered production file, find which step definitions import or reference it. Read those step definitions for Gherkin step bindings (e.g. `Given(`, `When(`, `Then(` calls in Cucumber-JS, decorators in Cucumber-JVM, or equivalent in the project's language). Resolve the binding to the concrete matching step line from the `.feature` file. Use parameterized and regex bindings to find the actual step text in the feature, and use that concrete text in `@planks(...)`. Save this mapping for step 9. If multiple step definitions reference the same file, the file may carry Planks for multiple steps.
+4. Run coverage analysis. Run the `coverage` command from `RIGGING.md` to get per-file line coverage. If `RIGGING.md` defines no coverage command, infer one from the project stack, else block to Captain as a configuration blocker. Use per-file and per-line output to prioritize: 100%-covered files with no `@planks(...)` annotations need only backfill, partially-covered files need backfill plus `@captain` gaps, 0%-covered files need full `@captain` scenarios.
+5. Map covered code to step text. For each covered production file, find which step definitions import or reference it. Read those step definitions for Gherkin step bindings in the project's Cucumber implementation. Resolve the binding to the concrete matching step line from the `.feature` file. Use parameterized and regex bindings to find the actual step text in the feature, and use that concrete text in `@planks(...)`. Save this mapping for step 9. If multiple step definitions reference the same file, the file may carry Planks for multiple steps.
 6. Find uncovered modules. Grep step definitions for imports or references to production paths. Any production module not imported by any step definition has zero cucumber coverage and needs a `@captain` scenario.
 7. Scan for policy violations and seams with behaviour outside their related `@planks(...)` steps:
    - **Content catalog violations:** hardcoded product-facing strings (labels, messages, emails, UI copy, error messages shown to users) that should live in assets or content catalogs per the Asset policy.
