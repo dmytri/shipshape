@@ -66,6 +66,7 @@ Called after Crew finishes and verification passes. If uncertain which mode, ass
 - `@planks(...)` annotations exist on every production seam in scope. Add missing annotations when clear; flag stale annotations and related stale artifacts as Captain blockers. Boatswain does not delete production code; Shipwright handles removal during harbour.
 - Verify planked seams contain only behaviour their related Gherkin steps require. Any deviation is a spec gap or dead code. Flag to Captain.
 - Grep the uncommitted diff for removed `PERTURBATION` statements. Each one marks a seam Captain condemned for reimplementation. Verify the seam was reimplemented to comply with current durable context: feature `Rule:` prose, `AGENTS.md` standards, `RIGGING.md` values, and available lint. A diff that removes the statement and leaves the seam otherwise unchanged is a Captain blocker.
+- Search the working tree for live `PERTURBATION` statements. A live perturbation in a green tree is a foul deck: the seam is unexercised or its scenario is stale-green. Block to Captain with evidence.
 - If QM dispatched parallel Crew agents, reconcile their changes before final verification.
 - Generated coverage reports are transient. Use them for hygiene, but do not treat them as product intent or planning artifacts.
 - If `watchbill.json` and verification disagree, verification wins; remind Captain to update or remove `watchbill.json`.

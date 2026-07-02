@@ -78,6 +78,15 @@ check "boatswain blocked from git push" bash-custody.sh "$(b "$work/t-boatswain.
 check "qm blocked from publish" bash-custody.sh "$(b "$work/t-qm.jsonl" "npm publish")" 2
 check "main loop push unrestricted" bash-custody.sh "$(b "$work/t-main.jsonl" "git push origin main")" 0
 
+# captain-notes-guard
+check "qm blocked from reading CAPTAIN.md" captain-notes-guard.sh "$(p "$work/t-qm.jsonl" "$work/proj/CAPTAIN.md")" 2
+check "crew blocked from grepping CAPTAIN.md" captain-notes-guard.sh "$(p "$work/t-crew.jsonl" "$work/proj/CAPTAIN.md")" 2
+check "boatswain may read CAPTAIN.md" captain-notes-guard.sh "$(p "$work/t-boatswain.jsonl" "$work/proj/CAPTAIN.md")" 0
+check "main loop reads unrestricted" captain-notes-guard.sh "$(p "$work/t-main.jsonl" "$work/proj/CAPTAIN.md")" 0
+check "qm other reads unaffected" captain-notes-guard.sh "$(p "$work/t-qm.jsonl" "$work/proj/features/pay.feature")" 0
+check "crew blocked from cat CAPTAIN.md" bash-custody.sh "$(b "$work/t-crew.jsonl" "cat CAPTAIN.md")" 2
+check "boatswain may cat CAPTAIN.md" bash-custody.sh "$(b "$work/t-boatswain.jsonl" "cat CAPTAIN.md")" 0
+
 # qm-entry-guard
 check "qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 2
 check "qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0

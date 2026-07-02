@@ -26,6 +26,14 @@ deny() {
   exit 2
 }
 
+case "$role" in
+  qm|crew|shipwright)
+    case "$payload" in
+      *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. Boatswain MAY read it; QM, Crew, and Shipwright derive everything from durable artifacts." ;;
+    esac
+    ;;
+esac
+
 case "$payload" in
   *"git push"*|*"git tag"*|*"npm publish"*|*"pnpm publish"*|*"yarn publish"*|*"gh release"*|*"gh pr create"*|*"vercel deploy"*|*"vercel --prod"*)
     deny "Outbound is Captain-only and requires explicit user approval."

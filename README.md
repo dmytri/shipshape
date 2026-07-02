@@ -155,7 +155,7 @@ After context clears, QM reads only durable repository artifacts and runs focuse
 - focused: `pnpm cucumber-js "{scenario}" --tags "not @captain and not @shipwright"`
 - broad: `pnpm cucumber-js --tags "not @captain and not @shipwright"`
 - coverage: `pnpm c8 cucumber-js --tags "not @captain and not @shipwright"`
-- step-usage: `pnpm cucumber-js --format usage`
+- step-usage: `pnpm cucumber-js --dry-run --format usage-json`
 - plank-inventory: `pnpm jsdoc -X src/`
 - typecheck: `pnpm tsc --noEmit`
 - lint: `pnpm eslint .`
@@ -287,6 +287,8 @@ A perturbation marks that seam for reimplementation. Captain adds the `fail-fast
 
 The perturbation statement carries a fixed message and nothing else: no step text, no scenario names, no rationale, no instructions. Requirements stay in durable artifacts.
 
+A perturbation must become a failing verification target. One that stays green has discovered an unexercised seam or a stale-green scenario, and that evidence routes to Captain as a blocker.
+
 ## Harbour mode
 
 When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user: promote to a binding spec by removing the tag, or discard by retagging to `@shipwright`. The next harbour removes the code a `@shipwright` scenario traces to, then deletes the scenario. QM ignores `@captain` and `@shipwright` scenarios.
@@ -346,7 +348,7 @@ Shipshape skills work anywhere a coding agent can read repository files and foll
 Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. This repository ships an optional plugin layer in the vendor-neutral open-plugin format that mechanizes two disciplines on supporting runtimes:
 
 - **Context isolation.** Role agents run QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM firewall becomes mechanical.
-- **Custody.** Hooks block writes outside each role's write scope, hold local commits to Boatswain, keep outbound actions Captain-only, and refuse `/qm` when Captain context is visible. Custody hooks bind the internal role agents. The human-facing main loop stays unrestricted; Captain's discipline is instructional, by design.
+- **Custody.** Hooks block writes outside each role's write scope, block QM, Crew, and Shipwright from reading `CAPTAIN.md`, hold local commits to Boatswain, keep outbound actions Captain-only, and refuse `/qm` when Captain context is visible. Custody hooks bind the internal role agents. The human-facing main loop stays unrestricted; Captain's discipline is instructional, by design.
 - **Derived status.** The `/shipshape:status` command reports deck state from repository signals: tree cleanliness, commits ahead of upstream, `@captain` and `@shipwright` counts, perturbations, and watchbill validity.
 - **Install audit.** The `/shipshape:doctor` command audits the installation itself: completeness of each installed copy, freshness against upstream, and coherence across channels and scopes, so stale or shadowed doctrine is found instead of trusted.
 - **Orientation.** On session start in a project with `RIGGING.md`, the plugin injects `shipshape.md`, a structural map of roles, artifacts, tags, and routing, plus one derived deck-state line suggesting the entry role. The map is non-normative; the skills stay canonical, and `tests/map.sh` checks its names against them.

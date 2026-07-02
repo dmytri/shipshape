@@ -41,6 +41,15 @@
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/qm-entry-guard.sh\""
           }
         ]
+      },
+      {
+        "matcher": "Read|Grep|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/captain-notes-guard.sh\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
