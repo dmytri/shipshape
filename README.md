@@ -131,7 +131,49 @@ Captain may focus the next verification pass with `watchbill.json`:
 }
 ```
 
-After context clears, QM reads only durable repository artifacts and runs focused verification. Exact commands come from the adopting project's `RIGGING.md`.
+After context clears, QM reads only durable repository artifacts and runs focused verification. Exact commands come from the adopting project's `RIGGING.md`. A fitted-out TypeScript project might carry this one:
+
+```markdown
+# Rigging
+
+## Stack
+
+- language: typescript
+- runtime: node@22
+- packageManager: pnpm
+
+## Directories
+
+- implementation: src/
+- specs: features/
+- verification: features/steps/, features/support/
+- assets: assets/
+
+## Commands
+
+- discover: `pnpm cucumber-js --dry-run --tags "not @captain and not @shipwright"`
+- focused: `pnpm cucumber-js "{scenario}" --tags "not @captain and not @shipwright"`
+- broad: `pnpm cucumber-js --tags "not @captain and not @shipwright"`
+- coverage: `pnpm c8 cucumber-js --tags "not @captain and not @shipwright"`
+- step-usage: `pnpm cucumber-js --format usage`
+- plank-inventory: `pnpm jsdoc -X src/`
+- typecheck: `pnpm tsc --noEmit`
+- lint: `pnpm eslint .`
+
+## Perturbation
+
+- message: `PERTURBATION: consider current durable context; remove when fixed`
+- fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+
+## Tiers
+
+- default: @logic
+- sandbox: @sandbox; requires test API keys in the environment
+
+## Dependencies
+
+- policy: locked; no new dependencies without a spec
+```
 
 ```text
 $ npm run test:bdd -- "features/checkout/saved-card-checkout.feature:Customer pays with a saved card"
@@ -243,11 +285,15 @@ Scenarios pin behaviour. Durable context also carries requirements that leave be
 
 A perturbation marks that seam for reimplementation. Captain adds the `fail-fast` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
 
+The perturbation statement carries a fixed message and nothing else: no step text, no scenario names, no rationale, no instructions. Requirements stay in durable artifacts.
+
 ## Harbour mode
 
 When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user: promote to a binding spec by removing the tag, or discard by retagging to `@shipwright`. The next harbour removes the code a `@shipwright` scenario traces to, then deletes the scenario. QM ignores `@captain` and `@shipwright` scenarios.
 
 On an existing codebase, this is a long and painful process. Every production seam is planked, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is traced to feature-file steps and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
+
+Tags are workflow state with a bounded lifecycle: the voyage does not resume while `@shipwright` marks remain, and a completed harbour leaves the tree untagged except for `@captain` scenarios awaiting review.
 
 ```mermaid
 sequenceDiagram
@@ -276,6 +322,8 @@ Shipshape answers those failure modes with a small, current-state workflow:
 
 Disposable does not mean careless. Code and tests must justify their existence against current executable behaviour. Humans edit code at any time. Shipshape has no backlog, no task list, and no agent memory of planned work. Agents derive the next action from current verification state. If you fix a bug by hand, QM sees it pass and moves on. If you break something, QM flags it. There is no stale plan to reconcile.
 
+Boatswain enforces the standards the project writes down. Put code standards in `AGENTS.md`; unwritten standards do not exist.
+
 The authoritative surface stays small:
 
 - `.feature` files define binding product behaviour.
@@ -298,7 +346,7 @@ Shipshape skills work anywhere a coding agent can read repository files and foll
 Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. This repository ships an optional plugin layer in the vendor-neutral open-plugin format that mechanizes two disciplines on supporting runtimes:
 
 - **Context isolation.** Role agents run QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM firewall becomes mechanical.
-- **Custody.** Hooks block writes outside each role's write scope, hold local commits to Boatswain, keep outbound actions Captain-only, and refuse `/qm` when Captain context is visible.
+- **Custody.** Hooks block writes outside each role's write scope, hold local commits to Boatswain, keep outbound actions Captain-only, and refuse `/qm` when Captain context is visible. Custody hooks bind the internal role agents. The human-facing main loop stays unrestricted; Captain's discipline is instructional, by design.
 - **Derived status.** The `/shipshape:status` command reports deck state from repository signals: tree cleanliness, commits ahead of upstream, `@captain` and `@shipwright` counts, perturbations, and watchbill validity.
 - **Install audit.** The `/shipshape:doctor` command audits the installation itself: completeness of each installed copy, freshness against upstream, and coherence across channels and scopes, so stale or shadowed doctrine is found instead of trusted.
 - **Orientation.** On session start in a project with `RIGGING.md`, the plugin injects `shipshape.md`, a structural map of roles, artifacts, tags, and routing, plus one derived deck-state line suggesting the entry role. The map is non-normative; the skills stay canonical, and `tests/map.sh` checks its names against them.
