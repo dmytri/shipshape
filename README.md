@@ -2,15 +2,13 @@
 
 [![skills.sh](https://skills.sh/b/dmytri/shipshape)](https://skills.sh/dmytri/shipshape)
 
-Shipshape is a portable skill set for coding agents.
+Shipshape is a portable skill set for coding agents. It turns product intent into durable Cucumber specs, derives work from failing verification, and isolates agent roles so discovery context does not leak into implementation.
 
-It turns product intent into durable Cucumber specs, derives work from failing verification, and isolates agent roles so context does not leak into implementation.
-
-**Specifications are durable. Code is disposable. Agents are replaceable.**
+**Specifications are durable. Code and verification are disposable. Agents are replaceable.**
 
 The Ship of Theseus is an old problem about identity through change. Plutarch's ship is preserved by repair. Rotten timber is removed, new timber is fitted, and the vessel remains in service until none of the first planks remain. Is it still the same ship?
 
-Shipshape asks the same question of software.
+Shipshape asks the same question of software, and answers it: the ship is not her planks. A codebase can be repaired plank by plank while its identity persists, because identity lives in the specification. Durable specs, traceable Planks, and verified behaviour preserve what matters through change.
 
 ## Install
 
@@ -20,15 +18,17 @@ npx skills add dmytri/shipshape --skill '*'
 
 This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/boatswain`, and `/shipwright`.
 
+Agents with plugin support can install Shipshape as a plugin instead:
+
+```bash
+npx plugins add dmytri/shipshape
+```
+
+The plugin carries the same six skills and adds mechanical enforcement. See [Enforcement and portability](#enforcement-and-portability).
+
 ## Quickstart
 
-1. Install all Shipshape skills:
-
-   ```bash
-   npx skills add dmytri/shipshape --skill '*'
-   ```
-
-2. Start with Captain:
+1. Start with Captain:
 
    ```text
    /captain
@@ -36,78 +36,25 @@ This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/boatsw
 
    **Existing codebase?** Run `/shipwright` first. It is thorough and slow, but required: every production seam is planked, every uncovered behaviour inventoried. Captain reviews the results with you before the normal spec-driven loop begins.
 
-3. Tell Captain the product behaviour you want.
+2. Tell Captain the product behaviour you want.
 
-4. Captain writes or updates `.feature` specs and, when useful, `watchbill.json`.
+3. Captain writes or updates `.feature` specs and, when useful, `watchbill.json`.
 
-5. Clear the agent context, or use a runtime that clears context automatically.
+4. Clear the agent context, or use a runtime that clears context automatically.
 
-6. Start Quartermaster:
+5. Start Quartermaster:
 
    ```text
    /qm
    ```
 
-7. QM derives verification from durable repository artifacts and dispatches Crew against failing targets.
+6. QM derives verification from durable repository artifacts and dispatches Crew against failing targets.
 
-8. Boatswain performs hygiene, verification recheck, and local commit custody.
+7. Boatswain performs hygiene, verification recheck, and local commit custody.
 
-9. Captain reports back and handles decisions such as push, PR, publish, release, or deploy.
+8. Captain reports back and handles decisions such as push, PR, publish, release, or deploy.
 
-## Why Shipshape exists
-
-Plain agent coding often traps product intent in chat. Memory-bank workflows can preserve too much stale context. Markdown-heavy spec-driven workflows can turn generated plans and task lists into false progress. Agents drift when the same context contains discovery, planning, tests, and code. Old specs, stale tests, and orphaned code pollute future work.
-
-Shipshape answers those failure modes with a small, current-state workflow:
-
-- Product behaviour lives in `.feature` specs.
-- Work comes from undefined, unimplemented, or failing verification.
-- Roles have strict custody over specs, verification, implementation, and hygiene.
-- Context is cleared between Captain and Quartermaster.
-- Boatswain flags stale production artifacts and cleans non-code cruft.
-- `watchbill.json` selects and orders discovered work only; it does not create work.
-
-## What Shipshape is
-
-Shipshape is a disciplined workflow for keeping product intent durable, agent context disposable, and progress tied to verification.
-
-It uses Cucumber-native specifications as the durable product contract. It treats production code and verification as rebuildable from that contract. Disposable does not mean careless; it means code and tests must justify their existence against current executable behaviour. Shipshape separates human-facing discovery, verification design, implementation, and cleanup into roles with narrow write scopes.
-
-Shipshape is deliberately narrow. It is most opinionated about Cucumber-native executable specs, context-isolated roles, and verification-discovered work.
-
-Humans edit code at any time. Shipshape has no backlog, no task list, and no agent memory of planned work. Agents derive their next action only from current verification state. If you fix a bug by hand, QM sees it pass and moves on. If you break something, QM flags it. There is no stale plan to reconcile.
-
-## What Shipshape is not
-
-Shipshape is not:
-
-- an IDE,
-- a memory bank,
-- a backlog format,
-- a task-list generator,
-- a project constitution,
-- a code generator,
-- a replacement for Cucumber,
-- a runtime enforcement system by itself.
-
-Shipshape is the portable skill layer. Enforcing runtimes can make the rules mechanical.
-
-## What is authoritative?
-
-Shipshape keeps the authoritative surface small:
-
-- `.feature` files define binding product behaviour.
-- `assets/**` are human-owned product material under Captain custody during Shipshape work: examples, fixtures, content, media, or other support material. Product-facing content should live in assets or project-approved content catalogs, such as Fluent, gettext, ICU MessageFormat, JSON/YAML catalogs, CMS exports, or framework-native i18n files. Assets and catalogs are not instructions, backlog, rationale, project memory, or hidden requirements.
-- `AGENTS.md` is the human-facing agent entry document.
-- `RIGGING.md` holds project tooling values such as stack, directories, and commands.
-- `CAPTAIN.md`, if present, contains Captain-only non-binding notes.
-- `watchbill.json` selects and orders verification-discovered work only.
-- `@planks(...)` annotations explain why production seams exist; they do not define product intent.
-- Git history preserves history. Current files describe current design.
-
-If asset or catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
-
-## Workflow and roles
+## How it works
 
 ```mermaid
 sequenceDiagram
@@ -143,18 +90,11 @@ Shipshape separates agent work by custody and context. Each role sees only the c
 
 Only Captain talks to the user. QM, Crew, Boatswain, and Shipwright are internal roles. They report through verification output, repository changes, and role hand-offs.
 
-The most important boundary is Captain to QM. Captain may use human conversation to discover intent, but QM starts from clean context and reads only durable repository artifacts. This prevents discovery chat, rationale, and abandoned ideas from leaking into tests or implementation.
+The most important boundary is Captain to QM. Captain may use human conversation to discover intent. QM starts from clean context and reads only durable repository artifacts. Discovery chat, rationale, and abandoned ideas never reach tests or implementation.
 
-Role flow:
+Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist. Passing checks are evidence, not proof. QM prefers focused runs over full tier runs. Full tier runs are boundary checks, not the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
 
-1. Captain captures product behaviour in current `.feature` specs.
-2. Context clears.
-3. QM derives executable verification from the specs.
-4. Boatswain may pre-clean stale artifacts before they shape verification or implementation.
-5. Crew makes one focused production change for one failing target.
-6. QM reruns verification and may dispatch more Crew work.
-7. Boatswain flags stale artifacts, cleans non-code cruft, checks hygiene, verifies, and commits locally.
-8. Captain reports back to the user and handles decisions such as push, PR, publish, release, or deploy.
+Verification works best when production code exposes narrow behaviour seams. Shipshape discourages hidden product behaviour in global state, constructors, static initialization, and service locators. Seams serve real verification. They never replace normal-path real coverage with mocks, fakes, or test-only branches.
 
 ## What a session looks like
 
@@ -189,7 +129,7 @@ Captain may focus the next verification pass with `watchbill.json`:
 }
 ```
 
-After context clears, QM reads only durable repository artifacts and runs focused verification. Exact commands depend on the adopting project's `AGENTS.md` tooling configuration.
+After context clears, QM reads only durable repository artifacts and runs focused verification. Exact commands come from the adopting project's `RIGGING.md`.
 
 ```text
 $ npm run test:bdd -- "features/checkout/saved-card-checkout.feature:Customer pays with a saved card"
@@ -233,23 +173,9 @@ QM reruns the focused check:
 
 Boatswain flags stale artifacts, cleans non-code cruft, reruns configured verification, commits locally, and returns to Captain. Captain reports the result and asks whether to push, open a PR, publish, release, or deploy.
 
-## Verification is progress
-
-In Shipshape, progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets.
-
-Verification works best when production code exposes narrow behaviour seams. Shipshape discourages hidden product behaviour in global state, constructors, static initialization, service locators, or broad side-effectful modules; it does not use seams to replace normal-path real coverage with mocks, fakes, or test-only branches.
-
-- Verification discovers the worklist.
-- `watchbill.json` can select and order discovered scenario work.
-- Passing checks are evidence, not proof.
-- QM should prefer Watchbill-selected and targeted focused runs over full tier runs when they are enough to advance the current target.
-- Full tier runs are boundary checks, not the default inner loop.
-- When no discovered work remains, Captain must offer to run the entire test suite across all tiers.
-- Reports must distinguish fresh results from cache-backed results.
-
 ## Watchbill
 
-`watchbill.json` lets Captain focus QM and Crew on a selected order of verification-discoverable scenarios. It does not create work; verification still decides what is undefined, unimplemented, failing, or passing.
+`watchbill.json` lets Captain focus QM and Crew on a selected order of verification-discoverable scenarios. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing.
 
 Example:
 
@@ -275,24 +201,6 @@ Rules:
 - Each scenario reference uses `<spec>.feature:<Scenario Name>`.
 - QM processes watches in order unless verification, product intent, environment, or tooling blocks.
 - If Watchbill and verification disagree, verification wins.
-
-## Harbour mode
-
-When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user before promoting to binding specs. QM ignores `@captain` until Captain promotes.
-
-On an existing codebase, this is a long and painful process. Every production seam is planked, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is traced to feature-file steps and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Shipwright
-    participant Captain
-
-    User->>Shipwright: /shipwright, scan this codebase
-    Shipwright->>Shipwright: Run coverage, scan for violations
-    Shipwright->>Captain: @captain scenarios written
-    Captain->>User: Review each scenario, promote/discard
-```
 
 ## Traceability
 
@@ -327,6 +235,71 @@ export async function payWithSavedCard(checkout, savedCard) {
 
 Trace annotations explain why production seams exist. They do not create work, replace verification discovery, or define product intent.
 
+## Perturbation
+
+Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance.
+
+A perturbation marks that seam for reimplementation. Captain adds the `fail-fast` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
+
+## Harbour mode
+
+When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user before promoting to binding specs. QM ignores `@captain` until Captain promotes.
+
+On an existing codebase, this is a long and painful process. Every production seam is planked, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is traced to feature-file steps and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Shipwright
+    participant Captain
+
+    User->>Shipwright: /shipwright, scan this codebase
+    Shipwright->>Shipwright: Run coverage, scan for violations
+    Shipwright->>Captain: @captain scenarios written
+    Captain->>User: Review each scenario, promote/discard
+```
+
+## Design position
+
+Plain agent coding often traps product intent in chat. Memory-bank workflows preserve too much stale context. Markdown-heavy spec-driven workflows turn generated plans and task lists into false progress. Agents drift when the same context contains discovery, planning, tests, and code. Old specs, stale tests, and orphaned code pollute future work.
+
+Shipshape answers those failure modes with a small, current-state workflow:
+
+- Product behaviour lives in `.feature` specs.
+- Work comes from undefined, unimplemented, or failing verification.
+- Roles have strict custody over specs, verification, implementation, and hygiene.
+- Context is cleared between Captain and Quartermaster.
+- Boatswain flags stale production artifacts and cleans non-code cruft.
+- `watchbill.json` selects and orders discovered work only. It does not create work.
+
+Disposable does not mean careless. Code and tests must justify their existence against current executable behaviour. Humans edit code at any time. Shipshape has no backlog, no task list, and no agent memory of planned work. Agents derive the next action from current verification state. If you fix a bug by hand, QM sees it pass and moves on. If you break something, QM flags it. There is no stale plan to reconcile.
+
+The authoritative surface stays small:
+
+- `.feature` files define binding product behaviour.
+- `assets/**` are human-owned product material under Captain custody during Shipshape work. Product-facing content should live in assets or project-approved content catalogs. Assets and catalogs are not instructions, backlog, rationale, project memory, or hidden requirements.
+- `AGENTS.md` is the human-facing agent entry document.
+- `RIGGING.md` holds project tooling values such as stack, directories, commands, and the perturbation statement.
+- `CAPTAIN.md`, if present, contains Captain-only non-binding notes.
+- `watchbill.json` selects and orders verification-discovered work only.
+- `@planks(...)` annotations explain why production seams exist. They do not define product intent.
+- Git history preserves history. Current files describe current design.
+
+If asset or catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
+
+Shipshape is not an IDE, a memory bank, a backlog format, a task-list generator, a project constitution, a code generator, or a replacement for Cucumber.
+
+## Enforcement and portability
+
+Shipshape skills work anywhere a coding agent can read repository files and follow role instructions. The workflow is portable by design: Cucumber specs, verification output, `@planks(...)` annotations, and git history carry the durable state.
+
+Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. This repository ships an optional plugin layer in the vendor-neutral open-plugin format that mechanizes two disciplines on supporting runtimes:
+
+- **Context isolation.** Role agents run QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM firewall becomes mechanical.
+- **Custody.** Hooks block writes outside each role's write scope, hold local commits to Boatswain, keep outbound actions Captain-only, and refuse `/qm` when Captain context is visible.
+
+The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement strength depends on each runtime's hook and subagent support. Skills are the floor everywhere.
+
 ## Related approaches
 
 Shipshape overlaps with spec-driven development tools, memory-bank workflows, and agent-team systems, but makes different tradeoffs.
@@ -344,15 +317,9 @@ Related systems include [Kiro](https://kiro.dev), [Spec Kit](https://github.com/
 
 For background, see Birgitta Bockeler's article on SDD tools on Martin Fowler's site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
 
-## Enforcement and portability
-
-Shipshape skills work anywhere a coding agent can read repository files and follow role instructions. The workflow is portable by design: Cucumber specs, verification output, `@planks(...)` annotations, and git history carry the durable state.
-
-Skill-only agents follow the rules by explicit discipline. Enforcing runtimes can turn the same rules into mechanical checks.
-
 ## Maturity
 
-Shipshape is pre-validation. It has a single author, no published case studies, and relies on voluntary agent discipline that runtimes can enforce but skills alone cannot. It inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
+Shipshape is pre-validation. It has a single author and no published case studies. Skill-only use relies on voluntary agent discipline. The plugin layer mechanizes custody and context isolation on supporting runtimes, and that enforcement is equally unproven. Shipshape inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
 
 ## Origin
 
