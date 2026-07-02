@@ -24,8 +24,13 @@ else
   tree="clean"
   route="/captain"
 fi
-captains=$(grep -r -o '@captain' --include='*.feature' "$cwd" 2>/dev/null | wc -l | tr -d ' ')
-condemned=$(grep -r -o '@shipwright' --include='*.feature' "$cwd" 2>/dev/null | wc -l | tr -d ' ')
+if git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
+  tags=$(git -C "$cwd" grep -h -o -E '@captain|@shipwright' -- '*.feature' 2>/dev/null)
+else
+  tags=$(grep -r -h -o -E '@captain|@shipwright' --include='*.feature' "$cwd" 2>/dev/null)
+fi
+captains=$(printf '%s\n' "$tags" | grep -c '@captain')
+condemned=$(printf '%s\n' "$tags" | grep -c '@shipwright')
 
 echo ""
 echo "Deck state, derived now: tree $tree; @captain scenarios: $captains; @shipwright scenarios: $condemned. Suggested entry: $route."

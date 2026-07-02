@@ -20,7 +20,7 @@ esac
 transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*"\([^"]*\)".*/\1/p')
 role=""
 if [ -n "$transcript" ] && [ -f "$transcript" ]; then
-  role=$(grep -m1 -o 'SHIPSHAPE-ROLE: [a-z]*' "$transcript" | cut -d' ' -f2)
+  role=$(head -c 65536 "$transcript" | grep -m1 -o 'SHIPSHAPE-ROLE: [a-z]*' | cut -d' ' -f2)
 fi
 [ -z "$role" ] && exit 0
 

@@ -20,7 +20,7 @@ problems=""
 grep -q 'Feature:' "$file_path" || problems="$problems
 - file has no Feature: declaration"
 
-grep -qP '\t' "$file_path" 2>/dev/null && problems="$problems
+grep -q "$(printf '\t')" "$file_path" && problems="$problems
 - file contains tabs; the scenario-writing agreement uses 2-space indentation"
 
 if grep -q 'Scenario' "$file_path"; then

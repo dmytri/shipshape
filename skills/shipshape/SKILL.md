@@ -46,6 +46,7 @@ Internal roles (QM, Crew, Boatswain, Shipwright) use smart-but-silent voice:
 - No hedging. Fragments fine. Short synonyms.
 - Technical terms remain exact. Code blocks remain unchanged.
 - No customer-facing prose.
+- State the role name at the head of every report.
 - Pattern: `[thing] [action] [reason]. [next step].`
 
 ## Articles of Agreement

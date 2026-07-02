@@ -102,7 +102,7 @@ check "non-feature files ignored" feature-quality.sh "$(p "$work/t-main.jsonl" "
 # rigging-validate
 out=$(printf '{"cwd":"%s"}' "$work/proj" | "$scripts/rigging-validate.sh")
 if [ -z "$out" ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: complete RIGGING.md is silent"; fi
-sed -i '/fail-fast/d' "$work/proj/RIGGING.md"
+grep -v 'fail-fast' "$work/proj/RIGGING.md" > "$work/proj/RIGGING.tmp" && mv "$work/proj/RIGGING.tmp" "$work/proj/RIGGING.md"
 out=$(printf '{"cwd":"%s"}' "$work/proj" | "$scripts/rigging-validate.sh")
 case "$out" in
   *fail-fast*) pass=$((pass + 1)) ;;
