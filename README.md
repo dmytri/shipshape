@@ -245,7 +245,7 @@ A perturbation marks that seam for reimplementation. Captain adds the `fail-fast
 
 ## Harbour mode
 
-When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user before promoting to binding specs. QM ignores `@captain` until Captain promotes.
+When adding Shipshape to an existing codebase or between releases, run `/shipwright`. Shipwright works in-harbour, Crew is off deck. It scans production code with coverage tools and policy checks, then writes `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user: promote to a binding spec by removing the tag, or discard by retagging to `@shipwright`. The next harbour removes the code a `@shipwright` scenario traces to, then deletes the scenario. QM ignores `@captain` and `@shipwright` scenarios.
 
 On an existing codebase, this is a long and painful process. Every production seam is planked, every uncovered behaviour inventoried, every policy violation flagged. There is no shortcut. But when it finishes, the codebase is traced to feature-file steps and ready for spec-driven development. The pain is the point: it surfaces how much of the codebase was undocumented, untested, or accidental.
 
