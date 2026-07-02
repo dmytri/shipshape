@@ -7,9 +7,11 @@
 # changed production seam." Doctrine lives in the skills; this script adds
 # none.
 #
-# Role identity: Shipshape role agents declare "SHIPSHAPE-ROLE: <role>" in
-# their system prompt. Sessions with no marker are the human-facing main
-# loop; the check there stays with skill discipline.
+# Role identity: the runtime names the running agent in the hook payload
+# as agent_type, such as "shipshape:crew". Payloads with no shipshape
+# agent_type are the human-facing main loop or a foreign agent; custody
+# does not apply there. Quoted mentions of the field inside tool_input
+# arrive JSON-escaped and cannot match the unescaped top-level key.
 
 payload=$(cat)
 
@@ -17,11 +19,7 @@ case "$payload" in
   *'"stop_hook_active":true'*|*'"stop_hook_active": true'*) exit 0 ;;
 esac
 
-transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*"\([^"]*\)".*/\1/p')
-role=""
-if [ -n "$transcript" ] && [ -f "$transcript" ]; then
-  role=$(head -c 65536 "$transcript" | grep -m1 -o 'SHIPSHAPE-ROLE: [a-z]*' | cut -d' ' -f2)
-fi
+role=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:\([a-z]*\)".*/\1/p')
 [ -z "$role" ] && exit 0
 
 cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')

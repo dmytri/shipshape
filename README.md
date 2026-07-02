@@ -374,7 +374,7 @@ For background, see Birgitta Bockeler's article on SDD tools on Martin Fowler's 
 
 ## Maturity
 
-Shipshape is pre-validation. It has a single author and no published case studies. Skill-only use relies on voluntary agent discipline. The plugin layer mechanizes custody and context isolation on supporting runtimes, and that enforcement is equally unproven. Shipshape inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
+Shipshape is pre-validation. It has a single author and no published case studies. Skill-only use relies on voluntary agent discipline. The plugin layer mechanizes custody and context isolation on supporting runtimes; custody enforcement is live-fire verified on Claude Code and unproven elsewhere. Shipshape inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
 
 ## Origin
 
