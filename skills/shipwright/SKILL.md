@@ -134,6 +134,12 @@ For JavaScript and TypeScript, derive this perturbation value:
 
 For other languages, use the normal fail-fast statement for that language. If the value is not clear, raise a Captain blocker.
 
+### Derivation notes
+
+- `step-usage`: derive a machine-readable format that does not truncate step text, such as Cucumber's `usage-json`. Truncated usage output produces false stale-plank reports.
+- Tiers: `@logic` is the default. Derive a `@sandbox` tier when verification needs real services. A project that drives agent behaviour MAY add an `@eval` tier that runs a baseline agent against the shipped product. A browser product MAY add `@browser`; an interactive terminal product MAY add `@tui` through a PTY. Interactive tiers often need serial execution; record that in the tier policy.
+- A tier that needs its own invocation gets a tier-suffixed command variant, such as `coverage-sandbox`.
+
 ### README.md block
 
 Add this block to the project README to reference Shipshape:

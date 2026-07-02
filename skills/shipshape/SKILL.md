@@ -163,7 +163,7 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 
 - `## Stack`: `language`, `runtime`, and `packageManager`.
 - `## Directories`: `implementation`, `specs`, `verification`, and `assets` paths. `implementation` MAY list several paths, including packaging config. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned.
-- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations in the implementation directory. The `step-usage` value SHOULD emit a machine-readable format that does not truncate step text, such as Cucumber's `usage-json`; truncated output produces false stale-plank reports. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`, when a tier needs its own invocation. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
+- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations in the implementation directory. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
 - `## Perturbation`: the stable `message` and project-specific `fail-fast` statement.
 - `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
 - `## Dependencies`: the dependency `policy`.
@@ -235,4 +235,4 @@ Generated coverage reports are transient verification output. They MUST NOT defi
 | `@logic` | Pure local tests, no external accounts. Fast, deterministic, safe. | Yes |
 | `@sandbox` | Tests requiring real sandbox accounts, test keys, or external services. | No |
 
-Projects MAY define additional opt-in tiers, each with its own tag and policy in `RIGGING.md`. Examples: `@eval` runs a baseline agent against the shipped product to verify a consuming agent can use it, which suits any project that drives agent behaviour; `@browser` exercises the product through a real browser; `@tui` exercises interactive terminal prompts through a PTY. Interactive tiers often need serial execution; record that in the tier policy.
+Projects MAY define additional opt-in tiers. Each tier has its own tag and policy in `RIGGING.md`.
