@@ -1,6 +1,6 @@
 ---
 name: qm
-description: "Use this skill to run the Shipshape Quartermaster role: fresh-context verification and executable coverage from durable repository artifacts only."
+description: "Use this skill to run the Shipshape Quartermaster role: fresh-context verification and executable coverage from durable repository artifacts only. Run after Captain, in clear context."
 ---
 
 # Quartermaster

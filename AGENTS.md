@@ -25,6 +25,7 @@ Shipshape is distributed as skill files:
 | `tests/hooks.sh` | Hook behaviour tests |
 | `README.md` | Public project positioning and usage overview |
 | `llms.txt` | Agent-facing index of canonical files (pointers only, no doctrine) |
+| `shipshape.md` | Structural orientation map (names, relations, pointers; non-normative) |
 | `skills.sh.json` | skills.sh registry metadata |
 | `AGENTS.md` | Repository-local agent instructions |
 
@@ -36,6 +37,7 @@ Shipshape is distributed as skill files:
 - Put shared workflow rules in `skills/shipshape/SKILL.md`.
 - Put role-specific rules in the matching role skill.
 - Keep all role skills consistent with the Articles of Agreement in `skills/shipshape/SKILL.md`.
+- `shipshape.md` is a structural map: names, relations, and pointers only. A normative sentence in it is a defect. Update it with any rename it references; `tests/map.sh` checks the names against the skills.
 - Skills alone MUST fully instruct agents. The plugin layer (`.plugin/`, `agents/`, `hooks/`) only mechanizes what skill text already states. Every plugin artifact cites the skill text it enforces. Adding behaviour to the plugin layer that the skills do not state is a violation; fix the skill first, then mechanize it. Deleting the plugin layer must lose nothing but enforcement.
 - Use Shipshape Controlled English in skill files: short sentences, precise subjects, RFC 2119 terms where useful, and Canadian spelling such as `behaviour`. Use `artifact`, not `artefact`.
 - The README Ship of Theseus section is the only text with relaxed Controlled English rules, for literary effect. Every other file follows Controlled English in full, including the punctuation rules: no em dashes and no parenthetical asides.

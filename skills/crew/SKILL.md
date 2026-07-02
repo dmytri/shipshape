@@ -1,6 +1,6 @@
 ---
 name: crew
-description: "Use this skill to run a Shipshape Crew Mate for one failing verification target, making the smallest required production change."
+description: "Use this skill to run a Shipshape Crew Mate for one failing verification target, making the smallest required production change. Dispatched by QM with a target and failure evidence."
 ---
 
 # Crew Mate

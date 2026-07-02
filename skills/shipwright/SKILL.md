@@ -1,6 +1,6 @@
 ---
 name: shipwright
-description: "Use this skill to run the Shipshape Shipwright role: in-harbour code inspection. Discovers existing behaviour and policy violations from production code, writes @captain-tagged scenario skeletons and @planks annotations for Captain review."
+description: "Use this skill to run the Shipshape Shipwright role: in-harbour code inspection. Discovers existing behaviour and policy violations from production code, writes @captain-tagged scenario skeletons and @planks annotations for Captain review. Run for fitting out, onboarding an existing codebase, and between releases."
 ---
 
 # Shipwright

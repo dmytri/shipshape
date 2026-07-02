@@ -5,6 +5,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-orient.sh\""
+          },
+          {
+            "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/rigging-validate.sh\""
           }
         ]

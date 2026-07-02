@@ -1,6 +1,6 @@
 ---
 name: boatswain
-description: "Use this skill to run the Shipshape Boatswain role: hygiene, verification recheck, and local commit custody."
+description: "Use this skill to run the Shipshape Boatswain role: hygiene, verification recheck, and local commit custody. Run before QM on a dirty tree and after Crew finishes."
 ---
 
 # Boatswain

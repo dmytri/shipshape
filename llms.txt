@@ -22,6 +22,7 @@ Specifications are durable. Code is disposable. Agents are replaceable.
 
 ## Docs
 
+- [Shipshape Map](https://raw.githubusercontent.com/dmytri/shipshape/main/shipshape.md): structural orientation map of roles, artifacts, tags, annotations, commands, and routing
 - [README](https://raw.githubusercontent.com/dmytri/shipshape/main/README.md): positioning, install, workflow, traceability, and enforcement overview
 - [AGENTS.md](https://raw.githubusercontent.com/dmytri/shipshape/main/AGENTS.md): repository editing rules for agents working on Shipshape itself
 

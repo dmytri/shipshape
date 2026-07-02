@@ -1,6 +1,6 @@
 ---
 name: shipshape
-description: "Use this skill to understand the Shipshape workflow, shared Articles of Agreement, and select the correct role skill: /captain, /qm, /crew, /boatswain, or /shipwright."
+description: "Use this skill to understand the Shipshape workflow, shared Articles of Agreement, and select the correct role skill: /captain, /qm, /crew, /boatswain, or /shipwright. Entry point when no role is active or the right role is unclear."
 ---
 
 # Shipshape
