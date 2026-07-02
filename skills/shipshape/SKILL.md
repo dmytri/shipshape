@@ -107,29 +107,7 @@ Follow this scenario-writing agreement. Shipshape uses specification by example:
 
 ## Role flow
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Captain
-    participant QM
-    participant Boatswain
-    participant Crew
-
-    User->>Captain: Describe product intent
-    Captain->>Captain: Write .feature specs, watchbill.json
-    Note over Captain,QM: Context clears
-    QM->>QM: Run verification discovery
-    QM->>Boatswain: Pre-clean scan
-    Boatswain->>QM: Stale artifacts flagged
-    QM->>Crew: Dispatch failing target
-    Crew->>Crew: Smallest production change
-    Crew->>QM: Target pass
-    QM->>Boatswain: Post-implementation hygiene, verify
-    Boatswain->>Captain: Deck clean, verify pass, committed
-    Captain->>User: Report result, offer outbound
-```
-
-If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, route to Captain with concrete blocker evidence in the role hand-off. After Captain resolves product or specification intent, auto-clear or clear/start fresh before QM.
+User to Captain: intent becomes durable specs and optional `watchbill.json`. Context clears. QM runs verification discovery, calls Boatswain for a pre-clean scan when needed, and dispatches Crew per failing target. Crew makes the smallest production change and returns. Boatswain does post-implementation hygiene, reverifies, and commits locally. Captain reports to the user and handles outbound.
 
 ### Role transitions
 
@@ -192,7 +170,7 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 ### Verification policy
 
-Use project-specific commands from `RIGGING.md`. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios. Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs. Full tier runs are boundary checks, not the default inner loop. Passing checks are evidence, not proof. Skipped verification is unverified. Reports MUST distinguish fresh results from cache-backed results. QM owns verification procedure details.
+Use project-specific commands from `RIGGING.md`. Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs. Full tier runs are boundary checks, not the default inner loop. Passing checks are evidence, not proof. Skipped verification is unverified. Reports MUST distinguish fresh results from cache-backed results. QM owns verification procedure details.
 
 Methodology rules can be self-enforcing. A `@property` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable.
 
@@ -214,7 +192,7 @@ Captain handles outbound decisions (push, PR, publish, release, deploy). Outboun
 
 Feature files are canon. Shipshape derives trace from current feature files, through scenarios and steps, into step definitions and production seams. Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
 
-Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
+An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
 
 Use the project comment form for trace annotations. `@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
 

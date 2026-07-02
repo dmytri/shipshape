@@ -72,11 +72,10 @@ Called after Crew finishes and verification passes. If uncertain which mode, ass
 - If `watchbill.json` and verification disagree, verification wins; remind Captain to update or remove `watchbill.json`.
 - `watchbill.json`: if listed scenarios are verified or no longer select active discovered work, remind Captain to delete. Do not delete it yourself.
 - `CAPTAIN.md`: flag if bloated, speculative, or containing resolved discussion that should be trimmed.
-- Lint everything available: code, specs, config, Markdown. Flag violations as blockers.
 
 ## Verification and custody
 
-- Run focused, Watchbill-selected, and broader verification as configured and practical. ALL verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios (e.g. `--tags "not @captain and not @shipwright"`). Do not waste time or tokens on full tier runs when targeted evidence is enough for the current custody step. Prefer fresh results; label cache-backed results.
+- Run focused, Watchbill-selected, and broader verification as configured and practical, excluding `@captain` and `@shipwright` scenarios (e.g. `--tags "not @captain and not @shipwright"`). Do not waste time or tokens on full tier runs when targeted evidence is enough for the current custody step. Prefer fresh results; label cache-backed results.
 - Stage intended changes only. Separate Shipshape-advanced hunks from unrelated user edits within an in-scope file. Stage only the lines that advance the scenario or watch. Leave unrelated user work in the working tree for Captain to handle.
 - Commit locally in post-implementation mode only. Write the commit subject to summarize the change and reference the scenario or watch it advanced.
 - Confirm working tree clean or only unrelated user work remains unstaged.
