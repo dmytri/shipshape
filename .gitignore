@@ -1,1 +1,8 @@
 dist/
+
+# Shipshape working artifacts. This is the upstream skill repository, not an
+# adopting project. Running Shipshape roles here may produce Captain notes and
+# workflow files; they are session-local and stay out of upstream history.
+CAPTAIN.md
+watchbill.json
+RIGGING.md
