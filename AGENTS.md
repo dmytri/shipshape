@@ -27,6 +27,7 @@ Shipshape is distributed as skill files:
 
 - Keep repository guidance separate from downstream Shipshape usage guidance.
 - Put public positioning in `README.md`.
+- The README slogan is "Specifications are durable. Code is disposable. Agents are replaceable." It is a slogan, not doctrine. Keep it punchy. Do not rewrite it to match skill wording; the skills carry the precise three-layer doctrine.
 - Put shared workflow rules in `skills/shipshape/SKILL.md`.
 - Put role-specific rules in the matching role skill.
 - Keep all role skills consistent with the Articles of Agreement in `skills/shipshape/SKILL.md`.
