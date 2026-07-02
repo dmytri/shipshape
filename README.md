@@ -4,7 +4,7 @@
 
 Shipshape is a portable skill set for coding agents. It turns product intent into durable Cucumber specs, derives work from failing verification, and isolates agent roles so discovery context does not leak into implementation.
 
-**Specifications are durable. Code and verification are disposable. Agents are replaceable.**
+**Specifications are durable. Code is disposable. Agents are replaceable.**
 
 The Ship of Theseus is an old problem about identity through change. Plutarch's ship is preserved by repair. Rotten timber is removed, new timber is fitted, and the vessel remains in service until none of the first planks remain. Is it still the same ship?
 
