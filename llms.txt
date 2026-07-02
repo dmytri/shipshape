@@ -1,0 +1,31 @@
+# Shipshape
+
+> Shipshape is a context-isolated, spec-driven workflow for coding agents. Product behaviour lives in durable Cucumber specs. Work derives from failing verification. Roles have strict write custody, and context clears between discovery and implementation. The skills are canonical and fully instruct agents on their own; the plugin layer only mechanizes what the skills state.
+
+Specifications are durable. Code is disposable. Agents are replaceable.
+
+## Skills
+
+- [shipshape](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/shipshape/SKILL.md): shared workflow rules, the Articles of Agreement, role routing, and project configuration
+- [captain](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/captain/SKILL.md): human-facing discovery, durable specs and assets, blocker resolution, outbound decisions
+- [qm](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/qm/SKILL.md): fresh-context verification and executable coverage from durable repository artifacts only
+- [crew](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/crew/SKILL.md): the smallest production change for one failing verification target
+- [boatswain](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/boatswain/SKILL.md): hygiene, verification recheck, and local commit custody
+- [shipwright](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/shipwright/SKILL.md): in-harbour code inspection, fitting out, planks annotations, and scenario skeletons
+
+## Plugin
+
+- [plugin.json](https://raw.githubusercontent.com/dmytri/shipshape/main/.plugin/plugin.json): vendor-neutral plugin manifest
+- [hooks.json](https://raw.githubusercontent.com/dmytri/shipshape/main/hooks/hooks.json): custody and guard hooks that mechanize the Articles
+- [status command](https://raw.githubusercontent.com/dmytri/shipshape/main/commands/status.md): deck state derived from repository signals
+- [doctor command](https://raw.githubusercontent.com/dmytri/shipshape/main/commands/doctor.md): installation completeness, freshness, and coherence audit
+
+## Docs
+
+- [README](https://raw.githubusercontent.com/dmytri/shipshape/main/README.md): positioning, install, workflow, traceability, and enforcement overview
+- [AGENTS.md](https://raw.githubusercontent.com/dmytri/shipshape/main/AGENTS.md): repository editing rules for agents working on Shipshape itself
+
+## Install
+
+- Skills channel: `npx skills add dmytri/shipshape --skill '*'`
+- Plugin channel: `npx plugins add dmytri/shipshape`

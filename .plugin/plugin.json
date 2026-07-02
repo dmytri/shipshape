@@ -1,5 +1,23 @@
 {
   "name": "shipshape",
-  "version": "0.1.0",
-  "description": "Context-isolated, spec-driven workflow for coding agents. Skills are canonical and sufficient alone; this plugin layer adds mechanical enforcement: role context isolation and write custody."
+  "version": "0.2.0",
+  "description": "Context-isolated, spec-driven workflow for coding agents. Skills are canonical and sufficient alone; this plugin layer adds mechanical enforcement: role context isolation and write custody.",
+  "author": {
+    "name": "Dmytri Kleiner",
+    "url": "https://github.com/dmytri"
+  },
+  "repository": "https://github.com/dmytri/shipshape",
+  "homepage": "https://skills.sh/dmytri/shipshape",
+  "license": "0BSD",
+  "keywords": [
+    "spec-driven",
+    "cucumber",
+    "gherkin",
+    "bdd",
+    "workflow",
+    "coding-agents",
+    "context-isolation",
+    "verification",
+    "traceability"
+  ]
 }

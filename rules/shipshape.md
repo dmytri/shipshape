@@ -1,0 +1,1 @@
+This machine has the Shipshape plugin installed. If the current project has `RIGGING.md` at its root, the project uses the Shipshape workflow: enter work through the Shipshape role skills, and treat `.feature` specs and `assets/**` as Captain-custodied artifacts.

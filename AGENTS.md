@@ -19,7 +19,12 @@ Shipshape is distributed as skill files:
 | `.plugin/plugin.json` | Vendor-neutral plugin manifest |
 | `agents/` | Role agents for context isolation (thin adapters over role skills) |
 | `hooks/` | Custody enforcement hooks (mechanize Article text only) |
+| `commands/` | Plugin slash commands (derived-state reporting and install diagnostics, no doctrine) |
+| `rules/` | Always-on plugin rule (two-sentence tripwire, no doctrine) |
+| `assets/logo.svg` | Plugin logo |
+| `tests/hooks.sh` | Hook behaviour tests |
 | `README.md` | Public project positioning and usage overview |
+| `llms.txt` | Agent-facing index of canonical files (pointers only, no doctrine) |
 | `skills.sh.json` | skills.sh registry metadata |
 | `AGENTS.md` | Repository-local agent instructions |
 
@@ -33,6 +38,7 @@ Shipshape is distributed as skill files:
 - Keep all role skills consistent with the Articles of Agreement in `skills/shipshape/SKILL.md`.
 - Skills alone MUST fully instruct agents. The plugin layer (`.plugin/`, `agents/`, `hooks/`) only mechanizes what skill text already states. Every plugin artifact cites the skill text it enforces. Adding behaviour to the plugin layer that the skills do not state is a violation; fix the skill first, then mechanize it. Deleting the plugin layer must lose nothing but enforcement.
 - Use Shipshape Controlled English in skill files: short sentences, precise subjects, RFC 2119 terms where useful, and Canadian spelling such as `behaviour`. Use `artifact`, not `artefact`.
+- The README Ship of Theseus section is the only text with relaxed Controlled English rules, for literary effect. Every other file follows Controlled English in full, including the punctuation rules: no em dashes and no parenthetical asides.
 - Do not add project-specific assumptions from Jolly, Saleor, or other adopters to shared Shipshape rules.
 - Do not create binding repository artifacts such as roadmaps, memory banks, decision logs, constitutions, or task lists unless the user explicitly asks.
 - Do not update installed global skills or downstream project copies unless the user explicitly asks.

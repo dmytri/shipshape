@@ -6,9 +6,11 @@ Shipshape is a portable skill set for coding agents. It turns product intent int
 
 **Specifications are durable. Code is disposable. Agents are replaceable.**
 
-The Ship of Theseus is an old problem about identity through change. Plutarch's ship is preserved by repair. Rotten timber is removed, new timber is fitted, and the vessel remains in service until none of the first planks remain. Is it still the same ship?
+The Ship of Theseus is a classical thought experiment recorded by Plutarch. The Athenians preserved the hero's ship by repair: rotten timber out, new timber in, until none of the original planks remained. Was it still the same ship?
 
-Shipshape asks the same question of software, and answers it: the ship is not her planks. A codebase can be repaired plank by plank while its identity persists, because identity lives in the specification. Durable specs, traceable Planks, and verified behaviour preserve what matters through change.
+AI agents make the old question urgent. An agent can rewrite code, tests, fixtures, and support files in an afternoon, and every pass replaces more planks. A codebase maintained this way needs a durable source of identity, something that survives its own repair.
+
+Shipshape's answer is that the ship was never its planks. Identity lives in the specification. Durable specs, traceable Planks, and verified behaviour preserve what matters while everything else remains free to change.
 
 ## Install
 
@@ -24,7 +26,7 @@ Agents with plugin support can install Shipshape as a plugin instead:
 npx plugins add dmytri/shipshape
 ```
 
-The plugin carries the same six skills and adds mechanical enforcement. See [Enforcement and portability](#enforcement-and-portability).
+The plugin carries the same six skills and adds mechanical enforcement. Plugin installs invoke skills under the plugin namespace, for example `/shipshape:captain`. See [Enforcement and portability](#enforcement-and-portability).
 
 ## Quickstart
 
@@ -297,8 +299,10 @@ Skill-only agents follow the rules by explicit discipline. Enforcing runtimes tu
 
 - **Context isolation.** Role agents run QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM firewall becomes mechanical.
 - **Custody.** Hooks block writes outside each role's write scope, hold local commits to Boatswain, keep outbound actions Captain-only, and refuse `/qm` when Captain context is visible.
+- **Derived status.** The `/shipshape:status` command reports deck state from repository signals: tree cleanliness, commits ahead of upstream, `@captain` and `@shipwright` counts, perturbations, and watchbill validity.
+- **Install audit.** The `/shipshape:doctor` command audits the installation itself: completeness of each installed copy, freshness against upstream, and coherence across channels and scopes, so stale or shadowed doctrine is found instead of trusted.
 
-The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement strength depends on each runtime's hook and subagent support. Skills are the floor everywhere.
+The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement strength depends on each runtime's hook and subagent support. Skills are the floor everywhere. The plugin layer is exercised on Claude Code today; other plugin targets receive the same artifacts and degrade to whatever hooks and subagents they support.
 
 ## Related approaches
 
