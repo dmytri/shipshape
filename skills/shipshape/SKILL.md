@@ -132,11 +132,12 @@ User to Captain: intent becomes durable specs and optional `watchbill.json`. Con
 
 A role hands off to the next role. How the hand-off happens depends on the coding agent.
 
-- If the agent supports context-isolated subagents, spawn the next role as an isolated subagent. This is preferred. It preserves the context firewall.
+- If the agent supports context-isolated subagents, spawn the next role as an isolated subagent. This is preferred. A fresh context window carries no Captain content, which satisfies the clean-context firewall and prevents accidental contamination.
+- A fresh context window is the isolation floor. Where the runtime shares an on-disk transcript across that boundary, the transcript is a residual side channel. It is discarded conversation context, never product intent, and an internal role MUST NOT mine it. The runtime SHOULD block internal-role reads of the transcript; a fresh session carries a fresh transcript and closes the residual fully. Do not force a fresh session on a routine transition where a window-isolated subagent already carries no Captain content; reserve that cost for opt-in strict work.
 - If the agent supports only context-inheriting subagents, spawn an inheriting subagent. This is acceptable for QM to Crew. It MUST NOT carry Captain or human discovery context across the Captain to QM boundary.
 - If the agent cannot spawn subagents, the current role temporarily assumes the next role, then returns. While a role assumes an internal role, it MUST ignore any human input that arrives in flight. It MUST leave that input in context for Captain to handle on return. Only Captain consumes human input.
 
-Captain to QM always requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start fresh, then run `/qm`. QM re-checks context on load and refuses if Captain or human discovery context is visible.
+Captain to QM always requires clean context. A window-isolated subagent or a fresh session both satisfy it. If the runtime provides isolation automatically, continue. If not, Captain tells the user to start a fresh session, then run `/qm`. A same-session clear resets the window but not the transcript, so it is the weaker option where the transcript persists. QM re-checks context on load and refuses if Captain or human discovery context is visible in its window.
 
 **Dispatch contract.** A Captain-originated dispatch to an internal role carries the role, the base commit, and an optional `watchbill.json` pointer. It carries nothing else: the durable artifacts are the hand-off. Craft notes, seam hints, and expected failure modes are contamination even when labelled tooling facts. QM dispatches Crew per the QM skill: the target reference and the observed failure evidence.
 
@@ -184,6 +185,10 @@ If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory produc
 ### Working tree
 
 Humans edit at any time. A role owns only the edits it makes and leaves every other working-tree change untouched. A role never treats the tree's existing state as its own work. Boatswain stages only role-advanced hunks and leaves unrelated operator work for Captain.
+
+### Captain context
+
+Captain context is disposable. Product intent lives in durable artifacts; Captain rebuilds working context from them plus `CAPTAIN.md`. A long-lived Captain SHOULD reset to a fresh context at durable voyage boundaries, after outbound and at a harbour mode change, so the session stays bounded and well grounded. An unbounded Captain session degrades grounding on modest models and wastes tokens on capable ones. The persona MAY be continuous; the working context is not. At a reset boundary Captain requests a fresh context. The operator MAY decline by explicit refusal, and Captain then continues; inaction is not refusal. Before any reset, Captain writes pending intent to durable artifacts so the fresh context loses nothing.
 
 ### Asset policy
 
