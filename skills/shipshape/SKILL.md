@@ -145,7 +145,7 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 `RIGGING.md` uses a fixed Markdown shape. Roles read it on open and parse it by heading. It holds values, not procedure. Procedure lives in the skills. Use these sections:
 
 - `## Stack`: `language`, `runtime`, and `packageManager`.
-- `## Directories`: `implementation`, `specs`, `verification`, and `assets` paths. `implementation` MAY list several paths, including packaging config. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned.
+- `## Directories`: `implementation`, `specs`, `verification`, and `assets` paths. `implementation` MAY list several paths, including packaging config. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. `assets` MAY list several existing directories: fitting out declares content directories as assets in place and moves nothing.
 - `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations in the implementation directory. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
 - `## Perturbation`: the stable `message` and project-specific `fail-fast` statement.
 - `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
@@ -167,7 +167,7 @@ If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory produc
 
 `assets/**` are human-owned product material under Captain custody during Shipshape work. The human operator owns product decisions and content. Captain MAY edit assets to capture approved product material, examples, fixtures, screenshots, pages, copy, media, or other support material.
 
-Assets MAY be referenced by scenarios or verification. Assets MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. Only `.feature` specs and verification output create agent work. Product-facing content SHOULD live in assets or project-approved content catalogs. If asset content or exact catalog content must be protected as behaviour, Captain specifies that behaviour in a `.feature` scenario. Guaranteed behaviour promotes to a `.feature` scenario; the asset body carries craft only.
+Assets MAY be referenced by scenarios or verification. Assets MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. Only `.feature` specs and verification output create agent work. Product-facing content SHOULD live in assets or project-approved content catalogs. Content consumed by a build or generator, such as static-site pages, templates rendered as content, and data files, is product material under this policy, not production code. If asset content or exact catalog content must be protected as behaviour, Captain specifies that behaviour in a `.feature` scenario. Guaranteed behaviour promotes to a `.feature` scenario; the asset body carries craft only.
 
 ### Artifact authority policy
 
