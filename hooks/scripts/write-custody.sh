@@ -18,6 +18,8 @@ role=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:
 [ -z "$role" ] && exit 0
 
 file_path=$(printf '%s' "$payload" | sed -n 's/.*"file_path":[[:space:]]*"\([^"]*\)".*/\1/p')
+# NotebookEdit carries the target as notebook_path, not file_path.
+[ -z "$file_path" ] && file_path=$(printf '%s' "$payload" | sed -n 's/.*"notebook_path":[[:space:]]*"\([^"]*\)".*/\1/p')
 [ -z "$file_path" ] && exit 0
 
 cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')

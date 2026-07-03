@@ -30,8 +30,9 @@ for n in "@captain" "@shipwright" "@property" "@exceptional-double" "@logic" "@s
 for n in "@planks(" ; do need "$n"; done
 for n in discover focused broad coverage step-usage plank-inventory typecheck lint; do need "$n"; done
 
-# Non-normative check: the map must carry no RFC 2119 requirement language.
-if grep -qE 'MUST|SHOULD|MAY NOT' "$map"; then
+# Non-normative check: the map must carry no requirement language, in any
+# case. A normative sentence in a structural map is a defect.
+if grep -qiE '\b(must|should|shall|require)\b|MAY NOT' "$map"; then
   fail=$((fail + 1)); echo "FAIL: map contains normative language"
 else
   pass=$((pass + 1))

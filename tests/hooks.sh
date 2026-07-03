@@ -154,6 +154,32 @@ check "sentinel dispatch blocked" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"t
 check "qm evidence dispatch exempt from cap" dispatch-guard.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:crew\",\"prompt\":\"$filler\"}}" 0
 check "foreign target ignored" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"Explore\",\"prompt\":\"$filler\"}}" 0
 
+# --- regression tests for audit fixes ---
+
+# write-custody covers NotebookEdit (notebook_path), not only file_path.
+check "qm blocked from src notebook" write-custody.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\",\"tool_input\":{\"notebook_path\":\"$work/proj/src/pay.ipynb\"}}" 2
+check "main loop notebook unrestricted" write-custody.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"notebook_path\":\"$work/proj/src/pay.ipynb\"}}" 0
+
+# qm-entry-guard fires on the plugin namespace, not only the bare name.
+check "namespaced qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"shipshape:qm\"}}" 2
+check "namespaced qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"shipshape:qm\"}}" 0
+
+# bash-custody catches git global flags before the subcommand, and reads
+# only the command field so a mention elsewhere does not trigger custody.
+check "boatswain blocked from git -C push" bash-custody.sh "$(b "shipshape:boatswain" "git -C /x push origin main")" 2
+check "push in description does not trigger custody" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\",\"description\":\"prepare to git push later\"}}" 0
+
+# captain-notes-guard blocks a Read of the transcript file itself.
+check "qm blocked from reading transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 2
+check "boatswain may read transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 0
+
+# reset-nudge reads only the command, not the tool output.
+nudge "push in tool output does not fire nudge" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git status\"},\"tool_response\":{\"stdout\":\"use git push to publish\"}}" "silent"
+
+# planks-check flags an untracked new production file.
+printf 'export function extra() {}\n' > "$work/proj/src/untracked.ts"
+check "untracked unplanked file blocked for crew" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 2
+
 # frozen sentinel: in the Captain template, in no other hook script, absent from every deny message
 grep -q "STOP. Captain's notes" "$repo/skills/captain/SKILL.md" && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: sentinel present in Captain template"; }
 stray=$(grep -rl "STOP. Captain's notes" "$repo/hooks" | grep -v dispatch-guard.sh)

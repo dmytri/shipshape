@@ -36,7 +36,7 @@ The plugin carries the same six skills and adds mechanical enforcement. Plugin i
    /captain
    ```
 
-   **Existing codebase?** Run `/shipwright` first. It is thorough and slow, but required: every production seam is planked, every uncovered behaviour inventoried. Captain reviews the results with you before the normal spec-driven loop begins.
+   **No `RIGGING.md` yet?** Captain routes to `/shipwright` for fitting out first. On a brand-new project this is quick. On an existing codebase it is the thorough scan below: every production seam is planked, every uncovered behaviour inventoried. Captain reviews the results with you before the normal spec-driven loop begins.
 
 2. Tell Captain the product behaviour you want.
 

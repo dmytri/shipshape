@@ -2,19 +2,15 @@
 
 > Orientation only. This map holds structure and pointers. The skills are canonical. Load the `shipshape` skill for the Articles of Agreement, and the role skill for its rules. When this map and a skill disagree, the skill wins.
 
-Specifications are durable. Code is disposable. Agents are replaceable.
-
 ## Roles
 
 | Role | Skill | Writes | Hands off to |
 |---|---|---|---|
-| Captain | `captain` | `.feature` specs, `assets/**`, `CAPTAIN.md`, `watchbill.json` | QM, across a context clear |
+| Captain | `captain` | `.feature` specs, `assets/**`, `CAPTAIN.md`, `watchbill.json`, perturbation statements | QM, across a context clear |
 | Quartermaster | `qm` | verification: tests, step definitions, fixtures, harness | Crew, or Boatswain |
 | Crew Mate | `crew` | production code only | QM |
 | Boatswain | `boatswain` | hygiene edits, `@shipwright` scenario marks, local commits | Captain |
-| Shipwright | `shipwright` | `@captain` skeletons, `@planks(...)` annotations, harbour removals | Captain |
-
-Only Captain talks to the user. The Captain to QM boundary requires clear context.
+| Shipwright | `shipwright` | `@captain` skeletons, `@planks(...)` annotations, harbour removals, fitting-out `AGENTS.md` and `RIGGING.md` | Captain |
 
 ## Durable artifacts
 
@@ -23,7 +19,7 @@ Only Captain talks to the user. The Captain to QM boundary requires clear contex
 | `.feature` files | binding product behaviour | Captain |
 | `assets/**` | human-owned product material | Captain, during Shipshape work |
 | `AGENTS.md` | agent entry document | project |
-| `RIGGING.md` | tooling values: stack, directories, commands, perturbation, tiers | Shipwright scaffolds, Captain amends |
+| `RIGGING.md` | tooling values, per the fixed shape in the shipshape skill | Shipwright derives and repairs |
 | `CAPTAIN.md` | Captain-only non-binding notes | Captain |
 | `watchbill.json` | ordering of verification-discovered work | Captain |
 

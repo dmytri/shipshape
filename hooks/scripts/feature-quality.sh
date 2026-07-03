@@ -15,13 +15,18 @@ case "$file_path" in
 esac
 [ -f "$file_path" ] || exit 0
 
+# Apply only inside a Shipshape project.
+cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
+[ -n "$cwd" ] || cwd=$(pwd)
+[ -f "$cwd/RIGGING.md" ] || exit 0
+
 problems=""
 
 grep -q 'Feature:' "$file_path" || problems="$problems
 - file has no Feature: declaration"
 
-grep -q "$(printf '\t')" "$file_path" && problems="$problems
-- file contains tabs; the scenario-writing agreement uses 2-space indentation"
+grep -q "^[ ]*$(printf '\t')" "$file_path" && problems="$problems
+- indentation uses tabs; the scenario-writing agreement uses 2-space indentation"
 
 if grep -q 'Scenario' "$file_path"; then
   grep -qE '^[[:space:]]*(Given|When|Then) ' "$file_path" || problems="$problems

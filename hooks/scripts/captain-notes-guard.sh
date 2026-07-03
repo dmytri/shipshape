@@ -31,4 +31,24 @@ case "$payload" in
     ;;
 esac
 
+# The session transcript is a discarded side channel, never product intent
+# (Role transitions: "an internal role MUST NOT mine it"). Block a Read,
+# Grep, or Glob that names the transcript file by path or basename. The
+# transcript path is read from the payload, so it cannot be spoofed.
+transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*"\([^"]*\)".*/\1/p')
+if [ -n "$transcript" ]; then
+  tbase=$(basename "$transcript")
+  fp=$(printf '%s' "$payload" | sed -n 's/.*"file_path":[[:space:]]*"\([^"]*\)".*/\1/p')
+  pat=$(printf '%s' "$payload" | sed -n 's/.*"pattern":[[:space:]]*"\([^"]*\)".*/\1/p')
+  pth=$(printf '%s' "$payload" | sed -n 's/.*"path":[[:space:]]*"\([^"]*\)".*/\1/p')
+  for v in "$fp" "$pat" "$pth"; do
+    case "$v" in
+      *"$tbase"*|*"$transcript"*)
+        echo "Shipshape custody: $role MUST NOT read the session transcript. It is discarded chat, not product intent. Derive everything from durable artifacts. (Article 2: context firewall.)" >&2
+        exit 2
+        ;;
+    esac
+  done
+fi
+
 exit 0

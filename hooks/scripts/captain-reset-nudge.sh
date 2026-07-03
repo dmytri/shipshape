@@ -16,7 +16,14 @@ payload=$(cat)
 role=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:\([a-z]*\)".*/\1/p')
 [ -n "$role" ] && exit 0
 
-command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\(.*\)".*/\1/p')
+# Nudge only inside a Shipshape project.
+cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
+[ -n "$cwd" ] || cwd=$(pwd)
+[ -f "$cwd/RIGGING.md" ] || exit 0
+
+# Bound extraction to the command string so a mention in the tool output
+# cannot fire the nudge.
+command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\([^"]*\)".*/\1/p')
 case "$command" in
   *"git push"*|*"git tag"*|*"npm publish"*|*"pnpm publish"*|*"yarn publish"*|*"gh release"*|*"vercel deploy"*|*"vercel --prod"*) : ;;
   *) exit 0 ;;

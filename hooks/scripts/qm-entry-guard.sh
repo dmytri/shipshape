@@ -17,7 +17,10 @@ case "$payload" in
 esac
 
 skill=$(printf '%s' "$payload" | sed -n 's/.*"skill":[[:space:]]*"\([^"]*\)".*/\1/p')
-[ "$skill" = "qm" ] || exit 0
+case "$skill" in
+  qm|shipshape:qm) : ;;
+  *) exit 0 ;;
+esac
 
 # A window-isolated QM subagent carries no Captain content in its context
 # window, which satisfies the clean-context firewall (Role transitions:
@@ -33,7 +36,7 @@ role=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:
 transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*"\([^"]*\)".*/\1/p')
 [ -n "$transcript" ] && [ -f "$transcript" ] || exit 0
 
-if grep -q -e 'SHIPSHAPE-ROLE: captain' -e 'command-name>/captain' -e 'Launching skill: captain' -e '"skill":[[:space:]]*"captain"' "$transcript"; then
+if grep -q -e 'command-name>/captain' -e 'command-name>/shipshape:captain' -e 'Launching skill: captain' -e 'Launching skill: shipshape:captain' -e '"skill":[[:space:]]*"captain"' -e '"skill":[[:space:]]*"shipshape:captain"' "$transcript"; then
   echo 'No. Captain context visible in this session. Start a fresh session, then QM. A window-isolated QM subagent is allowed; a same-session /qm is not. (Article 2: context firewall.)' >&2
   exit 2
 fi

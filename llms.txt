@@ -1,8 +1,6 @@
 # Shipshape
 
-> Shipshape is a context-isolated, spec-driven workflow for coding agents. Product behaviour lives in durable Cucumber specs. Work derives from failing verification. Roles have strict write custody, and context clears between discovery and implementation. The skills are canonical and fully instruct agents on their own; the plugin layer only mechanizes what the skills state.
-
-Specifications are durable. Code is disposable. Agents are replaceable.
+> Shipshape is a context-isolated, spec-driven workflow for coding agents. Product behaviour lives in durable Cucumber specs, and work derives from failing verification.
 
 ## Skills
 

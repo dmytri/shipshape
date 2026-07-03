@@ -21,33 +21,28 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - Write production code only. No specs, tests, fixtures, harness, assets, or Captain notes.
 - Do the smallest production change that could make the target pass. Crew is **work shy**: no code that the current failing target does not require.
 - **No defensive error handling.** Do not wrap code in try/catch, result types, Option/Maybe, or fallbacks to suppress, translate, or recover from errors unless the current failing scenario explicitly requires that behaviour. Let exceptions, failed promises, non-zero exits, and error returns propagate to the surface with their original traceback, message, and cause. The failing verification target is the error observer; Crew MUST NOT hide or soften it.
-- No speculative edge cases, refactors, dependency swaps, or alternate approaches.
-- **No premature DRY.** Do not extract helpers, create interfaces, add abstraction layers, or deduplicate code unless the current failing target directly requires it. Duplication is preferred over a wrong abstraction.
-- **Strict YAGNI.** Do not add parameters, options, config, plugins, hooks, or extension points for future scenarios. The current scenario is the only requirement.
-- No "while we're here" changes. No opportunistic cleanup, formatting, renaming, or modernization unless it is the failing target.
+- Simplest sufficient change per Article 6: no speculative edge cases, refactors, dependency swaps, alternate approaches, premature DRY, YAGNI extension points, or opportunistic cleanup. Duplication is preferred over a wrong abstraction.
 - **Perturbation targets.** If the failure evidence is the `PERTURBATION` message, the fix is reimplementation of the seam from current durable context: feature `Rule:` prose, `AGENTS.md` standards, and `RIGGING.md` values. The perturbation statement leaves with the reimplemented seam.
-- Crew MAY expose a narrow verification seam when required for the assigned failing target.
-- Crew MUST NOT hide product behaviour in constructors, global state, static initialization, service locators, test-only branches, or harness-only paths.
-- Crew MUST NOT perform broad testability refactors, dependency rewrites, or architecture cleanup beyond the failing target.
-- MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker. If a dependency is needed but missing from `RIGGING.md`, stop and report the blocker to QM. Captain confirms the selection, documents it in `RIGGING.md`, and Crew installs it.
-- If the first approach fails, stop and report. If the test or spec seems wrong, stop and report.
+- Crew MAY expose a narrow verification seam when required for the assigned failing target. Per Article 14, keep product behaviour out of constructors, global state, static initialization, service locators, test-only branches, and harness-only paths, and do not perform broad testability refactors, dependency rewrites, or architecture cleanup beyond the failing target.
+- MUST NOT install unspecced dependencies. MUST NOT circumvent or work around a specced dependency; if a specced dependency causes failure, report it as a blocker. If a dependency is needed but missing from `RIGGING.md`, stop and report the blocker to QM.
+- If the approach fails after focused verification and one correction, stop and report. If the test or spec seems wrong, stop and report.
 - If the changed seam now contains behaviour outside its `@planks(...)` steps, stop and report to QM.
 - MUST add or update `@planks(...)` annotations on every changed production seam. Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual lines or helper fragments. Use exact Gherkin step text from the failing target. Do not trace production code to scenarios or features.
-- In parallel dispatch, Crew works only their assigned target and MUST NOT coordinate shared mutable state with other Crew agents.
+- In parallel dispatch, Crew works only their assigned target. If a required edit touches a file another dispatch plausibly owns, report the collision instead of editing.
 
 ## Opening
 
-1. Identify the single failing target. If absent: `No target. Crew stop.` A valid target carries a scenario reference and the observed failure. If failure evidence is missing, request it from QM and stop.
-2. Read `RIGGING.md` for stack, implementation directory, and the focused command. Then read only the failing scenario/test/step, referenced durable spec/asset, and directly related production files. Note the exact Gherkin step text for `@planks(...)` annotations.
+1. Verify the dispatch matches the contract: a scenario reference and observed failure only. On extra content, stop and report contamination. Identify the single failing target. If absent: `No target. Crew stop.` If failure evidence is missing, report the missing evidence and stop.
+2. Read `RIGGING.md` for stack, the implementation and specs directories, the focused command, and the `## Perturbation` message. Then read only the failing scenario/test/step, located under the specs directory, the referenced durable spec/asset, and directly related production files. Note the exact Gherkin step text for `@planks(...)` annotations.
 3. State target and durable source of expected behaviour.
 
 ## Work loop
 
-1. Reproduce or inspect the failure.
+1. Reproduce or inspect the failure. If the target passes before any edit, report the pass with the fresh run output and stop.
 2. Edit minimum production code only.
 3. Run focused verification using the `focused` command from `RIGGING.md`.
-4. If pass, load QM or report to QM subagent caller.
-5. If blocked, report blocker to QM and stop.
+4. If pass, return the final report to the caller.
+5. If blocked, or if the approach fails after one correction, report the blocker to QM and stop.
 
 ## Final report
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Shipshape planks check. Stop hook.
+# Shipshape planks check. SubagentStop hook.
 #
 # Enforces Article 16 from skills/shipshape/SKILL.md: "every production seam
 # MUST have at least one @planks(...) annotation", and the Crew rule from
@@ -7,11 +7,12 @@
 # changed production seam." Doctrine lives in the skills; this script adds
 # none.
 #
-# Role identity: the runtime names the running agent in the hook payload
-# as agent_type, such as "shipshape:crew". Payloads with no shipshape
-# agent_type are the human-facing main loop or a foreign agent; custody
-# does not apply there. Quoted mentions of the field inside tool_input
-# arrive JSON-escaped and cannot match the unescaped top-level key.
+# Role identity: the runtime names the finishing subagent in the hook
+# payload as agent_type, such as "shipshape:crew". This runs on
+# SubagentStop, which carries agent_type; the main-loop Stop event does
+# not, so a role that assumes work in the main loop is out of reach here.
+# Payloads with no shipshape agent_type are a foreign agent; custody does
+# not apply there.
 
 payload=$(cat)
 
@@ -26,17 +27,29 @@ cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p'
 [ -n "$cwd" ] || cwd=$(pwd)
 rig="$cwd/RIGGING.md"
 [ -f "$rig" ] || exit 0
-impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rig" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//;s|/$||')
+impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rig" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//')
 [ -n "$impl" ] || exit 0
 
+# implementation MAY list several comma-separated paths.
+in_impl() {
+  p="$1"; old="$IFS"; IFS=','
+  for d in $impl; do
+    d=$(printf '%s' "$d" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s|/$||')
+    [ -z "$d" ] && continue
+    case "$p" in "$d"/*) IFS="$old"; return 0 ;; esac
+  done
+  IFS="$old"; return 1
+}
+
+# Changed and new production files both count. diff omits untracked, so
+# add the untracked-and-not-ignored list.
+changed=$(git -C "$cwd" diff --name-only HEAD 2>/dev/null; git -C "$cwd" ls-files --others --exclude-standard 2>/dev/null)
 unplanked=""
-for f in $(git -C "$cwd" diff --name-only HEAD 2>/dev/null); do
-  case "$f" in
-    "$impl"/*)
-      [ -f "$cwd/$f" ] || continue
-      grep -q '@planks(' "$cwd/$f" || unplanked="$unplanked $f"
-      ;;
-  esac
+for f in $changed; do
+  if in_impl "$f"; then
+    [ -f "$cwd/$f" ] || continue
+    grep -q '@planks(' "$cwd/$f" || unplanked="$unplanked $f"
+  fi
 done
 
 if [ -n "$unplanked" ]; then

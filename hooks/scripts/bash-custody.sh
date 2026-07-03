@@ -24,9 +24,15 @@ deny() {
   exit 2
 }
 
+# Extract the command from tool_input, bounded to the first string so a
+# mention in the description or in tool output cannot trigger custody.
+# Normalize whitespace so flag-laden and double-spaced forms match.
+command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\([^"]*\)".*/\1/p')
+norm=" $(printf '%s' "$command" | tr -s '[:space:]' ' ') "
+
 case "$role" in
   qm|crew|shipwright)
-    case "$payload" in
+    case "$command" in
       *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. Boatswain MAY read it; QM, Crew, and Shipwright derive everything from durable artifacts." ;;
     esac
     # The session transcript is discarded conversation context, never
@@ -36,7 +42,6 @@ case "$role" in
     transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*"\([^"]*\)".*/\1/p')
     if [ -n "$transcript" ]; then
       tbase=$(basename "$transcript")
-      command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\(.*\)".*/\1/p')
       case "$command" in
         *"$tbase"*|*"$transcript"*) deny "Session transcript is discarded chat, not product intent. Derive everything from durable artifacts." ;;
       esac
@@ -44,14 +49,16 @@ case "$role" in
     ;;
 esac
 
-case "$payload" in
-  *"git push"*|*"git tag"*|*"npm publish"*|*"pnpm publish"*|*"yarn publish"*|*"gh release"*|*"gh pr create"*|*"vercel deploy"*|*"vercel --prod"*)
+# Outbound is Captain-only. Match the outbound verb even when git carries
+# global flags before the subcommand, such as "git -C dir push".
+case "$norm" in
+  *" git push"*|*" git "*" push"*|*" git tag"*|*" git "*" tag "*|*" npm publish"*|*" pnpm publish"*|*" yarn publish"*|*" gh release"*|*" gh pr create"*|*" vercel deploy"*|*" vercel --prod"*)
     deny "Outbound is Captain-only and requires explicit user approval."
     ;;
 esac
 
-case "$payload" in
-  *"git commit"*)
+case "$norm" in
+  *" git commit"*|*" git "*" commit"*)
     [ "$role" = "boatswain" ] || deny "Boatswain holds local commit custody."
     ;;
 esac
