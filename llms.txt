@@ -13,13 +13,6 @@ Specifications are durable. Code is disposable. Agents are replaceable.
 - [boatswain](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/boatswain/SKILL.md): hygiene, verification recheck, and local commit custody
 - [shipwright](https://raw.githubusercontent.com/dmytri/shipshape/main/skills/shipwright/SKILL.md): in-harbour code inspection, fitting out, planks annotations, and scenario skeletons
 
-## Plugin
-
-- [plugin.json](https://raw.githubusercontent.com/dmytri/shipshape/main/.plugin/plugin.json): vendor-neutral plugin manifest
-- [hooks.json](https://raw.githubusercontent.com/dmytri/shipshape/main/hooks/hooks.json): custody and guard hooks that mechanize the Articles
-- [status command](https://raw.githubusercontent.com/dmytri/shipshape/main/commands/status.md): deck state derived from repository signals
-- [doctor command](https://raw.githubusercontent.com/dmytri/shipshape/main/commands/doctor.md): installation completeness, freshness, and coherence audit
-
 ## Docs
 
 - [Shipshape Map](https://raw.githubusercontent.com/dmytri/shipshape/main/shipshape.md): structural orientation map of roles, artifacts, tags, annotations, commands, and routing

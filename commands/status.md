@@ -10,7 +10,7 @@ Derive current deck state from repository signals and report it. Run read-only c
 
 1. Tree: run `git status --short` and, when an upstream exists, `git rev-list --count @{upstream}..HEAD`. Report working tree cleanliness and commits ahead of upstream.
 2. Rigging: report whether `RIGGING.md` exists at the project root and whether the required values are present: `language` under Stack, `implementation` under Directories, `focused` under Commands, and `fail-fast` under Perturbation.
-3. Harbour signals: count `@captain` and `@shipwright` tags in the specs directory. Count `@shipwright` docblocks with the `plank-inventory` command from `RIGGING.md` when defined; text search is the fallback.
+3. Harbour signals: count `@captain` and `@shipwright` tags in the specs directory.
 4. Perturbations: count `PERTURBATION` statements in the implementation directory.
 5. Watchbill: report whether `watchbill.json` exists and matches the fixed shape: only ordered watch objects such as `watch1` and `watch2`, each containing only `scenarios`.
 6. Report the signals as a short table. Close with the routing the `shipshape` skill defines: `RIGGING.md` absent routes to `/shipwright` for fitting out; a dirty tree needs Boatswain; otherwise Captain.

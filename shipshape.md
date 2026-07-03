@@ -11,7 +11,7 @@ Specifications are durable. Code is disposable. Agents are replaceable.
 | Captain | `captain` | `.feature` specs, `assets/**`, `CAPTAIN.md`, `watchbill.json` | QM, across a context clear |
 | Quartermaster | `qm` | verification: tests, step definitions, fixtures, harness | Crew, or Boatswain |
 | Crew Mate | `crew` | production code only | QM |
-| Boatswain | `boatswain` | hygiene edits and local commits | Captain |
+| Boatswain | `boatswain` | hygiene edits, `@shipwright` scenario marks, local commits | Captain |
 | Shipwright | `shipwright` | `@captain` skeletons, `@planks(...)` annotations, harbour removals | Captain |
 
 Only Captain talks to the user. The Captain to QM boundary requires clear context.
@@ -39,10 +39,7 @@ Only Captain talks to the user. The Captain to QM boundary requires clear contex
 
 ## Docblock annotations, in production code
 
-| Annotation | Meaning |
-|---|---|
-| `@planks("<Gherkin step>")` | seam carries behaviour required by that exact step |
-| `@shipwright` | spec-less dead seam awaiting harbour removal |
+`@planks("<Gherkin step>")` marks a seam that carries behaviour required by that exact step. It is the only docblock annotation.
 
 ## Rigging commands
 
