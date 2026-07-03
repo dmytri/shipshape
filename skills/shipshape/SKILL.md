@@ -84,7 +84,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 
 ## Scenario-writing agreement
 
-Shipshape uses specification by example: each scenario is a concrete example that defines a behaviour contract. Write for humans first: any reader should understand what happens and what proves it. Captain and Shipwright apply this when writing binding or `@captain` scenarios; QM and Boatswain use it to judge scenario quality.
+Shipshape uses specification by example: each scenario is a concrete example that defines a behaviour contract. Describe behaviour, not implementation. The scenario is durable and the code beneath it is disposable, so a scenario must survive a rebuild of that code; if a step would change when only the implementation changes, raise it to the behaviour level. Write for humans first: any reader should understand what happens and what proves it. Captain and Shipwright apply this when writing binding or `@captain` scenarios; QM and Boatswain use it to judge scenario quality.
 
 Feature file:
 
