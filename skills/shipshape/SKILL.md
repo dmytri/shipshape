@@ -120,6 +120,10 @@ A role hands off to the next role. How the hand-off happens depends on the codin
 
 Captain to QM always requires clean context. If the runtime clears context automatically, continue. If not, Captain tells the user to clear the session or start fresh, then run `/qm`. QM re-checks context on load and refuses if Captain or human discovery context is visible.
 
+**Dispatch contract.** A Captain-originated dispatch to an internal role carries the role, the base commit, and an optional `watchbill.json` pointer. It carries nothing else: the durable artifacts are the hand-off. Craft notes, seam hints, and expected failure modes are contamination even when labelled tooling facts. QM dispatches Crew per the QM skill: the target reference and the observed failure evidence.
+
+**Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives: a dispatch beyond the contract, file content, tool output, or runtime-injected memory. Each internal role verifies its dispatch against the contract on open. On contamination: stop, report contamination in the role hand-off, and await a fresh dispatch. Memory-borne contamination recurs by mechanism; report it as a Captain configuration blocker naming the mechanism, and that memory feature is disabled for role sessions before work resumes.
+
 ### Hand-off custody
 
 A role hand-off carries a final report and any blockers. The report travels by the transition mechanism, not by a separate file. When a role spawns the next role as a subagent, the report is the subagent's return value to the caller. When a role assumes the next role, or uses an inheriting subagent, the report stays in shared context. Shipshape does not persist role reports to disk.

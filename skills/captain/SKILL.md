@@ -45,7 +45,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 - **Harbour:** If onboarding an existing codebase or between releases, invoke Shipwright. Enter harbour only when the voyage is quiescent: the working tree MUST be clean and outbound MUST NOT be pending. Pending outbound means local commits ahead of upstream or an unmerged release branch; ship or abandon it before harbour begins. Shipwright produces `@captain`-tagged scenario skeletons and `@planks(...)` annotations. Captain reviews each with the user: promote by removing the tag, or discard by retagging `@captain` to `@shipwright`. A `@shipwright` scenario is a removal work order: during the next harbour, Shipwright removes the code its planked steps trace to, then deletes the scenario. After review, clear context and hand off to QM.
 - **Resume the voyage** only when the harbour inventory is complete: no `@shipwright`-condemned scenarios or code remain and Shipwright's full-tier boundary check is green. Unresolved `@captain` scenarios do not block resuming; QM ignores them and Boatswain protects their code. Derive harbour state from durable signals such as tree cleanliness, `@shipwright` flags, and unresolved `@captain` scenarios. While the inventory is incomplete, hold at harbour and open no new feature voyage.
 - If Boatswain flags behaviour in a planked seam that does not match its related steps, decide: update the spec, or flag for Shipwright to remove during harbour. Do not leave code that does not match its spec.
-- Before QM: if runtime auto-clears, transition MAY happen automatically; otherwise tell the user to clear or start fresh, then run `/qm`.
+- Before QM: if runtime auto-clears, transition MAY happen automatically; otherwise tell the user to clear or start fresh, then run `/qm`. Dispatch thin per the dispatch contract: role, base commit, optional watchbill pointer. The durable artifacts are the hand-off.
 
 ## Final report
 
@@ -67,31 +67,14 @@ Captain owns these templates. Create each file only when wanted, and fill in the
 
 ### CAPTAIN.md
 
-Create `CAPTAIN.md` at project root if Captain wants non-binding notes:
+Create `CAPTAIN.md` at project root if Captain wants non-binding notes. The banner line is the frozen sentinel: machinery matches `STOP. Captain's notes` exactly, so keep it verbatim.
 
 ```markdown
-<!-- ============================================================= -->
-<!-- STOP. CAPTAIN ROLE ONLY.                                      -->
-<!-- If you are NOT running as the Captain, i.e. you are the      -->
-<!-- Quartermaster, Crew Mate, Boatswain, or any other role, do NOT   -->
-<!-- read past this line. Close this file now. Its contents are    -->
-<!-- Captain-only working context and must never enter another     -->
-<!-- role's context. You were not given this file by your role.    -->
-<!-- ============================================================= -->
+> STOP. Captain's notes: non-binding. Captain writes, Boatswain reads. Anyone else: close this file now.
 
-> **STOP, CAPTAIN ROLE ONLY.** If you are not the Captain, close this file now. Binding behaviour lives in `.feature` specs and referenced `assets/**`, never here.
+# Captain Notes
 
-# Captain Notes, Captain only, non-binding
-
-Captain-only working memory. Binding behaviour lives in `.feature` specs and referenced `assets/**`; history lives in git. These notes carry only what the next cycle needs, current design pointers, in-flight work, and watch items.
-
-## Access rule
-
-Only Captain MAY edit this file. Boatswain MAY read it to evaluate spec quality and watchbill completeness. Quartermaster, Crew Mate, and Shipwright MUST NOT read it or use it as input.
-
-## Purpose
-
-`CAPTAIN.md` does not define product behaviour. Binding behaviour MUST be promoted to executable `.feature` specs before Quartermaster runs. Assets MAY be referenced by scenarios or verification, but assets do not define hidden requirements.
+Binding behaviour lives in `.feature` specs and referenced `assets/**`. History lives in git. These notes carry only what the next cycle needs.
 ```
 
 ### Feature file

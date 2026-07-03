@@ -46,7 +46,7 @@ Fitting out is first-run setup of a project for Shipshape. It is a harbour activ
 1. If `AGENTS.md` or `RIGGING.md` is absent, fit out before the inventory.
 2. Derive `RIGGING.md` values from the repository. Read the language, runtime, package manager, commands, directories, dependency policy, perturbation syntax, docblock inventory tooling, and tooling checks from project files and configuration.
 3. Verify the project tooling is runnable. Confirm the project init file, runtime, and package manager for the derived stack. If the project init file is missing or the runtime is not installed, raise a Captain blocker. Do not write `RIGGING.md` until tooling is verified.
-4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the fixed `RIGGING.md` shape in the `shipshape` skill.
+4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the fixed `RIGGING.md` shape in the `shipshape` skill. Write the derived search-exclusion artifact per the derivation notes.
 5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker. The required values are `language`, `implementation`, `focused`, and perturbation `fail-fast`. Captain discovers the missing value with the user and writes it. Do not guess.
 6. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
 
@@ -139,6 +139,7 @@ For other languages, use the normal fail-fast statement for that language. If th
 - `step-usage`: derive a machine-readable format that does not truncate step text, such as Cucumber's `usage-json`. Truncated usage output produces false stale-plank reports.
 - Tiers: `@logic` is the default. Derive a `@sandbox` tier when verification needs real services. A project that drives agent behaviour MAY add an `@eval` tier that runs a baseline agent against the shipped product. A browser product MAY add `@browser`; an interactive terminal product MAY add `@tui` through a PTY. Interactive tiers often need serial execution; record that in the tier policy.
 - A tier that needs its own invocation gets a tier-suffixed command variant, such as `coverage-sandbox`.
+- Search exclusion: derive the ignore artifact the project's search tooling respects, such as `.rgignore` or `.ignore`, carrying `CAPTAIN.md`, so Captain's notes leave crew-visible search by construction. Raise a Captain blocker when no search tooling is identifiable.
 
 ### README.md block
 
@@ -164,7 +165,7 @@ For workflow instructions, load the Shipshape skill or visit the repository.
 ## Work loop
 
 1. Verify the harbour-entry guard. The working tree MUST be clean and outbound MUST NOT be pending. Pending outbound means local commits ahead of upstream. If the guard fails, block to Captain and stop. Do not begin harbour work on a dirty or unshipped tree.
-2. Load `shipshape` skill. Read `RIGGING.md` for project tooling values and `AGENTS.md` for any project-specific agent rules. If `RIGGING.md` or `AGENTS.md` is absent, fit out first. See Fitting out.
+2. Load `shipshape` skill. Read `RIGGING.md` for project tooling values and `AGENTS.md` for any project-specific agent rules. If `RIGGING.md` or `AGENTS.md` is absent, fit out first. See Fitting out. If fitted, refit: verify `RIGGING.md` carries every current command and value slot, explicitly `none` where a value is underivable, and verify every fitting-out-derived artifact exists, including the search exclusion. Derive what is missing. Raise a Captain blocker for anything underivable.
 3. Identify scope, Captain-assigned module/directory, or full codebase if onboarding.
 4. Run coverage analysis. Run the `coverage` command from `RIGGING.md` to get per-file line coverage. If `RIGGING.md` defines no coverage command, infer one from the project stack, else block to Captain as a configuration blocker. Use per-file and per-line output to prioritize: 100%-covered files with no `@planks(...)` annotations need only backfill, partially-covered files need backfill plus `@captain` gaps, 0%-covered files need full `@captain` scenarios.
 5. Map covered code to step text. For each covered production file, find which step definitions import or reference it. Read those step definitions for Gherkin step bindings in the project's Cucumber implementation. Resolve the binding to the concrete matching step line from the `.feature` file. Use parameterized and regex bindings to find the actual step text in the feature, and use that concrete text in `@planks(...)`. Save this mapping for step 9. If multiple step definitions reference the same file, the file may carry Planks for multiple steps.

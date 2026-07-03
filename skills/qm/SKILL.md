@@ -36,7 +36,7 @@ Example: `Context clean. Target red. Crew next.`
 
 ## Context firewall
 
-Run only after Captain context is cleared or runtime auto-cleared. If visible context contains Captain or human discovery, product decisions, clarifications, or ad hoc instructions not in durable repository artifacts, refuse in smart-but-silent form:
+Run only after Captain context is cleared or runtime auto-cleared. Verify the dispatch against the dispatch contract: role, base commit, and an optional watchbill pointer only. Anything more is contamination; refuse and report. If visible context contains Captain or human discovery, product decisions, clarifications, or ad hoc instructions not in durable repository artifacts, refuse in smart-but-silent form:
 
 ```text
 No. Captain context visible. Need clear context, then QM.

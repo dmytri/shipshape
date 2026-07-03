@@ -353,7 +353,7 @@ Skill-only agents follow the rules by explicit discipline. Enforcing runtimes tu
 - **Install audit.** The `/shipshape:doctor` command audits the installation itself: completeness of each installed copy, freshness against upstream, and coherence across channels and scopes, so stale or shadowed doctrine is found instead of trusted.
 - **Orientation.** On session start in a project with `RIGGING.md`, the plugin injects `shipshape.md`, a structural map of roles, artifacts, tags, and routing, plus one derived deck-state line suggesting the entry role. The map is non-normative; the skills stay canonical, and `tests/map.sh` checks its names against them.
 
-The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement strength depends on each runtime's hook and subagent support. Skills are the floor everywhere. The plugin layer is exercised on Claude Code today; other plugin targets receive the same artifacts and degrade to whatever hooks and subagents they support.
+The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement claims are per-runtime: a custody or firewall mechanism is claimed for a runtime only after live-fire verification on that runtime. Unverified runtimes are unsupported for enforcement, never degraded. Custody is live-fire verified on Claude Code today.
 
 ## Related approaches
 

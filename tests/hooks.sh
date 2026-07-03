@@ -122,5 +122,18 @@ printf '/**\n * @planks("When paying")\n */\nexport function pay() {}\n' > "$wor
 check "planked change passes for crew" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 0
 check "main loop planks unrestricted" planks-check.sh "{\"cwd\":\"$work/proj\"}" 0
 
+# dispatch-guard
+filler=$(i=0; s=""; while [ $i -lt 60 ]; do s="${s}0123456789012345678901234567890123456789012345678"; i=$((i+1)); done; printf '%s' "$s")
+check "captain thin dispatch allowed" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:qm\",\"prompt\":\"Role: qm. Base: abc123. Watchbill: watchbill.json.\"}}" 0
+check "captain fat dispatch blocked" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:qm\",\"prompt\":\"$filler\"}}" 2
+check "sentinel dispatch blocked" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:crew\",\"prompt\":\"notes say STOP. Captain's notes: non-binding\"}}" 2
+check "qm evidence dispatch exempt from cap" dispatch-guard.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:crew\",\"prompt\":\"$filler\"}}" 0
+check "foreign target ignored" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"Explore\",\"prompt\":\"$filler\"}}" 0
+
+# frozen sentinel: in the Captain template, in no other hook script, absent from every deny message
+grep -q "STOP. Captain's notes" "$repo/skills/captain/SKILL.md" && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: sentinel present in Captain template"; }
+stray=$(grep -rl "STOP. Captain's notes" "$repo/hooks" | grep -v dispatch-guard.sh)
+[ -z "$stray" ] && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: sentinel leaked into: $stray"; }
+
 echo "pass: $pass fail: $fail"
 [ "$fail" -eq 0 ]
