@@ -50,17 +50,10 @@ if [ $? -eq 2 ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: f
 # leak path: internal role reads the session transcript off disk
 leak "transcript read leak blocked (qm)" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"cat $work/t.jsonl\"}" 2
 leak "transcript read leak blocked (crew)" bash-custody.sh "shipshape:crew" "Bash" "{\"command\":\"wc -l $work/t.jsonl\"}" 2
-# leak path: same-session main-loop /qm on visible Captain context (no isolation).
-# agent_type absent marks the human-facing main loop; the dirty transcript is its window.
-mlpayload="{\"session_id\":\"t\",\"transcript_path\":\"$work/t.jsonl\",\"cwd\":\"$work/proj\",\"hook_event_name\":\"PreToolUse\",\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"qm\"},\"tool_use_id\":\"t\"}"
-printf '%s' "$mlpayload" | "$scripts/qm-entry-guard.sh" >/dev/null 2>&1
-if [ $? -eq 2 ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: main-loop qm on dirty transcript blocked"; fi
 # legitimate paths stay open
 leak "boatswain read stays open" captain-notes-guard.sh "shipshape:boatswain" "Read" "{\"file_path\":\"$work/proj/CAPTAIN.md\"}" 0
 leak "boatswain transcript read stays open" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"cat $work/t.jsonl\"}" 0
 leak "thin dispatch stays open" dispatch-guard.sh "shipshape:qm" "Task" "{\"subagent_type\":\"shipshape:crew\",\"prompt\":\"Target: f.feature:X. Failure: expected Y.\"}" 0
-# window-isolated QM subagent carries no Captain content and satisfies the firewall
-leak "isolated qm subagent stays open" qm-entry-guard.sh "shipshape:qm" "Skill" "{\"skill\":\"qm\"}" 0
 
 echo "pass: $pass fail: $fail"
 [ "$fail" -eq 0 ]

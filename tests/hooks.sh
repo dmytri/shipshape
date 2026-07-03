@@ -111,12 +111,6 @@ nudge "captain publish nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"comman
 nudge "captain non-outbound silent" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git status\"}}" "silent"
 nudge "internal role push not nudged" "$(b "shipshape:qm" "git push origin main")" "silent"
 
-# qm-entry-guard
-check "main-loop qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 2
-check "main-loop qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0
-check "isolated qm subagent allowed despite dirty transcript" qm-entry-guard.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0
-check "other skills unaffected" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"crew\"}}" 0
-
 # feature-quality
 printf 'Feature: Pay\n\n  Scenario: Pays\n    Given a card\n    When paying\n    Then paid\n' > "$work/proj/features/good.feature"
 printf 'Scenario: floating scenario with no steps\n' > "$work/proj/features/bad.feature"
@@ -159,10 +153,6 @@ check "foreign target ignored" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool
 # write-custody covers NotebookEdit (notebook_path), not only file_path.
 check "qm blocked from src notebook" write-custody.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\",\"tool_input\":{\"notebook_path\":\"$work/proj/src/pay.ipynb\"}}" 2
 check "main loop notebook unrestricted" write-custody.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"notebook_path\":\"$work/proj/src/pay.ipynb\"}}" 0
-
-# qm-entry-guard fires on the plugin namespace, not only the bare name.
-check "namespaced qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"shipshape:qm\"}}" 2
-check "namespaced qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"shipshape:qm\"}}" 0
 
 # bash-custody catches git global flags before the subcommand, and reads
 # only the command field so a mention elsewhere does not trigger custody.

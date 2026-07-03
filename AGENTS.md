@@ -49,16 +49,19 @@ Shipshape is distributed as skill files:
 
 ## Plugin format
 
-The plugin layer follows the vendor-neutral open-plugin specification, not Claude Code's native plugin layout. This is a deliberate early-adopter choice. The format is new and its adoption is uncertain, so anchor on Claude Code as the one live-fire-verified runtime and support the neutral format where it costs nothing.
+The repository is vendor-neutral. It carries no runtime-specific support. Downstream runtimes and installers add their own vendor layers; Shipshape ships only the generic minimum.
+
+The core is skill-only, which is the widely portable form. Install it with `npx skills add`, which works across most agent runtimes. The optional plugin layer follows the vendor-neutral open-plugin specification. That format is experimental and its adoption is uncertain, so treat it as early-adopter support and keep it generic.
 
 - Spec: https://github.com/vercel-labs/open-plugin-spec
 - Installer: https://www.npmjs.com/package/plugins, run as `npx plugins add dmytri/shipshape`
 
-Rules that follow from the format:
+Rules that follow:
 
-- The manifest lives at `.plugin/plugin.json`. The spec requires hosts to check that path, and the `plugins` installer reads it as the source of truth. Component directories such as `skills/`, `agents/`, `hooks/`, and `commands/` live at the plugin root, never inside `.plugin/`.
-- Do not add a `.claude-plugin/plugin.json` to the repository. On install, `npx plugins add` copies `.plugin/` to the vendor directory such as `.claude-plugin/`, generates `.claude-plugin/marketplace.json`, and registers the plugin in the runtime settings. The installer performs this translation only when no vendor manifest already exists, so a hand-written `.claude-plugin/plugin.json` would suppress the translation and create a second manifest to keep version-synced.
-- `hooks/hooks.json` uses `${CLAUDE_PLUGIN_ROOT}` on purpose. It resolves natively on Claude Code even without the installer, and the installer rewrites it to the target vendor root such as `${CURSOR_PLUGIN_ROOT}` on other runtimes. Keep it Claude-anchored. Do not change it to the neutral `${PLUGIN_ROOT}`, which resolves only when the installer runs its translation.
+- Keep every plugin artifact vendor-neutral. Use no runtime-specific variable, path, directory, or manifest anywhere in the repository.
+- The manifest lives at `.plugin/plugin.json`, the spec-required path and the installer's source of truth. Component directories such as `skills/`, `agents/`, `hooks/`, and `commands/` live at the plugin root, never inside `.plugin/`.
+- Do not add a vendor manifest at a `.<vendor>-plugin/plugin.json` path. On install, `npx plugins add` copies `.plugin/` to each vendor directory, generates the vendor marketplace file, and registers the plugin in the runtime settings. That translation is downstream, not in this repository.
+- `hooks/hooks.json` uses the neutral `${PLUGIN_ROOT}`. The installer rewrites it to each runtime's own plugin-root variable at install time. Do not hardcode a runtime-specific variable.
 
 ## Commit attribution
 

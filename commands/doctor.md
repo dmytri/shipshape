@@ -12,7 +12,7 @@ Portability rule: the checks are the contract; the example commands are examples
 
 1. **Inventory.** Locate every installed copy of the Shipshape skills, across generic and runtime-specific layouts:
    - generic agent directories, project and global, such as `.agents/skills/` and `~/.agents/skills/`;
-   - runtime-specific skill directories, project and global, such as `.claude/skills/` and `~/.claude/skills/` and their equivalents for other runtimes;
+   - runtime-specific skill directories, project and global, in each runtime's own skill layout;
    - the runtime's plugin root, where the plugin channel installs `shipshape` with skills, agents, and hooks.
    Record location, channel, and scope for each copy. The channels are skills and plugin. The scopes are project and global. Symlinked copies resolve to their targets; record both the link and the target.
 2. **Completeness.** A skills-channel copy carries all six skills: `shipshape`, `captain`, `qm`, `crew`, `boatswain`, `shipwright`. A plugin-channel copy also carries `agents/`, `hooks/`, and `commands/`, and every `hooks/scripts/*.sh` is executable. Flag partial copies and lost execute bits.
