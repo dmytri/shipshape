@@ -29,6 +29,18 @@ case "$role" in
     case "$payload" in
       *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. Boatswain MAY read it; QM, Crew, and Shipwright derive everything from durable artifacts." ;;
     esac
+    # The session transcript is discarded conversation context, never
+    # product intent (Role transitions: "an internal role MUST NOT mine
+    # it"). Block a command that names the transcript file. The path is
+    # read from the payload, not the command, so it cannot be spoofed.
+    transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*"\([^"]*\)".*/\1/p')
+    if [ -n "$transcript" ]; then
+      tbase=$(basename "$transcript")
+      command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\(.*\)".*/\1/p')
+      case "$command" in
+        *"$tbase"*|*"$transcript"*) deny "Session transcript is discarded chat, not product intent. Derive everything from durable artifacts." ;;
+      esac
+    fi
     ;;
 esac
 

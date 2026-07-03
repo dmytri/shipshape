@@ -87,10 +87,14 @@ check "main loop reads unrestricted" captain-notes-guard.sh "{\"cwd\":\"$work/pr
 check "qm other reads unaffected" captain-notes-guard.sh "$(p "shipshape:qm" "$work/proj/features/pay.feature")" 0
 check "crew blocked from cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:crew" "cat CAPTAIN.md")" 2
 check "boatswain may cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:boatswain" "cat CAPTAIN.md")" 0
+check "qm blocked from reading transcript" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2
+check "qm benign command allowed" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\"}}" 0
+check "boatswain may read transcript" bash-custody.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 0
 
 # qm-entry-guard
-check "qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 2
-check "qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0
+check "main-loop qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 2
+check "main-loop qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0
+check "isolated qm subagent allowed despite dirty transcript" qm-entry-guard.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0
 check "other skills unaffected" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"crew\"}}" 0
 
 # feature-quality
