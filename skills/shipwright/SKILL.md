@@ -149,18 +149,7 @@ Add this block to the project README to reference Shipshape:
 ````markdown
 ## Built with Shipshape
 
-This repository uses [Shipshape](https://github.com/dmytri/shipshape),
-a context-isolated spec-driven development workflow for coding agents.
-
-**Specifications are durable. Code and verification are disposable. Agents are replaceable.**
-
-Install Shipshape:
-
-```bash
-npx skills add dmytri/shipshape --skill '*'
-```
-
-For workflow instructions, load the Shipshape skill or visit the repository.
+This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install: `npx skills add dmytri/shipshape --skill '*'`
 ````
 
 ## Work loop
@@ -177,7 +166,7 @@ For workflow instructions, load the Shipshape skill or visit the repository.
    - **Verification seam violations:** side effects mixed into domain logic, hard dependencies created internally, digging through collaborator graphs, broad modules whose purpose requires "and" to describe.
    - **Unreachable code:** functions or paths coverage shows are never exercised.
    - **Missing coverage:** modules with zero cucumber usage.
-8. On a content-heavy project, write content-agnostic build invariants as `@property` scenarios: the build exits clean, every content entry yields an output, the feed validates. A scenario that enumerates a content-derived route or a page mirrors assets into specs and drifts with every content edit; that is a defect. Custom shortcodes, filters, and plugins are ordinary production seams with ordinary scenarios. Write `@captain`-tagged scenario skeletons for every finding from steps 6 and 7. Write under the specs directory from `RIGGING.md`, one `Feature` per file, named in kebab-case after the module or area. Append a scenario to an existing feature file when its `Feature` already exists. `@captain` tags an individual `Scenario`, never a `Feature`. When appending to an existing feature file, tag only the new scenario. Leave the `Feature` and its other scenarios untagged. Follow the scenario-writing agreement: concrete, falsifiable, domain-level, independent. Use realistic data. The Gherkin steps you write here become the canonical step text for any uncovered code.
+8. On a content-heavy project, write content-agnostic build invariants as `@property` scenarios, such as the build exits clean and every content entry yields an output. A scenario that enumerates a content-derived route or page is a defect: it mirrors assets into specs and drifts with every content edit. Write `@captain`-tagged scenario skeletons for every finding from steps 6 and 7. Write under the specs directory from `RIGGING.md`, one `Feature` per file, named in kebab-case after the module or area. Append a scenario to an existing feature file when its `Feature` already exists. `@captain` tags an individual `Scenario`, never a `Feature`. When appending to an existing feature file, tag only the new scenario. Leave the `Feature` and its other scenarios untagged. Follow the scenario-writing agreement: concrete, falsifiable, domain-level, independent. Use realistic data. The Gherkin steps you write here become the canonical step text for any uncovered code.
 9. Add `@planks(...)` annotations to every production seam. Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual expressions, branches, or helper fragments. For covered code, use the step text saved from step 5. For uncovered code, use the step text from the `@captain` scenarios you wrote in step 8. For `@planks(...)` annotations pointing to deleted or renamed steps, correct the annotation if the step still exists under new text, or create a `@captain` scenario and replank if the original step is gone.
 10. Process condemned material. For each `@shipwright` scenario, remove the code its planked steps trace to, then delete the scenario. For each `@shipwright` docblock, remove the flagged seam. Find docblocks with the `plank-inventory` command or language-native docblock tooling; text search is the fallback. Inspect each item and remove safely when the suite stays green. If a removal breaks verification, revert and flag to Captain. Exclude `@captain` and `@shipwright` scenarios in every harbour run (e.g. `--tags "not @captain and not @shipwright"`).
 11. Complete the full inventory. Do not stop until every module in scope has been analysed and all `@shipwright`-condemned scenarios and code have been processed.
