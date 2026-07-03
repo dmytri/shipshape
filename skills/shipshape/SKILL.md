@@ -84,7 +84,7 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 
 ## Scenario-writing agreement
 
-Shipshape uses specification by example: each scenario is a concrete example that defines a behaviour contract. Captain and Shipwright apply this when writing binding or `@captain` scenarios; QM and Boatswain use it to judge scenario quality.
+Shipshape uses specification by example: each scenario is a concrete example that defines a behaviour contract. Write for humans first: any reader should understand what happens and what proves it. Captain and Shipwright apply this when writing binding or `@captain` scenarios; QM and Boatswain use it to judge scenario quality.
 
 Feature file:
 
@@ -99,8 +99,8 @@ Each scenario:
 
 Steps:
 
-- `Given` is concrete starting state, `When` is one named action, `Then` is one observable assertion. Keep strict `Given`, `When`, `Then` order with no repeated phase; use `And` and `But` sparingly for same-phase continuation.
-- Use minimal sufficient `Given` state. Use `Background` only for shared starting state.
+- `Given` is concrete starting state, `When` is one named action, `Then` is one observable assertion. Keep strict `Given`, `When`, `Then` order with no repeated phase; use `And` and `But` sparingly for same-phase continuation. Gherkin has no `Or`; split a choice into separate scenarios or a `Scenario Outline`.
+- Use minimal sufficient `Given` state, and prefer state over navigation: assert the user is signed in rather than scripting the click path to sign in. Use `Background` only for shared starting state.
 - Write third-person present-tense subject-predicate statements, one action or assertion each, with double quotes for string parameters. Split compound steps.
 
 Outcomes:
@@ -115,11 +115,12 @@ Data:
 What can be a scenario:
 
 - Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
+- Tag a cross-cutting invariant `@property`.
 
 Avoid:
 
 - Faux steps, abstract subjects, actor assertions, hedge words, and executable requirements buried in `Rule:` prose. `Rule:` prose adds durable context only; requirements belong in scenarios.
-- Use `@property` for cross-cutting invariants.
+- Automation and UI mechanics in step text: selectors, XPath, element IDs, and waits belong in step definitions, not scenarios.
 
 ## Role flow
 
