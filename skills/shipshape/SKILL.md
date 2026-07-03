@@ -49,6 +49,18 @@ Internal roles (QM, Crew, Boatswain, Shipwright) use smart-but-silent voice:
 - State the role name at the head of every report.
 - Pattern: `[thing] [action] [reason]. [next step].`
 
+## Core concepts
+
+Shipshape has three layers. Specs and assets are durable artifacts. Production code is disposable from specs. Verification and harness are also disposable from specs and carry their own conformance obligations.
+
+| Concept | Layer | Owned by | Purpose | Example |
+|---|---|---|---|---|
+| Step | Spec | Captain | Durable product contract | `When the customer pays with the saved card` |
+| Seam | Production | Crew | Stable behaviour surface that carries Planks | `export async function payWithSavedCard()` |
+| Plank | Trace | Crew, Shipwright | Links seam to step contract | `@planks("When the customer pays with the saved card")` |
+
+A seam may carry Planks for several steps. A step may be carried by Planks on several seams.
+
 ## Articles of Agreement
 
 These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline. Each Article states one binding constraint. The mechanics live in the named sections and policies below.
@@ -70,42 +82,44 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 15. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles: batch all known work into the current pass, and prefer targeted verification over full tier runs. Full tier runs are boundary checks, not the default inner loop. Do not pause to ask whether to continue when the next step is obvious. Reserve a stop for an actual blocker, missing tool, contradictory spec, or absent credential, and name it plainly.
 16. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Shipshape coins the term. Shipshape does not trace individual planks. It traces plank sets by annotating the smallest stable production seam that owns the behaviour with `@planks("<Gherkin step>")`. Not every step requires Planks, but every production seam MUST have at least one `@planks(...)` annotation. A seam MUST NOT contain behaviour outside its related step contracts. Extra behaviour is missing specification, misplaced code, or dead code.
 
-## Core concepts
-
-Shipshape has three layers. Specs and assets are durable artifacts. Production code is disposable from specs. Verification and harness are also disposable from specs and carry their own conformance obligations.
-
-| Concept | Layer | Owned by | Purpose | Example |
-|---|---|---|---|---|
-| Step | Spec | Captain | Durable product contract | `When the customer pays with the saved card` |
-| Seam | Production | Crew | Stable behaviour surface that carries Planks | `export async function payWithSavedCard()` |
-| Plank | Trace | Crew, Shipwright | Links seam to step contract | `@planks("When the customer pays with the saved card")` |
-
-A seam may carry Planks for several steps. A step may be carried by Planks on several seams.
-
 ## Scenario-writing agreement
 
-Follow this scenario-writing agreement. Shipshape uses specification by example: each scenario is a concrete example that defines the behaviour contract. Captain and Shipwright MUST apply this agreement when writing binding or `@captain` scenarios. QM and Boatswain use it to evaluate scenario quality.
+Shipshape uses specification by example: each scenario is a concrete example that defines a behaviour contract. Captain and Shipwright apply this when writing binding or `@captain` scenarios; QM and Boatswain use it to judge scenario quality.
 
-- Every feature file SHOULD describe one `Feature` unless project policy differs. Use stable vocabulary from the domain and product.
-- Format Gherkin with 2-space indentation SHOULD, one blank line between scenarios SHOULD, and no blank lines between steps MUST.
-- Every scenario describes one real, falsifiable behaviour needed by the current iteration. Keep titles single-line, behaviour-focused, and specific.
-- Each scenario is independent; no scenario depends on another scenario running first.
-- Write at the domain or product level. Specify UI, API, database, navigation, or harness plumbing only when that layer is the behaviour under test.
-- `Given` is concrete starting state, `When` is one named action or input, and `Then` is an observable assertion. Use strict `Given`, `When`, `Then` order with no repeated phases.
-- Use `And` and `But` sparingly for same-phase continuation.
-- Use minimal sufficient `Given` state. Use `Background` only for shared starting state, not incidental setup.
-- Assert outcomes, not mechanisms, unless the mechanism itself is the contract under test. Prefer state over navigation.
-- Use concrete, realistic data: real flags, commands, keys, hostnames, files, asset paths, and example values. Use placeholder or nonsense values only when the scenario tests invalid input.
-- Write steps as third-person present-tense subject-predicate statements. Use double quotes for string parameters.
-- Put one action or assertion in each step. Split a compound step into separate steps.
-- Write positive observable `Then` outcomes, not prohibitions: assert the state, output, permission, runtime field, file, or external observable that proves the rule.
-- State a concrete observable signal as the outcome.
-- Testability, not subject, decides what can be specified. Product behaviour, harness conformance, agent behaviour, and runtime enforcement can all be scenarios if falsifiable. Performance budgets, authorization invariants, accessibility requirements, and other cross-cutting concerns are expressible as scenarios and become discoverable when they fail.
-- Keep one quality concern per scenario. Aim for fewer than about 10 steps.
-- Use `Scenario Outline` only when the same behaviour is checked with input variations. Use tables for data instead of step spam, and doc strings for structured payloads.
-- Keep tables concise with descriptive headers. If a table does not fit one screen, split the behaviour or move data to an asset.
-- Avoid faux steps, abstract subjects, actor assertions, hedge words, and behaviour hidden in `Rule:` prose. `Rule:` prose MAY provide context only when it helps QM or Crew understand durable constraints that do not fit cleanly in steps; executable requirements belong in scenarios.
-- Use `@property` for cross-cutting invariants, including agent-behaviour and runtime-enforcement invariants.
+Feature file:
+
+- One `Feature` per file unless project policy differs. Use stable domain vocabulary.
+- Format: 2-space indentation and one blank line between scenarios SHOULD; no blank line between steps MUST.
+
+Each scenario:
+
+- Covers one real, falsifiable behaviour needed now, one quality concern, under about 10 steps. Give it a single-line, specific, behaviour-focused title.
+- Is independent: it never depends on another scenario running first.
+- Sits at the domain or product level. Specify UI, API, database, or harness plumbing only when that layer is the behaviour under test.
+
+Steps:
+
+- `Given` is concrete starting state, `When` is one named action, `Then` is one observable assertion. Keep strict `Given`, `When`, `Then` order with no repeated phase; use `And` and `But` sparingly for same-phase continuation.
+- Use minimal sufficient `Given` state. Use `Background` only for shared starting state.
+- Write third-person present-tense subject-predicate statements, one action or assertion each, with double quotes for string parameters. Split compound steps.
+
+Outcomes:
+
+- Write a positive, observable `Then`: assert the state, output, file, permission, runtime field, or external signal that proves the rule. Assert outcomes, not mechanisms, unless the mechanism is the contract under test.
+
+Data:
+
+- Use concrete, realistic data: real flags, commands, keys, hostnames, files, and asset paths. Use placeholder or nonsense values only when testing invalid input.
+- Use `Scenario Outline` only when one behaviour runs with input variations. Put data in tables and structured payloads in doc strings; keep tables concise with descriptive headers, and split or move to an asset any table that overflows the screen.
+
+What can be a scenario:
+
+- Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
+
+Avoid:
+
+- Faux steps, abstract subjects, actor assertions, hedge words, and executable requirements buried in `Rule:` prose. `Rule:` prose adds durable context only; requirements belong in scenarios.
+- Use `@property` for cross-cutting invariants.
 
 ## Role flow
 
