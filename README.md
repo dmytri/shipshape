@@ -20,7 +20,7 @@ npx skills add dmytri/shipshape --skill '*'
 
 This installs all six skills: `/shipshape`, `/captain`, `/qm`, `/crew`, `/boatswain`, and `/shipwright`.
 
-Agents with plugin support can install Shipshape as a plugin instead:
+Agents that support the open-plugin format, such as Claude Code and Cursor, can install Shipshape as a plugin instead:
 
 ```bash
 npx plugins add dmytri/shipshape
