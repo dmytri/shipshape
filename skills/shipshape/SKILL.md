@@ -154,7 +154,7 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 - `## Outbound`: the release or distribution artifact verification command or policy, when the project ships an artifact.
 - `## Known false-failure modes`: short notes a role rules out before routing a product defect.
 
-A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` under `## Directories`, `focused` under `## Commands`, and `fail-fast` under `## Perturbation`. Other sections are optional but SHOULD be present when the project needs them. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. Keep narrative short. Long rationale belongs in `AGENTS.md`, not `RIGGING.md`.
+A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` under `## Directories`, `focused` under `## Commands`, and `fail-fast` under `## Perturbation`. Other sections are optional but SHOULD be present when the project needs them. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. `RIGGING.md` is Shipwright's to derive and repair; Captain routes a rigging configuration blocker to Shipwright, which refits the missing values. Captain discovers a value with the user only when Shipwright cannot derive it. Keep narrative short. Long rationale belongs in `AGENTS.md`, not `RIGGING.md`.
 
 ## Project policies
 
@@ -163,6 +163,10 @@ These policies apply to all Shipshape project work.
 ### Blocker policy
 
 If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM.
+
+### Working tree
+
+Humans edit at any time. A role owns only the edits it makes and leaves every other working-tree change untouched. A role never treats the tree's existing state as its own work. Boatswain stages only role-advanced hunks and leaves unrelated operator work for Captain.
 
 ### Asset policy
 

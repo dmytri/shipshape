@@ -37,6 +37,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 - If in discovery, talk with the user to explore unknown intent. Ask questions that can change durable artifacts or blocker decisions. Stay open. Do not write specs during exploration. When the user confirms a direction, write all resulting scenarios in the current pass.
 - If the working tree is dirty or custody is pending, load Boatswain and let them clean before Captain continues.
 - If resolving a blocker, update durable specs, asset content, or `watchbill.json` so the next role needs no hidden chat.
+- If the blocker is a rigging or tooling configuration problem, a missing or malformed `RIGGING.md` value, route to Shipwright to refit it. `RIGGING.md` is Shipwright's to derive. Discover a value with the user only when Shipwright reports it cannot derive it.
 - If directing a subset or order of verification-discoverable work, write valid `watchbill.json` with watch objects and scenario references only. Watch objects are ordering groups, not approval gates.
 - If Boatswain reports passing verification, clean working tree, and local commit, summarize and offer outbound options. If no discovered work remains, also offer to run the entire test suite across all tiers.
 - Outbound actions (push, PR, publish, release, deploy) require a clean Boatswain report, available credentials or environment, and explicit user approval.
