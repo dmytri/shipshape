@@ -91,6 +91,26 @@ check "qm blocked from reading transcript" bash-custody.sh "{\"agent_type\":\"sh
 check "qm benign command allowed" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\"}}" 0
 check "boatswain may read transcript" bash-custody.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 0
 
+# captain-reset-nudge (PostToolUse; nudge fires on stdout, blocks nothing)
+nudge() {
+  name="$1" payload="$2" want="$3"
+  out=$(printf '%s' "$payload" | "$scripts/captain-reset-nudge.sh" 2>/dev/null)
+  case "$out" in
+    *"Batch shipped"*) got="fire" ;;
+    *) got="silent" ;;
+  esac
+  if [ "$got" = "$want" ]; then
+    pass=$((pass + 1))
+  else
+    fail=$((fail + 1))
+    echo "FAIL: $name: want $want, got $got"
+  fi
+}
+nudge "captain outbound push nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git push origin main\"}}" "fire"
+nudge "captain publish nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"npm publish --access public\"}}" "fire"
+nudge "captain non-outbound silent" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git status\"}}" "silent"
+nudge "internal role push not nudged" "$(b "shipshape:qm" "git push origin main")" "silent"
+
 # qm-entry-guard
 check "main-loop qm refused on captain context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-dirty.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 2
 check "main-loop qm allowed on clean context" qm-entry-guard.sh "{\"transcript_path\":\"$work/t-main.jsonl\",\"tool_input\":{\"skill\":\"qm\"}}" 0
