@@ -89,11 +89,11 @@ Shipshape uses specification by example: each scenario is a concrete example tha
 Feature file:
 
 - One `Feature` per file unless project policy differs. Use stable domain vocabulary.
-- Format: 2-space indentation and one blank line between scenarios SHOULD; no blank line between steps MUST.
+- Indent with 2 spaces. Scenarios SHOULD be separated by one blank line. A scenario's steps MUST be contiguous.
 
 Each scenario:
 
-- Covers one real, falsifiable behaviour needed now, one quality concern, under about 10 steps. Give it a single-line, specific, behaviour-focused title.
+- Covers one real, falsifiable behaviour needed now, holds one quality concern, and stays within about 10 steps. Give it a single-line, specific, behaviour-focused title.
 - Is independent: it never depends on another scenario running first.
 - Sits at the domain or product level. Specify UI, API, database, or harness plumbing only when that layer is the behaviour under test.
 
@@ -110,17 +110,19 @@ Outcomes:
 Data:
 
 - Use concrete, realistic data: real flags, commands, keys, hostnames, files, and asset paths. Use placeholder or nonsense values only when testing invalid input.
-- Use `Scenario Outline` only when one behaviour runs with input variations. Put data in tables and structured payloads in doc strings; keep tables concise with descriptive headers, and split or move to an asset any table that overflows the screen.
+- Use `Scenario Outline` only when one behaviour runs with input variations. Put data in tables and structured payloads in doc strings; keep tables concise with descriptive headers, and split any table that overflows the screen or move it to an asset.
 
 What can be a scenario:
 
 - Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
 - Tag a cross-cutting invariant `@property`.
+- Content behaviour can be a scenario, but only the seam you own. When a third-party generator renders the content, that seam is invoking and configuring it correctly; assert that it runs and produces the expected output. The asset carries the copy and the generator owns its rendering.
 
 Avoid:
 
 - Faux steps, abstract subjects, actor assertions, hedge words, and executable requirements buried in `Rule:` prose. `Rule:` prose adds durable context only; requirements belong in scenarios.
 - Automation and UI mechanics in step text: selectors, XPath, element IDs, and waits belong in step definitions, not scenarios.
+- Asset copy or a generator's rendering as an assertion: literal page text belongs in the asset, and third-party rendering is the tool's contract, not a scenario `Then`.
 
 ## Role flow
 
