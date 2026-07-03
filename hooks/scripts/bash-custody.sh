@@ -24,10 +24,14 @@ deny() {
   exit 2
 }
 
-# Extract the command from tool_input, bounded to the first string so a
+# Extract the command from tool_input, bounded to the command string so a
 # mention in the description or in tool output cannot trigger custody.
-# Normalize whitespace so flag-laden and double-spaced forms match.
-command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\([^"]*\)".*/\1/p')
+# JSON-escaped quotes are swapped for an unprintable placeholder before
+# extraction so a quoted argument cannot truncate the string and hide a
+# later verb, then restored. Normalize whitespace so flag-laden and
+# double-spaced forms match.
+esc=$(printf '\001')
+command=$(printf '%s' "$payload" | sed "s/\\\\\"/$esc/g" | sed -n 's/.*"command":[[:space:]]*"\([^"]*\)".*/\1/p' | tr "$esc" '"')
 norm=" $(printf '%s' "$command" | tr -s '[:space:]' ' ') "
 
 case "$role" in
@@ -49,17 +53,41 @@ case "$role" in
     ;;
 esac
 
-# Outbound is Captain-only. Match the outbound verb even when git carries
-# global flags before the subcommand, such as "git -C dir push".
-case "$norm" in
-  *" git push"*|*" git "*" push"*|*" git tag"*|*" git "*" tag "*|*" npm publish"*|*" pnpm publish"*|*" yarn publish"*|*" gh release"*|*" gh pr create"*|*" vercel deploy"*|*" vercel --prod"*)
-    deny "Outbound is Captain-only and requires explicit user approval."
-    ;;
-esac
+# Resolve every git subcommand in the command, skipping git's global
+# flags such as "-C <dir>", so "git -C /x push" and "git status && git
+# push" both resolve to their true subcommands while "git stash push"
+# and "git log --grep push" stay innocent.
+gitsubs=$(printf '%s' "$norm" | awk '{
+  for (i = 1; i <= NF; i++) {
+    if ($i != "git") continue
+    j = i + 1
+    while (j <= NF) {
+      if ($j == "-C" || $j == "-c") { j += 2; continue }
+      if ($j ~ /^-/) { j++; continue }
+      print $j
+      break
+    }
+  }
+}')
+
+for sub in $gitsubs; do
+  case "$sub" in
+    push) deny "Outbound is Captain-only and requires explicit user approval." ;;
+    tag)
+      case "$norm" in
+        *" tag -l"*|*" tag --list"*) : ;;
+        *) deny "Outbound is Captain-only and requires explicit user approval." ;;
+      esac
+      ;;
+    commit)
+      [ "$role" = "boatswain" ] || deny "Boatswain holds local commit custody."
+      ;;
+  esac
+done
 
 case "$norm" in
-  *" git commit"*|*" git "*" commit"*)
-    [ "$role" = "boatswain" ] || deny "Boatswain holds local commit custody."
+  *" npm publish"*|*" pnpm publish"*|*" yarn publish"*|*" gh release"*|*" gh pr create"*|*" vercel deploy"*|*" vercel --prod"*)
+    deny "Outbound is Captain-only and requires explicit user approval."
     ;;
 esac
 

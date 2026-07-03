@@ -159,6 +159,16 @@ check "main loop notebook unrestricted" write-custody.sh "{\"cwd\":\"$work/proj\
 check "boatswain blocked from git -C push" bash-custody.sh "$(b "shipshape:boatswain" "git -C /x push origin main")" 2
 check "push in description does not trigger custody" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\",\"description\":\"prepare to git push later\"}}" 0
 
+# bash-custody survives escaped quotes and chained commands, and resolves
+# the true git subcommand instead of substring-matching.
+check "quoted arg cannot hide a push" bash-custody.sh "$(b "shipshape:crew" "echo \\\"x\\\" && git push origin main")" 2
+check "chained second git push blocked" bash-custody.sh "$(b "shipshape:crew" "git status && git push origin main")" 2
+check "quoted commit message still commits for boatswain" bash-custody.sh "$(b "shipshape:boatswain" "git commit -m \\\"fix: pay\\\"")" 0
+check "git stash push stays open" bash-custody.sh "$(b "shipshape:crew" "git stash push")" 0
+check "git log --grep push stays open" bash-custody.sh "$(b "shipshape:crew" "git log --grep push")" 0
+check "git tag -l stays open" bash-custody.sh "$(b "shipshape:boatswain" "git tag -l")" 0
+check "git tag creation still blocked" bash-custody.sh "$(b "shipshape:boatswain" "git tag v1.0.0")" 2
+
 # captain-notes-guard blocks a Read of the transcript file itself.
 check "qm blocked from reading transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 2
 check "boatswain may read transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 0

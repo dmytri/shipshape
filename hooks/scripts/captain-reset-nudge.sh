@@ -22,8 +22,10 @@ cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p'
 [ -f "$cwd/RIGGING.md" ] || exit 0
 
 # Bound extraction to the command string so a mention in the tool output
-# cannot fire the nudge.
-command=$(printf '%s' "$payload" | sed -n 's/.*"command":[[:space:]]*"\([^"]*\)".*/\1/p')
+# cannot fire the nudge. Swap JSON-escaped quotes for a placeholder so a
+# quoted argument cannot truncate the string and hide a later verb.
+esc=$(printf '\001')
+command=$(printf '%s' "$payload" | sed "s/\\\\\"/$esc/g" | sed -n 's/.*"command":[[:space:]]*"\([^"]*\)".*/\1/p' | tr "$esc" '"')
 case "$command" in
   *"git push"*|*"git tag"*|*"npm publish"*|*"pnpm publish"*|*"yarn publish"*|*"gh release"*|*"vercel deploy"*|*"vercel --prod"*) : ;;
   *) exit 0 ;;
