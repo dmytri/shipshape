@@ -1,7 +1,7 @@
 #!/bin/sh
 # Shipshape planks check. Stop hook.
 #
-# Enforces Article 17 from skills/shipshape/SKILL.md: "every production seam
+# Enforces Article 16 from skills/shipshape/SKILL.md: "every production seam
 # MUST have at least one @planks(...) annotation", and the Crew rule from
 # skills/crew/SKILL.md: "MUST add or update @planks(...) annotations on every
 # changed production seam." Doctrine lives in the skills; this script adds
