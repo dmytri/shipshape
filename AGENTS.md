@@ -21,7 +21,7 @@ Shipshape is distributed as skill files:
 | `hooks/` | Custody enforcement hooks (mechanize Article text only) |
 | `commands/` | Plugin slash commands (derived-state reporting and install diagnostics, no doctrine) |
 | `assets/logo.svg` | Plugin logo |
-| `tests/` | Hook behaviour, map drift, and bulkhead conformance tests |
+| `tests/` | Hook behaviour, map drift, style, and bulkhead conformance tests |
 | `README.md` | Public project positioning and usage overview |
 | `llms.txt` | Agent-facing index of canonical files (pointers only, no doctrine) |
 | `shipshape.md` | Structural orientation map (names, relations, pointers; non-normative) |

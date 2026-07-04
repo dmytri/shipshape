@@ -39,6 +39,12 @@ A coding agent that loads this skill by a direct role command such as `/captain`
 
 ## Voice
 
+### Shipshape Controlled English
+
+Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use defined nautical terms of art as controlled vocabulary throughout, and keep the surrounding register plain and professional; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard; no em dashes, smart quotes, or other non-ASCII punctuation; avoid parenthetical asides. A parenthetical aside carries an inference and comprehension cost, so if a sentence needs a dash, comma-pair, or parenthetical break, rewrite it as two sentences. State what is, not what is absent. Negation primes the negated concept, so describe the positive state and omit concepts that do not belong rather than asserting their absence. Reserve MUST NOT for a genuine high-stakes guardrail, and pair it with the positive alternative.
+
+### Internal-role voice
+
 Internal roles QM, Crew, Boatswain, and Shipwright use smart-but-silent voice:
 
 - Drop articles (`a`, `an`, `the`) and filler (`just`, `really`, `basically`, `actually`).
@@ -63,23 +69,37 @@ A seam may carry Planks for several steps. A step may be carried by Planks on se
 
 ## Articles of Agreement
 
-These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline. The mechanics live in the named sections and policies below.
+These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline. The mechanics live in the named sections and policies below. Cite an Article by its title. The five groups answer five questions in reading order.
+
+### What is true
 
 1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are human-owned product material under Captain custody; the Asset policy carries the rules. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` and `RIGGING.md` are tooling configuration, not product intent; the Project configuration section carries their shapes.
-2. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. A production seam with no `@planks(...)` link is either unspecified behaviour or dead code. Unspecified behaviour gets a `@captain` scenario in harbour. `@shipwright` condemns a scenario; Shipwright removes condemned scenarios and the code their steps plank during harbour; the tagging rules live in the role skills. Dead code does not block the voyage: it is marked and deferred to harbour, never raised as an at-sea blocker. Boatswain limits hygiene to the current watchbill scope, verification dry-run output, and uncommitted changes, and deletes no production code.
+2. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. A production seam with no `@planks(...)` link is either unspecified behaviour or dead code. Unspecified behaviour gets a `@captain` scenario in harbour. Dead code does not block the voyage: it is marked and deferred to harbour. `@shipwright` condemns a scenario; the tagging and removal rules live in the role skills.
 3. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Every production seam MUST have at least one `@planks(...)` annotation, and MUST NOT contain behaviour outside its related step contracts. The Traceability policy carries the annotation mechanics.
-4. **Directed work uses `watchbill.json`.** Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. It contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form, with no prose, metadata, or hidden context. Each reference is repo-root-relative and includes the specs directory. QM processes all watches in order unless verification, product intent, environment, or tooling blocks. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
+4. **Directed work uses `watchbill.json`.** Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state. The Watchbill policy carries the file shape.
+
+### Who may act
+
 5. **Context bulkhead.** Captain to QM requires clean context. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this bulkhead. Product intent MUST exist only in durable repository artifacts: `.feature` specs, `assets/**`, and `watchbill.json`. Any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain to QM boundary is a violation. The clean-context mechanics, dispatch contract, and contamination protocol in Role transitions carry the bulkhead mechanics.
 6. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
 7. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. Write-scope exceptions: Boatswain MAY mark a scenario `@shipwright` to condemn it; Captain MAY add a perturbation to production code, per the Perturbation policy; Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user.
+
+### How work proceeds
+
 8. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY is forbidden, such as extracting helpers, creating interfaces, or adding abstraction before the scenario demands it. YAGNI violations are forbidden, such as parameters, options, config, hooks, or extension points for imagined futures.
 9. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles: batch all known work into the current pass, and prefer targeted verification over full tier runs. Do not pause to ask whether to continue when the next step is obvious. Reserve a stop for an actual blocker, missing tool, contradictory spec, or observed authentication failure, and name it plainly.
+
+### How it is proven
+
 10. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
 11. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline, for example with `@exceptional-double`. It MUST never replace normal-path real coverage.
 12. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 13. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with the doubles the "Real by default" Article forbids.
 14. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
-15. **Use Shipshape Controlled English.** Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use defined nautical terms of art as controlled vocabulary throughout, and keep the surrounding register plain and professional; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard; no em dashes, smart quotes, or other non-ASCII punctuation; avoid parenthetical asides. A parenthetical aside carries an inference and comprehension cost, so if a sentence needs a dash, comma-pair, or parenthetical break, rewrite it as two sentences. State what is, not what is absent. Negation primes the negated concept, so describe the positive state and omit concepts that do not belong rather than asserting their absence. Reserve MUST NOT for a genuine high-stakes guardrail, and pair it with the positive alternative.
+
+### How it is written
+
+15. **Use Shipshape Controlled English.** All Shipshape writing uses Shipshape Controlled English. The Voice section carries the mechanics: vocabulary, register, RFC 2119 terms, ASCII punctuation, and positive statement.
 16. **Use they/them pronouns** for all roles and agents.
 
 ## Scenario-writing agreement
@@ -200,6 +220,10 @@ Assets MAY be referenced by scenarios or verification. Assets MUST NOT define Sh
 
 Do not create extra binding Shipshape artifact types such as constitution, project-rules, memory-bank, decision-log, architecture-notes, roadmap, or backlog files. Product behaviour belongs in `.feature` files. Tooling configuration belongs in `AGENTS.md` and `RIGGING.md`. Directed work selection belongs in `watchbill.json`. Captain-only non-binding notes belong in `CAPTAIN.md`. Historical rationale belongs in git history and commit messages.
 
+### Watchbill policy
+
+`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form, with no prose, metadata, or hidden context. Each reference is repo-root-relative and includes the specs directory. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
+
 ### Verification policy
 
 Use project-specific commands from `RIGGING.md`. Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs. Full tier runs are boundary checks, not the default inner loop. Passing checks are evidence, not proof. Skipped verification is unverified. Fitting out provisions credentials for every configured tier, so every configured tier is runnable by construction. Run each configured tier whenever the work calls for it. A tier run that fails to authenticate is evidence that fitting out is incomplete: report a Captain blocker with the failure output. Reports MUST distinguish fresh results from cache-backed results. QM owns verification procedure details.
@@ -214,7 +238,7 @@ A perturbation MUST become a failing verification target. A perturbation that st
 
 ### Verification-shaped code policy
 
-Production code SHOULD expose narrow, observable seams for real scenario behaviour, per the "Code exposes verification seams" Article. Verification seams MUST support real behaviour and MUST NOT use the doubles the "Real by default" Article forbids. Crew MAY refactor production code to expose a verification seam only when that is the smallest sufficient change for the assigned failing target. Role-specific seam guidance lives in QM, Crew, Boatswain, and Shipwright.
+The "Code exposes verification seams" Article carries the seam obligations. Crew MAY refactor production code to expose a verification seam only when that is the smallest sufficient change for the assigned failing target. Role-specific seam guidance lives in QM, Crew, Boatswain, and Shipwright.
 
 ### Outbound verification policy
 
