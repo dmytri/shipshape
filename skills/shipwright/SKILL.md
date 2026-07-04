@@ -65,6 +65,8 @@ Install with the open skills CLI:
 ```bash
 npx skills add dmytri/shipshape --skill '*'
 ```
+
+Update Shipshape at a voyage boundary with `npx skills update`.
 ````
 
 ### RIGGING.md template

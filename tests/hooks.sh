@@ -128,6 +128,30 @@ case "$out" in
   *) fail=$((fail + 1)); echo "FAIL: missing fail-fast is reported" ;;
 esac
 
+# update-nudge (SessionStart; nudge fires on stdout, blocks nothing)
+unudge() {
+  name="$1" remote_ver="$2" want="$3"
+  printf '{"version": "%s"}\n' "$remote_ver" > "$work/remote.json"
+  out=$(SHIPSHAPE_REMOTE_MANIFEST="$work/remote.json" "$scripts/update-nudge.sh" 2>/dev/null)
+  case "$out" in
+    *"available"*) got="fire" ;;
+    *) got="silent" ;;
+  esac
+  if [ "$got" = "$want" ]; then
+    pass=$((pass + 1))
+  else
+    fail=$((fail + 1))
+    echo "FAIL: $name: want $want, got $got"
+  fi
+}
+installed_ver=$(sed -n 's/.*"version":[[:space:]]*"\([^"]*\)".*/\1/p' "$repo/.plugin/plugin.json" | head -n1)
+unudge "newer remote nudges" "99.0.0" "fire"
+unudge "same version silent" "$installed_ver" "silent"
+unudge "older remote silent" "0.0.1" "silent"
+# missing remote manifest stays silent
+out=$(SHIPSHAPE_REMOTE_MANIFEST="$work/absent.json" "$scripts/update-nudge.sh" 2>/dev/null)
+case "$out" in "") pass=$((pass + 1)) ;; *) fail=$((fail + 1)); echo "FAIL: missing remote manifest stays silent" ;; esac
+
 # planks-check
 cd "$work/proj" && git init -q . && git add -A && git -c user.email=t@t -c user.name=t commit -qm init
 cat >> "$work/proj/RIGGING.md" <<'RIG'

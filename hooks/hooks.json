@@ -11,6 +11,10 @@
           {
             "type": "command",
             "command": "\"${PLUGIN_ROOT}/hooks/scripts/rigging-validate.sh\""
+          },
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/hooks/scripts/update-nudge.sh\""
           }
         ]
       }
