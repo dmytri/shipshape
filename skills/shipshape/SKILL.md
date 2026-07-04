@@ -117,6 +117,7 @@ What can be a scenario:
 - Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
 - Tag a cross-cutting invariant `@property`.
 - Content behaviour can be a scenario, but only the seam you own. When a third-party generator renders the content, that seam is invoking and configuring it correctly; assert that it runs and produces the expected output. The asset carries the copy and the generator owns its rendering.
+- A standard contract is a machine-readable, testable specification of mechanical shape, such as an OpenAPI document, a JSON Schema, or a GraphQL schema. Conformance to a standard contract can be a scenario: reference the contract asset and assert the seam conforms. The Gherkin holds the user or business behaviour; the contract asset holds the mechanical shape such as fields, status codes, and structure. Do not duplicate contract shapes in prose.
 
 Avoid:
 
@@ -164,7 +165,7 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 
 - `## Stack`: `language`, `runtime`, and `packageManager`.
 - `## Directories`: `implementation`, `specs`, `verification`, and `assets` paths. `implementation` MAY list several paths, including packaging config. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. `assets` MAY list several existing directories: fitting out declares content directories as assets in place and moves nothing.
-- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations in the implementation directory. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
+- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations in the implementation directory. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. A project that references a standard contract asset MAY add a `conformance` command that validates seams against that asset, so a conformance step runs a real check. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
 - `## Perturbation`: the stable `message` and project-specific `fail-fast` statement. The `message` MUST contain the literal token `PERTURBATION` so a role can detect a live perturbation in the tree.
 - `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
 - `## Dependencies`: the dependency `policy`.

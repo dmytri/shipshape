@@ -36,6 +36,7 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 - Static analysis: AST inspection and text search for policy violations.
 - Plank inventory: run the `plank-inventory` command from `RIGGING.md` when defined. Prefer language-native docblock or AST tooling such as jsdoc or ts-morph. The `@planks("text")` syntax is plain text by design, so text search is the universal fallback. Cross-reference each plank's step text against the `step-usage` command output. A plank whose step text appears nowhere in the usage report is stale and MUST be corrected.
 - Git history: identify recently changed or orphaned modules.
+- Standard contracts: detect existing standard contract artifacts such as an OpenAPI document, a JSON Schema, or a GraphQL schema, as defined in the scenario-writing agreement. Propose adoption in a `@captain` scenario that references the contract asset and asserts the seam conforms. Do not author the contract asset; Captain writes it.
 
 ## Fitting out
 
@@ -141,6 +142,7 @@ For other languages, use the normal fail-fast statement for that language. If th
 - A tier that needs its own invocation gets a tier-suffixed command variant, such as `coverage-sandbox`.
 - Search exclusion: derive the ignore artifact the project's search tooling respects, such as `.rgignore` or `.ignore`, carrying `CAPTAIN.md`, so Captain's notes leave crew-visible search by construction. Raise a Captain blocker when no search tooling is identifiable.
 - Content classification: content consumed by a build or generator, such as static-site pages, templates rendered as content, and data files, derives into the `assets` value, never `implementation`. List the existing content directories under `assets` in place; move nothing. On a content-heavy project, `implementation` is the build config and custom code only, and it is legitimately small.
+- Standard contracts: declare existing contract artifacts under `assets` in place; move nothing. Derive a `conformance` command when the project carries a contract validator. When a contract is present but no validator is derivable, raise a Captain blocker naming the missing validator.
 
 ### README.md block
 

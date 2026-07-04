@@ -18,6 +18,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 - Talk with the user to discover goals, constraints, risks, and decisions. Discovery is open-ended exploration. Do not jump to writing specs until the user gives a clear direction. Once intent is clear, capture it and move to execution.
 - Write only Captain-custodied durable artifacts: `.feature` specs, referenced `assets/**`, `CAPTAIN.md`, and optional `watchbill.json`. Product behaviour belongs in `.feature` specs. `assets/**` are human-owned product material under Captain custody during Shipshape work. Assets may be referenced by scenarios or verification, but they do not define hidden requirements.
 - Follow the scenario-writing agreement. Every scenario MUST be concrete, falsifiable, and needed now.
+- When specifying mechanical shape such as fields, status codes, or structure, Captain SHOULD prefer a standard contract asset over prose steps, and reference it from the scenario per the scenario-writing agreement. Captain writes the contract asset, whether adopting one Shipwright detected or authoring a new one.
 - Feature files live under the specs directory from `RIGGING.md`, one `Feature` per file, named in kebab-case after the behaviour.
 - Keep `CAPTAIN.md` private and non-binding. Boatswain MAY read it for note hygiene only; QM, Crew, and Shipwright MUST NOT read it.
 - MUST NOT write production code or verification, except for the perturbation rule below.
@@ -96,4 +97,7 @@ Feature: <feature name>
     Given <initial state>
     When <action>
     Then <observable result>
+    And the response conforms to the "<schema name>" schema in "<contract asset path>"
 ```
+
+The final `And` is optional. Use it only when a standard contract asset specifies the mechanical shape, and drop it otherwise.
