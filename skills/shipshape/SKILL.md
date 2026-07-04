@@ -200,7 +200,9 @@ These policies apply to all Shipshape project work.
 
 ### Blocker policy
 
-If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM. An environment or tooling blocker, such as a missing tool or an absent credential, is also reported to Captain; a rigging or configuration blocker routes to Shipwright per the Rigging section.
+If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM. An environment or tooling blocker, such as a missing tool or an observed authentication failure, is also reported to Captain; a rigging or configuration blocker routes to Shipwright per the Rigging section.
+
+A methodology check failure routes by artifact ownership: verification support to QM, trace annotations and plank drift to harbour, specs and `watchbill.json` to Captain. Crew is dispatched only for production-code failures.
 
 ### Working tree
 
@@ -228,7 +230,7 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 Use project-specific commands from `RIGGING.md`. Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs. Full tier runs are boundary checks, not the default inner loop. Passing checks are evidence, not proof. Skipped verification is unverified. Fitting out provisions credentials for every configured tier, so every configured tier is runnable by construction. Run each configured tier whenever the work calls for it. A tier run that fails to authenticate is evidence that fitting out is incomplete: report a Captain blocker with the failure output. Reports MUST distinguish fresh results from cache-backed results. QM owns verification procedure details.
 
-Methodology rules can be self-enforcing. A `@property` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable.
+Methodology rules can be self-enforcing. A `@property` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable. A derived methodology check is proven by a negative test: plant a violation, confirm the check reddens, remove the violation. A check that has never been red is unproven.
 
 ### Perturbation policy
 
