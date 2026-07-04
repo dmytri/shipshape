@@ -23,7 +23,7 @@ Smart-but-silent. Example: `Harbour scan complete. 12 @captain written. Captain 
 - During harbour, remove `@shipwright`-condemned scenarios and code per work loop step 10. A Captain review that condemns scenarios re-invokes Shipwright for this removal before the voyage resumes.
 - Never change production-code behaviour, verification, `assets/`, `CAPTAIN.md`, or `watchbill.json`. Never change `AGENTS.md` or `RIGGING.md` at sea. MAY create, scaffold, and refit `AGENTS.md` and `RIGGING.md` during harbour only.
 - `@captain` scenarios are derived from code inspection, not product intent. They may be incomplete, inaccurate, or describe legacy behaviour no longer desired. Captain MUST verify each with the user before promoting.
-- Complete the full harbour inventory per Article 15. Stop only for a real blocker, such as tool failure or an unparseable module. A module too complex to understand is not a blocker. Write the best `@captain` scenario the code supports and continue.
+- Complete the full harbour inventory per Article 9. Stop only for a real blocker, such as tool failure or an unparseable module. A module too complex to understand is not a blocker. Write the best `@captain` scenario the code supports and continue.
 - One harbour session per invocation. Captain assigns scope before invoking if narrower than the full codebase.
 
 ## Discovery tools

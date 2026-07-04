@@ -38,6 +38,22 @@ else
   pass=$((pass + 1))
 fi
 
+# Hook citations: every "(Article N: <name>.)" in a hook script must name
+# the Nth Article heading in the core skill, so renumbering cannot drift.
+core="$repo/skills/shipshape/SKILL.md"
+cites=$(grep -ho '(Article [0-9]*: [^)]*)' "$repo"/hooks/scripts/*.sh | sort -u)
+bad=""
+while IFS= read -r c; do
+  [ -z "$c" ] && continue
+  n=$(printf '%s' "$c" | sed 's/(Article \([0-9]*\):.*/\1/')
+  name=$(printf '%s' "$c" | sed 's/(Article [0-9]*: \(.*\))/\1/;s/\.$//' | tr 'A-Z' 'a-z')
+  heading=$(sed -n "s/^$n\. \*\*\([^*]*\)\*\*.*/\1/p" "$core" | sed 's/\.$//' | tr 'A-Z' 'a-z')
+  [ "$name" = "$heading" ] || bad="$bad [cite '$c' vs Article $n heading '$heading']"
+done <<CITES
+$cites
+CITES
+if [ -z "$bad" ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: hook Article citations drifted:$bad"; fi
+
 # session-orient: silent without RIGGING.md, injects with it.
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT

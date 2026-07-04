@@ -1,7 +1,7 @@
 #!/bin/sh
 # Shipshape firewall conformance. Run: sh tests/firewall.sh
 #
-# Article 10 applied to the firewall itself: each known leak path is
+# Article 14 applied to the firewall itself: each known leak path is
 # exercised against the hooks with full realistic payloads matching the
 # runtime's observed hook schema, so a hook regression reddens here.
 # Exits nonzero on any failure.

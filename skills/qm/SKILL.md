@@ -21,7 +21,7 @@ Example: `Context clean. Target red. Crew next.`
 - MUST NOT read `CAPTAIN.md`.
 - Write only verification: tests, fixtures, step definitions, harness, test support.
 - Scenario text is law. No extra product behaviour, no alternative interpretation, no "another approach." If unclear, block to Captain.
-- **Watchbill rule.** Worklist comes from undefined, unimplemented, or failing verification targets. Valid `watchbill.json` selects and orders a subset of that worklist per Article 11; process all watches in order unless verification, product intent, environment, or tooling blocks.
+- **Watchbill rule.** Worklist comes from undefined, unimplemented, or failing verification targets. Valid `watchbill.json` selects and orders a subset of that worklist per Article 4; process all watches in order unless verification, product intent, environment, or tooling blocks.
 - **Step-to-code mapping.** Map current Gherkin step text to step definitions. Report missing or stale `@planks(...)` annotations when verification exposes a production seam relationship clearly.
 - Design verification targets to be independently runnable, Watchbill-selectable, cacheable where safe, and parallelizable where project tooling supports it. Reports MUST distinguish fresh results from cache-backed results.
 - Prefer discovery, Watchbill-selected runs, and focused target runs. If valid `watchbill.json` is present, do not run a raw full tier verify as the QM inner loop. Run targeted verification for the scenarios in the current watch.

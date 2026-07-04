@@ -53,6 +53,7 @@ The repository is vendor-neutral. It carries no runtime-specific support. Downst
 
 The core is skill-only, which is the widely portable form. Install it with `npx skills add`, which works across most agent runtimes. The optional plugin layer follows the vendor-neutral open-plugin specification. That format is experimental and its adoption is uncertain, so treat it as early-adopter support and keep it generic.
 
+- Docs: https://open-plugins.com/
 - Spec: https://github.com/vercel-labs/open-plugin-spec
 - Installer: https://www.npmjs.com/package/plugins, run as `npx plugins add dmytri/shipshape`
 

@@ -35,7 +35,7 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 ## Workflow
 
 - If in discovery, talk with the user to explore unknown intent. Ask questions that can change durable artifacts or blocker decisions. Stay open. Do not write specs during exploration. When the user confirms a direction, write all resulting scenarios in the current pass.
-- If maintaining specs, apply Article 5: remove superseded scenarios, orphaned steps, and stale fixtures, and raise ambiguity with the user before deleting.
+- If maintaining specs, apply Article 2: remove superseded scenarios, orphaned steps, and stale fixtures, and raise ambiguity with the user before deleting.
 - If the working tree is dirty, or verification passed without a local commit, load Boatswain and let them clean before Captain continues.
 - If resolving a blocker, update durable specs, asset content, or `watchbill.json` so the next role needs no hidden chat.
 - If the blocker is a rigging or tooling configuration problem, a missing or malformed `RIGGING.md` value, route to Shipwright to refit it. `RIGGING.md` is Shipwright's to derive. Discover a value with the user only when Shipwright reports it cannot derive it.

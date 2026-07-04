@@ -4,7 +4,7 @@
 # Enforces the CAPTAIN.md access rule: skills/qm/SKILL.md "MUST NOT read
 # CAPTAIN.md", and the Captain-notes access rule that Boatswain MAY read the
 # file while Quartermaster, Crew Mate, and Shipwright MUST NOT. Mechanizes
-# the Article 2 firewall for direct reads and for searches that name the
+# the Article 5 firewall for direct reads and for searches that name the
 # file; a broad search that surfaces the file without naming it stays with
 # skill discipline. Doctrine lives in the skills; this script adds none.
 #
@@ -26,7 +26,7 @@ esac
 
 case "$payload" in
   *CAPTAIN.md*)
-    echo "Shipshape custody: $role MUST NOT read CAPTAIN.md. Captain-only non-binding notes; Boatswain MAY read them, QM, Crew, and Shipwright derive everything from durable artifacts. (Article 2: context firewall.)" >&2
+    echo "Shipshape custody: $role MUST NOT read CAPTAIN.md. Captain-only non-binding notes; Boatswain MAY read them, QM, Crew, and Shipwright derive everything from durable artifacts. (Article 5: context firewall.)" >&2
     exit 2
     ;;
 esac
@@ -44,7 +44,7 @@ if [ -n "$transcript" ]; then
   for v in "$fp" "$pat" "$pth"; do
     case "$v" in
       *"$tbase"*|*"$transcript"*)
-        echo "Shipshape custody: $role MUST NOT read the session transcript. It is discarded chat, not product intent. Derive everything from durable artifacts. (Article 2: context firewall.)" >&2
+        echo "Shipshape custody: $role MUST NOT read the session transcript. It is discarded chat, not product intent. Derive everything from durable artifacts. (Article 5: context firewall.)" >&2
         exit 2
         ;;
     esac

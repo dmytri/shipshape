@@ -20,7 +20,7 @@ target=$(printf '%s' "$payload" | sed -n 's/.*"subagent_type":[[:space:]]*"ships
 
 case "$payload" in
   *"STOP. Captain's notes"*)
-    echo "Shipshape dispatch guard: the dispatch to $target carries the Captain-notes banner. Captain content crosses no firewall. Remove it and re-dispatch. (Article 2: context firewall.)" >&2
+    echo "Shipshape dispatch guard: the dispatch to $target carries the Captain-notes banner. Captain content crosses no firewall. Remove it and re-dispatch. (Article 5: context firewall.)" >&2
     exit 2
     ;;
 esac

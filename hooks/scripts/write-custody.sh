@@ -1,7 +1,7 @@
 #!/bin/sh
 # Shipshape write custody. PreToolUse guard for Edit/Write/MultiEdit/NotebookEdit.
 #
-# Enforces Article 4 (write scopes are strict) from skills/shipshape/SKILL.md
+# Enforces Article 7 (write scopes are strict) from skills/shipshape/SKILL.md
 # and the role contracts in skills/qm, skills/crew, skills/boatswain, and
 # skills/shipwright. Doctrine lives in the skills; this script adds none.
 # Delete this plugin and nothing is lost but enforcement.
@@ -28,7 +28,7 @@ rel="$file_path"
 base=$(basename "$file_path")
 
 deny() {
-  echo "Shipshape custody: $role MUST NOT write $rel. $1 (Article 4: write scopes are strict.)" >&2
+  echo "Shipshape custody: $role MUST NOT write $rel. $1 (Article 7: write scopes are strict.)" >&2
   exit 2
 }
 
