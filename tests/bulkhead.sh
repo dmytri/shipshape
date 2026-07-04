@@ -1,7 +1,7 @@
 #!/bin/sh
-# Shipshape firewall conformance. Run: sh tests/firewall.sh
+# Shipshape bulkhead conformance. Run: sh tests/bulkhead.sh
 #
-# Article 14 applied to the firewall itself: each known leak path is
+# The "Passing verification is not proof" Article applied to the bulkhead itself: each known leak path is
 # exercised against the hooks with full realistic payloads matching the
 # runtime's observed hook schema, so a hook regression reddens here.
 # Exits nonzero on any failure.
