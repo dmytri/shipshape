@@ -87,10 +87,10 @@ Procedure lives in the skills. Every role reads this on open.
 
 ## Directories
 
-- implementation: <derived path or comma-separated list>
-- specs: <derived>
-- verification: <derived or none>
-- assets: <derived directory, list, or none>
+- implementation: <one path per line, key repeated; `*` matches one path segment>
+- specs: <one path per line>
+- verification: <one path per line, or none>
+- assets: <one path per line, or none>
 
 ## Commands
 

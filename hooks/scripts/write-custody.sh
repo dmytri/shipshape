@@ -42,26 +42,27 @@ elif [ -f "RIGGING.md" ]; then
 fi
 impl="" specs="" verif="" assets=""
 if [ -n "$rigdir" ]; then
-  impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rigdir" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//')
-  specs=$(sed -n 's/^- specs:[[:space:]]*//p' "$rigdir" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//')
-  verif=$(sed -n 's/^- verification:[[:space:]]*//p' "$rigdir" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//')
-  assets=$(sed -n 's/^- assets:[[:space:]]*//p' "$rigdir" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//')
+  impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
+  specs=$(sed -n 's/^- specs:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
+  verif=$(sed -n 's/^- verification:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
+  assets=$(sed -n 's/^- assets:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
 fi
 
-# in_dirs <rel> <comma-separated dirs> -> exit status 0 when rel is inside any
+# in_dirs <rel> <newline-separated dirs> -> exit status 0 when rel is inside any.
+# A dir MAY be a glob such as packages/*/src, where * matches one path segment.
 in_dirs() {
   p="$1"
   dirs="$2"
-  old_ifs="$IFS"; IFS=','
+  old_ifs="$IFS"; IFS='
+'
+  set -f
   for d in $dirs; do
-    d=$(printf '%s' "$d" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-    d="${d%/}"
     [ -z "$d" ] && continue
     case "$p" in
-      "$d"/*|"$d") IFS="$old_ifs"; return 0 ;;
+      $d/*|$d) set +f; IFS="$old_ifs"; return 0 ;;
     esac
   done
-  IFS="$old_ifs"; return 1
+  set +f; IFS="$old_ifs"; return 1
 }
 
 case "$role" in

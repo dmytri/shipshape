@@ -27,18 +27,20 @@ cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p'
 [ -n "$cwd" ] || cwd=$(pwd)
 rig="$cwd/RIGGING.md"
 [ -f "$rig" ] || exit 0
-impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rig" | head -1 | tr -d '`' | sed 's/[[:space:]]*$//')
+impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rig" | tr -d '`' | sed 's|[[:space:]]*/*$||')
 [ -n "$impl" ] || exit 0
 
-# implementation MAY list several comma-separated paths.
+# implementation MAY list several paths, one per line; a dir MAY be a glob
+# such as packages/*/src, where * matches one path segment.
 in_impl() {
-  p="$1"; old="$IFS"; IFS=','
+  p="$1"; old="$IFS"; IFS='
+'
+  set -f
   for d in $impl; do
-    d=$(printf '%s' "$d" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s|/$||')
     [ -z "$d" ] && continue
-    case "$p" in "$d"/*) IFS="$old"; return 0 ;; esac
+    case "$p" in $d/*) set +f; IFS="$old"; return 0 ;; esac
   done
-  IFS="$old"; return 1
+  set +f; IFS="$old"; return 1
 }
 
 # Changed and new production files both count. diff omits untracked, so

@@ -22,7 +22,8 @@ cat > "$work/proj/RIGGING.md" <<'RIG'
 
 - implementation: src/
 - specs: features/
-- verification: features/steps/, features/support/
+- verification: features/steps/
+- verification: features/support/
 - assets: assets/
 
 ## Commands
@@ -32,6 +33,20 @@ cat > "$work/proj/RIGGING.md" <<'RIG'
 ## Perturbation
 
 - fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+RIG
+
+mkdir -p "$work/mono/packages/shim/src" "$work/mono/packages/shim/features/steps"
+cat > "$work/mono/RIGGING.md" <<'RIG'
+## Directories
+
+- implementation: src
+- implementation: packages/*/src
+- specs: features
+- specs: packages/*/features
+- verification: features/steps
+- verification: packages/*/features/steps
+- assets: assets
+- assets: packages/*/assets
 RIG
 
 pass=0
@@ -55,6 +70,9 @@ p() {
 b() {
   printf '{"agent_type":"%s","cwd":"%s","tool_input":{"command":"%s"}}' "$1" "$work/proj" "$2"
 }
+pm() {
+  printf '{"agent_type":"%s","cwd":"%s","tool_input":{"file_path":"%s"}}' "$1" "$work/mono" "$2"
+}
 
 # write-custody
 check "crew blocked from specs" write-custody.sh "$(p "shipshape:crew" "$work/proj/features/pay.feature")" 2
@@ -69,6 +87,12 @@ check "boatswain allowed hygiene edits" write-custody.sh "$(p "shipshape:boatswa
 check "foreign agent unrestricted" write-custody.sh "$(p "Explore" "$work/proj/features/pay.feature")" 0
 check "main loop unrestricted" write-custody.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/proj/features/pay.feature\"}}" 0
 check "quoted agent_type cannot match" write-custody.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/proj/features/pay.feature\",\"content\":\"mentions \\\"agent_type\\\": \\\"shipshape:crew\\\"\"}}" 0
+
+# write-custody: monorepo glob directories, one path per line, * is one path segment
+check "crew allowed in package src (glob)" write-custody.sh "$(pm "shipshape:crew" "$work/mono/packages/shim/src/x.ts")" 0
+check "crew blocked from package spec (glob)" write-custody.sh "$(pm "shipshape:crew" "$work/mono/packages/shim/features/x.feature")" 2
+check "crew blocked from package step defs (glob)" write-custody.sh "$(pm "shipshape:crew" "$work/mono/packages/shim/features/steps/x.ts")" 2
+check "qm blocked from package src (glob)" write-custody.sh "$(pm "shipshape:qm" "$work/mono/packages/shim/src/x.ts")" 2
 
 # bash-custody
 check "crew blocked from git commit" bash-custody.sh "$(b "shipshape:crew" "git commit -m x")" 2
