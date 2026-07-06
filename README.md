@@ -173,6 +173,10 @@ After context clears, QM reads only durable repository artifacts and runs focuse
 ## Dependencies
 
 - policy: locked; no new dependencies without a spec
+
+## Outbound
+
+- target: npm - ship `pnpm publish`; verify `npm view <package> version`
 ```
 
 ```text
@@ -309,6 +313,14 @@ sequenceDiagram
     Captain->>User: Review each scenario, promote/discard
 ```
 
+## Structural evolution
+
+Behaviour is not the only thing that drifts. Seams accrete, planks scatter, and structure decays while every scenario still passes. Shipshape treats structural change as first-class, but ships no refactoring engine and no catalogue of code smells. It makes structure legible and lets the project act.
+
+The trace instruments surface structural drift as evidence, not opinion. The `plank-inventory` command shows planks scattered across many seams, or a seam carrying planks from unrelated steps. Coverage shows a planked seam that no scenario exercises. Optional scantlings constrain approved structure without creating work. Perturbation then rebuilds a seam cluster from current durable context, the same mechanism that carries a requirement change through a clean rebuild.
+
+Shipshape names the quality gate and never the tool, and prefers tooling native to the project's stack over a popular import from another ecosystem. The project brings its own refactoring practice and its own tools. Shipshape keeps the trace honest through the change. This is why it stays small: structural taste lives in the project, and only what the trace can prove lives in the method.
+
 ## Design position
 
 Plain agent coding often traps product intent in chat. Memory-bank workflows preserve too much stale context. Markdown-heavy spec-driven workflows turn generated plans and task lists into false progress. Agents drift when the same context contains discovery, planning, tests, and code. Old specs, stale tests, and orphaned code pollute future work.
@@ -329,6 +341,7 @@ Boatswain enforces the standards the project writes down. Put code standards in 
 The authoritative surface stays small:
 
 - `.feature` files define binding product behaviour.
+- Scantlings are optional, machine-checkable constraints such as an OpenAPI or schema file. A scantling creates no work; a scenario references it and asserts a seam conforms. Captain authors a project-owned scantling; a vendored one is read-only.
 - `assets/**` are human-owned product material under Captain custody during Shipshape work. Product-facing content should live in assets or project-approved content catalogs. Assets and catalogs are not instructions, backlog, rationale, project memory, or hidden requirements.
 - `AGENTS.md` is the human-facing agent entry document.
 - `RIGGING.md` holds project tooling values such as stack, directories, commands, and the perturbation statement.
