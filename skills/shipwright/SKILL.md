@@ -56,17 +56,25 @@ Create `AGENTS.md` at project root. If `AGENTS.md` already exists, append the Sh
 ````markdown
 # Agent Instructions
 
-This project uses Shipshape.
+This project uses Shipshape, a context-isolated spec-driven workflow for coding agents.
+
+Agent opening this project: ensure Shipshape is installed, then load the `shipshape` skill and follow its routing before other work. Decide how to involve the human per your configured preferences.
 
 Tooling values such as stack, directories, and commands live in `RIGGING.md`.
 
-Install with the open skills CLI:
+Install with the open skills CLI, which works across most agent runtimes:
 
 ```bash
 npx skills add dmytri/shipshape --skill '*'
 ```
 
-Update Shipshape at a voyage boundary with `npx skills update`.
+If your runtime supports the open-plugin format, such as Claude Code or Cursor, install the experimental plugin build instead:
+
+```bash
+npx plugins add dmytri/shipshape
+```
+
+Update Shipshape at a voyage boundary with `npx skills update` for the skills install, or re-run `npx plugins add dmytri/shipshape` for the plugin build.
 ````
 
 ### RIGGING.md template
@@ -160,7 +168,7 @@ Append this block to the project README, never overwriting existing content:
 ````markdown
 ## Built with Shipshape
 
-This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install: `npx skills add dmytri/shipshape --skill '*'`
+This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install with `npx skills add dmytri/shipshape --skill '*'`, or the experimental open-plugin build with `npx plugins add dmytri/shipshape`.
 ````
 
 ## Work loop
