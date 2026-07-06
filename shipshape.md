@@ -6,7 +6,7 @@
 
 | Role | Skill | Writes | Hands off to |
 |---|---|---|---|
-| Captain | `captain` | `.feature` specs, `assets/**`, `CAPTAIN.md`, `watchbill.json`, perturbation statements | QM, across a context clear |
+| Captain | `captain` | `.feature` specs, `scantlings`, `assets/**`, `CAPTAIN.md`, `watchbill.json`, perturbation statements | QM, across a context clear |
 | Quartermaster | `qm` | verification: tests, step definitions, fixtures, harness | Crew, or Boatswain |
 | Crew Mate | `crew` | production code only | QM |
 | Boatswain | `boatswain` | hygiene edits, `@shipwright` scenario marks, local commits | Captain |
@@ -17,6 +17,7 @@
 | Artifact | Holds | Custody |
 |---|---|---|
 | `.feature` files | binding product behaviour | Captain |
+| `scantlings` | machine-readable contract shape, creates no work | Captain authors, vendored read-only |
 | `assets/**` | human-owned product material | Captain, during Shipshape work |
 | `AGENTS.md` | agent entry document | project |
 | `RIGGING.md` | tooling values, per the fixed shape in the shipshape skill | Shipwright derives and repairs |

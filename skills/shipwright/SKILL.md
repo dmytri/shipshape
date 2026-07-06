@@ -36,11 +36,11 @@ Shipwright SHOULD use when available. Tools depend on the project language and t
 - Static analysis: AST inspection and text search for policy violations.
 - Plank inventory: run the `plank-inventory` command from `RIGGING.md` when defined. Prefer language-native docblock or AST tooling such as jsdoc or ts-morph. The `@planks("text")` syntax is plain text by design, so text search is the universal fallback. Cross-reference each plank's step text against the `step-usage` command output. A plank whose step text appears nowhere in the usage report is stale and MUST be corrected.
 - Git history: identify recently changed or orphaned modules.
-- Standard contracts: detect existing standard contract artifacts such as an OpenAPI document, a JSON Schema, or a GraphQL schema, as defined in the scenario-writing agreement. Propose adoption in a `@captain` scenario that references the contract asset and asserts the seam conforms. Do not author the contract asset; Captain writes it.
+- Scantlings: detect existing scantling files such as an OpenAPI document, a JSON Schema, or a GraphQL schema, as defined in the scenario-writing agreement. Propose adoption in a `@captain` scenario that references the scantling and asserts the seam conforms. Do not author a project-owned scantling; Captain writes it.
 
 ## Fitting out
 
-Fitting out is first-run setup of a project for Shipshape. It is a harbour activity. Shipwright derives the project tooling values from the repository and scaffolds the config files. Shipwright never asks the user. It derives from the repository, or it raises a Captain blocker.
+Fitting out is first-run setup of a project for Shipshape. It is a harbour activity. Shipwright derives the project tooling values from the repository and scaffolds the Shipshape configuration. Shipwright derives the rig manifest from the existing rigging; it does not create the project toolchain. Shipwright never asks the user. It derives from the repository, or it raises a Captain blocker.
 
 1. If `AGENTS.md` or `RIGGING.md` is absent, fit out before the inventory.
 2. Derive `RIGGING.md` values from the repository. Read the language, runtime, package manager, commands, directories, dependency policy, perturbation syntax, docblock inventory tooling, and tooling checks from project files and configuration.
@@ -87,10 +87,11 @@ Procedure lives in the skills. Every role reads this on open.
 
 ## Directories
 
-- implementation: <one path per line, key repeated; `*` matches one path segment>
+- implementation: <every directory that can hold a planked seam, one path per line, key repeated; `*` matches one path segment>
 - specs: <one path per line>
 - verification: <one path per line, or none>
 - assets: <one path per line, or none>
+- scantlings: <machine-readable contract files in place, one path per line, or none>
 
 ## Commands
 
@@ -121,7 +122,8 @@ Procedure lives in the skills. Every role reads this on open.
 
 ## Outbound
 
-- policy: <derived or none>
+- target: <name> - ship `<derived command>`; verify `<derived live-artifact check>`
+- <one entry per outbound target, or none>
 
 ## Known false-failure modes
 
@@ -144,7 +146,9 @@ For other languages, use the normal fail-fast statement for that language. If th
 - A tier that needs its own invocation gets a tier-suffixed command variant, such as `coverage-sandbox`.
 - Search exclusion: derive the ignore artifact the project's search tooling respects, such as `.rgignore` or `.ignore`, carrying `CAPTAIN.md`, so Captain's notes leave crew-visible search by construction. Raise a Captain blocker when no search tooling is identifiable.
 - Content classification: content consumed by a build or generator, such as static-site pages, templates rendered as content, and data files, derives into the `assets` value, never `implementation`. List the existing content directories under `assets` in place; move nothing. On a content-heavy project, `implementation` is the build config and custom code only, and it is legitimately small.
-- Standard contracts: declare existing contract artifacts under `assets` in place; move nothing. Derive a `conformance` command when the project carries a contract validator. When a contract is present but no validator is derivable, raise a Captain blocker naming the missing validator.
+- Implementation and plank inventory: list every directory that can hold a planked seam under `implementation`, including entry-point directories such as `bin`. Derive the `plank-inventory` command to scan exactly the `implementation` paths, so every planked seam is inventoried.
+- Scantlings: declare existing scantling files under the `scantlings` directory value in place; move nothing. Derive a `conformance` command when the project carries a scantling validator. When a scantling is present but no validator is derivable, raise a Captain blocker naming the missing validator.
+- Outbound targets: derive each outbound target the project ships, such as a package registry publish or a live deploy. Write one entry per target under `## Outbound` naming the target, its `ship` command, and its `verify` check against the live artifact. A target with a multi-step runbook keeps the runbook in `AGENTS.md` and points to it.
 - Methodology checks: derive executable conformance checks so methodology violations surface as failing verification targets. Two checks are required: watchbill shape conformance, and perturbation liveness, where every `PERTURBATION` token in the tree surfaces as a failing target. Four checks are derived when the stack supports them: a stale-plank join of `plank-inventory` against `step-usage`, a forbidden-doubles scan that honours `@exceptional-double`, a feature lint config such as `.gplintrc`, and a standing tier auth probe command. Record `none` with a note where the stack supports no derivation; a missing optional check is a finding, not a blocker. Prefer a `@property` scenario where a scenario can observe the signal, so failures surface through normal discovery; add a tier-suffixed command only when a scenario cannot observe the signal.
 - Check tooling: derive every check against structured output first, such as AST tooling, docblock tooling, or `usage-json`. Text search is the last-resort fallback, and a text-search-derived check MUST record its weakness under `## Known false-failure modes`.
 
@@ -161,7 +165,7 @@ This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context
 ## Work loop
 
 1. Verify the harbour-entry guard. The working tree MUST be clean and outbound MUST NOT be pending, as defined in the Harbour flow. A dirty tree consisting only of harbour-scoped edits from an interrupted session is resumable, not a guard failure. If the guard fails, block to Captain and stop. Do not begin harbour work on a dirty or unshipped tree.
-2. Load `shipshape` skill. Read `RIGGING.md` for project tooling values and `AGENTS.md` for any project-specific agent rules. If `RIGGING.md` or `AGENTS.md` is absent, fit out first. See Fitting out. If fitted, refit: verify `RIGGING.md` carries every current command and value slot, explicitly `none` where a value is underivable, and verify every fitting-out-derived artifact exists, including the search exclusion. Derive what is missing. Raise a Captain blocker for anything underivable.
+2. Load `shipshape` skill. Read `RIGGING.md` for project tooling values and `AGENTS.md` for any project-specific agent rules. If `RIGGING.md` or `AGENTS.md` is absent, fit out first. See Fitting out. If fitted, refit: verify `RIGGING.md` carries every current command and value slot, explicitly `none` where a value is underivable, and verify every fitting-out-derived artifact exists, including the search exclusion. Refit re-derives `RIGGING.md` to the current shape from the repository; a slot from a superseded shape is dropped, not preserved. Derive what is missing. Raise a Captain blocker for anything underivable.
 3. Identify scope: the Captain-assigned module or directory, or the implementation directories from `RIGGING.md` when onboarding. Assets are never planked and get no `@captain` scenarios about their content. Generated and vendored code inside implementation directories is out of scope; note it in the report. A mostly-content project yields a small implementation surface and a short plank inventory; that is a finding, not a failure.
 4. Run coverage analysis. Run the `coverage` command from `RIGGING.md` to get per-file line coverage. If `RIGGING.md` defines no coverage command, infer one from the project stack, else block to Captain as a configuration blocker. Use per-file and per-line output to prioritize: 100%-covered files with no `@planks(...)` annotations need only backfill, partially-covered files need backfill plus `@captain` gaps, 0%-covered files need full `@captain` scenarios.
 5. Map covered code to step text. For each covered production file, find which step definitions import or reference it. Read those step definitions for Gherkin step bindings in the project's Cucumber implementation. Resolve the binding to the concrete matching step line from the `.feature` file. Use parameterized and regex bindings to find the actual step text in the feature, and use that concrete text in `@planks(...)`. Save this mapping for the planking step. If multiple step definitions reference the same file, the file may carry Planks for multiple steps.

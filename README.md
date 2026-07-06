@@ -353,9 +353,7 @@ Skill-only agents follow the rules by explicit discipline. Enforcing runtimes tu
 - **Install audit.** The `/shipshape:doctor` command audits the installation itself: completeness of each installed copy, freshness against upstream, and coherence across channels and scopes, so stale or shadowed doctrine is found instead of trusted.
 - **Orientation.** On session start in a project with `RIGGING.md`, the plugin injects `shipshape.md`, a structural map of roles, artifacts, tags, and routing, plus one derived deck-state line suggesting the entry role. The map is non-normative; the skills stay canonical, and `tests/map.sh` checks its names against them.
 
-The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement claims are per-runtime: a custody or bulkhead mechanism is claimed for a runtime only after live-fire verification on that runtime. Unverified runtimes are unsupported for enforcement, never degraded.
-
-Live-fire status on Claude Code, at plugin 0.8.2: dispatch custody is live-fire verified, blocking both an oversized dispatch and a dispatch carrying the Captain-notes banner. The write, read, and command custody hooks are verified by a payload conformance suite against the runtime's observed hook schema, and the runtime demonstrably invokes hooks from the same registration. Their deny paths resist end-to-end live fire for a structural reason: the skill discipline layer refuses a violation drill before any forbidden tool call fires, and the runtime treats agent-relayed authorization as no authorization. Three defence layers were observed activating inside-out, with the innermost first. The hooks stay in place as the backstop for an agent that sheds its discipline.
+The skills remain canonical and sufficient on their own. Every plugin artifact cites the skill text it enforces and adds no doctrine. Removing the plugin loses nothing but enforcement. Enforcement claims are per-runtime and verified downstream: a project that adopts Shipshape on a real coding agent, such as Estelle, exercises the custody and bulkhead mechanisms on that runtime and reports what holds. Live-fire verification belongs in those downstream projects, not in this repository. Unverified runtimes are unsupported for enforcement, never degraded.
 
 ## Related approaches
 
@@ -366,7 +364,7 @@ Shipshape overlaps with spec-driven development tools, memory-bank workflows, an
 | Spec-driven development tools | Requirements, plans, proposals, tasks, or implementation phases | Current Cucumber specs are the product contract; verification state discovers work. |
 | Memory banks | Preserve context across sessions | Chat context is discarded; durable repository artifacts carry current intent. |
 | Agent-team systems | Use roles, agents, or personas to organize work | Roles are custody boundaries, not an organization simulation. |
-| Codegen-first systems | Generate or synchronize code from specs | Code and verification are disposable from specs, but implementation changes through failing verification targets. |
+| Codegen-first systems | Generate or synchronize code from specs | Code is disposable from specs, but implementation changes through failing verification targets. |
 
 Shipshape combines four ideas: role custody, context isolation, verification as progress, and Cucumber-native traceability.
 
@@ -376,7 +374,7 @@ For background, see Birgitta Bockeler's article on SDD tools on Martin Fowler's 
 
 ## Maturity
 
-Shipshape is pre-validation. It has a single author and no published case studies. Skill-only use relies on voluntary agent discipline. The plugin layer mechanizes custody and context isolation on supporting runtimes; dispatch custody is live-fire verified on Claude Code, write and command custody are payload-verified with runtime invocation confirmed, and every runtime beyond Claude Code is unproven. Shipshape inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
+Shipshape is pre-validation. It has a single author and no published case studies. Skill-only use relies on voluntary agent discipline. The plugin layer mechanizes custody and context isolation on supporting runtimes, and a project that adopts Shipshape on a real coding agent verifies those mechanisms downstream and reports what holds. Shipshape inherits the no-version-pinning supply-chain properties of skills.sh. The ideas are internally consistent and the vocabulary is deliberate, but Shipshape has not yet been proven outside its origin.
 
 ## Origin
 

@@ -10,7 +10,7 @@ scripts="$repo/hooks/scripts"
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
-mkdir -p "$work/proj/src" "$work/proj/features/steps"
+mkdir -p "$work/proj/src" "$work/proj/features/steps" "$work/proj/scantlings"
 printf 'plain user session, no marker\n' > "$work/t-main.jsonl"
 printf 'earlier: Launching skill: captain\n' > "$work/t-dirty.jsonl"
 cat > "$work/proj/RIGGING.md" <<'RIG'
@@ -25,6 +25,7 @@ cat > "$work/proj/RIGGING.md" <<'RIG'
 - verification: features/steps/
 - verification: features/support/
 - assets: assets/
+- scantlings: scantlings/
 
 ## Commands
 
@@ -84,6 +85,9 @@ check "qm allowed in step defs" write-custody.sh "$(p "shipshape:qm" "$work/proj
 check "qm blocked from specs" write-custody.sh "$(p "shipshape:qm" "$work/proj/features/pay.feature")" 2
 check "boatswain blocked from CAPTAIN.md" write-custody.sh "$(p "shipshape:boatswain" "$work/proj/CAPTAIN.md")" 2
 check "boatswain allowed hygiene edits" write-custody.sh "$(p "shipshape:boatswain" "$work/proj/src/pay.ts")" 0
+check "crew blocked from scantlings" write-custody.sh "$(p "shipshape:crew" "$work/proj/scantlings/orders.openapi.yaml")" 2
+check "qm blocked from scantlings" write-custody.sh "$(p "shipshape:qm" "$work/proj/scantlings/orders.openapi.yaml")" 2
+check "shipwright blocked from scantlings" write-custody.sh "$(p "shipshape:shipwright" "$work/proj/scantlings/orders.openapi.yaml")" 2
 check "foreign agent unrestricted" write-custody.sh "$(p "Explore" "$work/proj/features/pay.feature")" 0
 check "main loop unrestricted" write-custody.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/proj/features/pay.feature\"}}" 0
 check "quoted agent_type cannot match" write-custody.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/proj/features/pay.feature\",\"content\":\"mentions \\\"agent_type\\\": \\\"shipshape:crew\\\"\"}}" 0

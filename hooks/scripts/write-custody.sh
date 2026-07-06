@@ -40,12 +40,13 @@ if [ -n "$cwd" ] && [ -f "$cwd/RIGGING.md" ]; then
 elif [ -f "RIGGING.md" ]; then
   rigdir="RIGGING.md"
 fi
-impl="" specs="" verif="" assets=""
+impl="" specs="" verif="" assets="" scant=""
 if [ -n "$rigdir" ]; then
   impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
   specs=$(sed -n 's/^- specs:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
   verif=$(sed -n 's/^- verification:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
   assets=$(sed -n 's/^- assets:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
+  scant=$(sed -n 's/^- scantlings:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')
 fi
 
 # in_dirs <rel> <newline-separated dirs> -> exit status 0 when rel is inside any.
@@ -75,6 +76,7 @@ case "$role" in
     esac
     [ -n "$impl" ] && in_dirs "$rel" "$impl" && deny "Production code belongs to Crew."
     [ -n "$assets" ] && in_dirs "$rel" "$assets" && deny "Assets are Captain-custodied."
+    [ -n "$scant" ] && in_dirs "$rel" "$scant" && deny "Scantlings are Captain-custodied."
     ;;
   crew)
     # skills/crew/SKILL.md: "Write production code only. No specs, tests,
@@ -86,6 +88,7 @@ case "$role" in
     [ -n "$verif" ] && in_dirs "$rel" "$verif" && deny "Verification belongs to QM."
     [ -n "$specs" ] && in_dirs "$rel" "$specs" && deny "Specs belong to Captain."
     [ -n "$assets" ] && in_dirs "$rel" "$assets" && deny "Assets are Captain-custodied."
+    [ -n "$scant" ] && in_dirs "$rel" "$scant" && deny "Scantlings are Captain-custodied."
     ;;
   boatswain)
     # skills/boatswain/SKILL.md: "MAY read CAPTAIN.md ...; MUST NOT edit it."
@@ -101,6 +104,7 @@ case "$role" in
     esac
     [ -n "$verif" ] && in_dirs "$rel" "$verif" && deny "Shipwright never changes verification."
     [ -n "$assets" ] && in_dirs "$rel" "$assets" && deny "Shipwright never changes assets."
+    [ -n "$scant" ] && in_dirs "$rel" "$scant" && deny "Shipwright never authors a project-owned scantling."
     ;;
 esac
 

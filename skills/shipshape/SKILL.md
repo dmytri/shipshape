@@ -7,7 +7,7 @@ description: "Use this skill to understand the Shipshape workflow, shared Articl
 
 Shipshape is a context-isolated, spec-driven workflow for coding agents.
 
-**Specifications are durable. Code and verification are disposable. Agents are replaceable.**
+**Specifications are durable. Code is disposable. Agents are replaceable.**
 
 Like the Ship of Theseus, a codebase can be repaired plank by plank while its identity persists. Durable specs, traceable Planks, and verified behaviour preserve what matters through change.
 
@@ -137,7 +137,7 @@ What can be a scenario:
 - Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
 - Tag a cross-cutting invariant `@property`.
 - Content behaviour can be a scenario, but only the seam you own. When a third-party generator renders the content, that seam is invoking and configuring it correctly; assert that it runs and produces the expected output. The asset carries the copy and the generator owns its rendering.
-- A standard contract is a machine-readable, testable specification of mechanical shape, such as an OpenAPI document, a JSON Schema, or a GraphQL schema. Conformance to a standard contract can be a scenario: reference the contract asset and assert the seam conforms. The Gherkin holds the user or business behaviour; the contract asset holds the mechanical shape such as fields, status codes, and structure. Do not duplicate contract shapes in prose.
+- A scantling is a machine-readable, testable specification of mechanical shape, such as an OpenAPI document, a JSON Schema, or a GraphQL schema. A scantling creates no work; a scenario references it and asserts a seam conforms. Captain owns a project-authored scantling; a vendored scantling is read-only like any vendored file. The Gherkin holds the user or business behaviour; the scantling holds the mechanical shape such as fields, status codes, and structure. Do not duplicate scantling shapes in prose.
 
 Avoid:
 
@@ -181,18 +181,20 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 
 ### Rigging
 
-`RIGGING.md` uses a fixed Markdown shape. Roles read it on open and parse it by heading. It holds values, not procedure. Procedure lives in the skills. Use these sections:
+`RIGGING.md` uses a fixed Markdown shape. Roles read it on open and parse it by heading. It holds values, not procedure. Procedure lives in the skills. Each value is a Markdown list item `- <key>: <value>` on its own line, and a multi-value key repeats on a new line for each value. Command values are wrapped in backticks and path values are bare. Use these sections:
 
 - `## Stack`: `language`, `runtime`, and `packageManager`.
-- `## Directories`: `implementation`, `specs`, `verification`, and `assets` paths, one path per line with the key repeated. A `*` matches one path segment, so `packages/*/src` covers every package in a workspace. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. Fitting out declares content directories as assets in place and moves nothing.
-- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations in the implementation directory. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. A project that references a standard contract asset MAY add a `conformance` command that validates seams against that asset, so a conformance step runs a real check. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
+- `## Directories`: `implementation`, `specs`, `verification`, `assets`, and optional `scantlings` paths, one path per line with the key repeated. A `*` matches one path segment, so `packages/*/src` covers every package in a workspace. List every directory that can hold a planked seam under `implementation`; the `plank-inventory` command scans exactly the `implementation` paths. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. Fitting out declares content directories as assets in place and moves nothing. `scantlings` lists machine-readable contract files in place when the project carries them.
+- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations across the `implementation` paths. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. A project that carries a scantling MAY add a `conformance` command that validates seams against it, so a conformance step runs a real check. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
 - `## Perturbation`: the stable `message` and project-specific `fail-fast` statement. The `message` MUST contain the literal token `PERTURBATION` so a role can detect a live perturbation in the tree.
 - `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
-- `## Dependencies`: the dependency `policy`.
-- `## Outbound`: the release or distribution artifact verification command or policy, when the project ships an artifact.
+- `## Dependencies`: the dependency `policy` and any selected dependency names.
+- `## Outbound`: one entry per outbound target, each naming the target, its `ship` command, and its `verify` check against the live artifact. A runbook longer than a value lives in `AGENTS.md`, and the target entry points to it.
 - `## Known false-failure modes`: short notes a role rules out before routing a product defect.
 
 A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` and `specs` under `## Directories`, `focused` under `## Commands`, and `fail-fast` under `## Perturbation`. Other sections are optional but SHOULD be present when the project needs them. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. `RIGGING.md` is Shipwright's to derive and repair; Captain routes a rigging configuration blocker to Shipwright, which refits the missing values. Captain discovers a value with the user only when Shipwright cannot derive it. Keep narrative short. Long rationale belongs in `AGENTS.md`, not `RIGGING.md`.
+
+The project configuration files that `RIGGING.md` documents are the ship's rigging, such as the package manifest, the lockfile, and the tooling and lint configuration. Shipwright fits the rigging during fitting out. Boatswain maintains it as hygiene. Captain selects dependencies and records them under `## Dependencies`. Crew installs a selected dependency as the mechanical part of a spec-ordered change.
 
 ## Project policies
 
@@ -244,7 +246,7 @@ The "Code exposes verification seams" Article carries the seam obligations. Crew
 
 ### Outbound verification policy
 
-Captain handles outbound decisions such as push, PR, publish, release, and deploy. Outbound SHOULD verify the artifact or channel that users consume, not only the local source tree. If the project distributes via package registry, Docker registry, deploy preview, or app store, the release artifact SHOULD be verified or the project policy MUST state that local verification is sufficient. Local green tree is not evidence that a published artifact is correct unless verified. A project MAY ship several distribution targets, such as a package and a separately deployed site. Name every target in `RIGGING.md` under `## Outbound` and verify each; targets deploy independently unless the policy states otherwise.
+Outbound is any action that places durable state where a party outside the voyage can consume it, such as a pushed branch, a published artifact, or a deployed or updated live service. A local commit and disposable, namespaced, self-cleaning test resources stay inside the voyage and are not outbound. Captain handles outbound decisions such as push, PR, publish, release, and deploy. Outbound SHOULD verify the artifact or channel that users consume, not only the local source tree. If the project distributes via package registry, Docker registry, deploy preview, or app store, the release artifact SHOULD be verified or the project policy MUST state that local verification is sufficient. Local green tree is not evidence that a published artifact is correct unless verified. A project MAY ship several distribution targets, such as a package and a separately deployed site. Name every target in `RIGGING.md` under `## Outbound` and verify each; targets deploy independently unless the policy states otherwise.
 
 ### Traceability policy
 
@@ -260,9 +262,9 @@ A seam MAY carry Planks for several steps. A step MAY be carried by several seam
 
 Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping. Support artifacts MAY use project-appropriate comments when ownership or deletion is unclear, but they MUST NOT define product intent.
 
-### Coverage report convention
+### Transient output
 
-Generated coverage reports are transient verification output. They MUST NOT define product intent, create work, or become durable planning artifacts.
+Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact.
 
 ### Tier tags
 
