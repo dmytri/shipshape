@@ -94,13 +94,14 @@ These are shared Shipshape declarations. Enforcing runtimes MAY implement them a
 10. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
 11. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline, for example with `@exceptional-double`. It MUST never replace normal-path real coverage.
 12. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
-13. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Avoid hidden behaviour in global state, constructors, static initialization, singletons, registries, service locators, and framework lifecycle hooks. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with the doubles the "Real by default" Article forbids.
-14. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
+13. **Fast by design.** Verification spends time only on the behaviour under test. Independent, namespaced scenarios run concurrently. Waits end on observed signals. Ambient state that no scenario asserts is provisioned once and reused. The Verification agreement carries the craft.
+14. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with the doubles the "Real by default" Article forbids.
+15. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
 
 ### How it is written
 
-15. **Use Shipshape Controlled English.** All Shipshape writing uses Shipshape Controlled English. The Voice section carries the mechanics: vocabulary, register, RFC 2119 terms, ASCII punctuation, and positive statement.
-16. **Use they/them pronouns** for all roles and agents.
+16. **Use Shipshape Controlled English.** All Shipshape writing uses Shipshape Controlled English. The Voice section carries the mechanics: vocabulary, register, RFC 2119 terms, ASCII punctuation, and positive statement.
+17. **Use they/them pronouns** for all roles and agents.
 
 ## Scenario-writing agreement
 
@@ -143,6 +144,42 @@ Avoid:
 
 - Steps that assert nothing observable, steps whose subject is an abstraction rather than a named actor or system, steps asserting an actor's intent rather than a result, and steps hedged with words such as `should probably` or `might`. Avoid executable requirements buried in `Rule:` prose; `Rule:` prose adds durable context only, and requirements belong in scenarios.
 - Automation and UI mechanics in step text: selectors, XPath, element IDs, and waits belong in step definitions, not scenarios.
+
+## Verification agreement
+
+Verification is the disposable proof of durable scenarios. A scenario states what must be true; verification proves the real thing happened, as fast as real isolation allows. Speed and honesty share one source: every unit of work is bound to the behaviour under test. QM applies this agreement when writing verification; Captain, Shipwright, and Boatswain use it to judge existing verification. A violation in verification support routes to QM per the Blocker policy.
+
+Signals:
+
+- End every wait on an observed signal: an event, a status transition, a successful probe. Where no signal is observable, retry in short bounded intervals toward a deadline.
+- Gate on readiness after provisioning: poll the resource until it observably serves, bounded by a deadline, and fail with the last observed state. One readiness gate at the provisioning seam replaces every downstream blanket retry.
+- Give real-service steps explicit budgets sized to real latency. A budget is a failure ceiling; the step resolves the moment its signal fires.
+- Match backoff to the signal. Honour a served `Retry-After`. Give transient statuses and connection failures a bounded budget. Fail immediately on a permanent rejection such as an authentication or validation error, so real defects surface fast.
+
+Concurrency:
+
+- Run independent scenarios concurrently. The scenario-writing agreement makes scenarios independent and the "Harmless by design" Article makes their resources namespaced, so concurrency is safe by construction and serial execution of independent work buys nothing.
+- Isolation gates concurrency. Before raising worker count, extend the namespace to every path workers share: temp directories, session and state files, caches, ports, resource names. A target that passes only when re-run serially is not yet fixed.
+- Size concurrency to the tier's binding constraint: local compute for a local tier, the service's real limits for a remote tier. Observe the constraint; a constant guessed on one machine is wrong on the next.
+- Read yesterday's weather. The wake MAY record what each tier's last run observed: wall-clock time, green worker count, and pressure signals such as rate-limit and memory errors. Start from that record and adjust on live pressure.
+
+Reuse:
+
+- Provision ambient state once and share it. State that no scenario asserts is setup cost: build it once per run behind a lock or marker file, or reuse a resource already present. Sharing stays safe because each scenario creates, mutates, and asserts only its own namespaced objects inside the shared state.
+- A scenario provisions its own copy only when provisioning is the behaviour under assertion.
+
+Seams:
+
+- Exercise behaviour through narrow seams with explicit inputs and observable outputs. Product logic reachable only through constructors, global state, static initialization, singletons, registries, service locators, or framework lifecycle hooks blocks real verification; report the seam per the "Code exposes verification seams" Article.
+
+Teardown:
+
+- Teardown is part of the run. Register it before creating the resource, give it the same signal-matched retries and a generous budget, and let its failure fail the run loudly. Reclaim leftover namespaced resources at suite start. A quiet teardown failure leaks resources and masks green results.
+
+Proof:
+
+- Green means the real thing happened. Assert the artifact only the real path can produce: the live reply, the served response, the persisted record, the package installed from the registry. An assertion a double could satisfy proves the harness, not the behaviour.
+- A recurring non-product failure is a harness defect. Engineer it out with a readiness gate, an isolation fix, or a reclaim at suite start, then strike its entry from `## Known false-failure modes`. An empty section is the healthy state.
 
 ## Role flow
 
@@ -264,7 +301,7 @@ Do not trace production code to features or scenarios. Scenario coverage is deri
 
 ### Transient output
 
-Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact.
+Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact. The wake MAY carry yesterday's weather: observed run data such as tier wall-clock time, green worker counts, and pressure signals, read by the next run as a starting prior for concurrency per the Verification agreement.
 
 ### Tier tags
 
