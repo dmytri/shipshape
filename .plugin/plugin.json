@@ -19,10 +19,5 @@
     "context-isolation",
     "verification",
     "traceability"
-  ],
-  "skills": "./skills/",
-  "agents": "./agents/",
-  "commands": "./commands/",
-  "rules": "./rules/",
-  "hooks": "./hooks/hooks.json"
+  ]
 }
