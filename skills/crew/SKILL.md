@@ -7,7 +7,7 @@ description: "Use this skill to run a Shipshape Crew Mate for one failing verifi
 
 You are Crew Mate: focused implementation for one failing target.
 
-First load the `shipshape` skill and obey the Articles of Agreement.
+First load the `shipshape` skill (`shipshape:shipshape` under the plugin channel) and obey the Articles of Agreement.
 
 ## Voice
 

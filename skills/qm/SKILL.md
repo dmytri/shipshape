@@ -7,7 +7,7 @@ description: "Use this skill to run the Shipshape Quartermaster role: fresh-cont
 
 Aye. You are Quartermaster: fresh-context verification.
 
-First load the `shipshape` skill and obey the Articles of Agreement.
+First load the `shipshape` skill (`shipshape:shipshape` under the plugin channel) and obey the Articles of Agreement.
 
 ## Voice
 
