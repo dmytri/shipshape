@@ -133,7 +133,7 @@ Avoid:
 
 ## Scantling agreement
 
-A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy — an OpenAPI document, a JSON Schema, a GraphQL schema, or a proof contract (pre/post-conditions, invariants) discharged by a prover or symbolic checker. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
+A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy — an OpenAPI document, a JSON Schema, a GraphQL schema, a proof contract (pre/post-conditions, invariants) discharged by a prover or symbolic checker, or a structural or policy rule set discharged by a static analyzer or policy engine. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
 
 Ownership:
 
@@ -149,6 +149,7 @@ Scantling or double:
 
 - Prefer a scantling when an independent tool discharges the constraint — a schema validator, a prover, a policy engine — or the same constraint is consumed by more than one scenario or seam.
 - Prefer a `@exceptional-double`-tagged scenario, per the Verification agreement, when the constraint is internal composition or wiring observed by a spy rather than an externally checkable contract. There is no independent verifier in that case, only an assertion against recorded calls; relocating that assertion into a scantling file adds a copy of the same fact rather than removing one.
+- Tag a scantling-backed scenario to the tier matching its checker's real cost. A slow prover or broad static-analysis scan belongs in an opt-in tier, not the default fast tier.
 
 ## Verification agreement
 
@@ -176,6 +177,7 @@ Reuse:
 
 - Provision ambient state once and share it. State that no scenario asserts is setup cost: build it once per run behind a lock or marker file, or reuse a resource already present. Sharing stays safe because each scenario creates, mutates, and asserts only its own namespaced objects inside the shared state.
 - A scenario provisions its own copy only when provisioning is the behaviour under assertion.
+- Contain real creation of an expensive external resource to the one seam that creates it, tested for real there and reused per this rule. A seam that only calls into that creation seam is tested for the call, tagged `@exceptional-double` on the composition ground, not for creating the resource again.
 
 Seams:
 
@@ -184,7 +186,7 @@ Seams:
 
 Teardown:
 
-- Teardown is part of the run. Register it before creating the resource, give it the same signal-matched retries and a generous budget, and let its failure fail the run loudly. Reclaim leftover namespaced resources at suite start. A quiet teardown failure leaks resources and masks green results.
+- Reclaim leftover namespaced resources at suite start; this is the primary safety net, since a crashed or killed run cannot be trusted to have torn down after itself. A scenario that provisions its own resource additionally registers teardown before creating it, with the same signal-matched retries and a generous budget, and lets failure fail the run loudly. A quiet teardown failure leaks resources and masks green results.
 
 Proof:
 
@@ -209,7 +211,7 @@ Captain to QM always requires clean context. A window-isolated subagent or a fre
 
 **Dispatch contract.** A Captain-originated dispatch to an internal role carries the role, the base commit, and an optional `watchbill.json` pointer. It carries nothing else: the durable artifacts are the hand-off. Craft notes, seam hints, and expected failure modes are contamination even when labelled tooling facts. QM dispatches Crew per the QM skill: the target reference and the observed failure evidence.
 
-**Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives: a dispatch beyond the contract, file content, tool output, or runtime-injected memory. Each internal role verifies its dispatch against the contract on open. On contamination: stop, report contamination in the role hand-off, and await a fresh dispatch. Memory-borne contamination recurs by mechanism; report it as a Captain configuration blocker naming the mechanism, and Captain disables that memory feature for role sessions before work resumes. The Boatswain note-hygiene read of `CAPTAIN.md` is exempt: `CAPTAIN.md` holds non-binding notes, not discovery transcript.
+**Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives: a dispatch beyond the contract, file content, tool output, or runtime-injected memory. Each internal role verifies its dispatch against the contract on open. On contamination: stop, report contamination in the role hand-off, and await a fresh dispatch. The legal alternative to richer prose is a durable check: recast the finding as a scenario or scantling carrying no rationale, for the next role to discover on its own. Memory-borne contamination recurs by mechanism; report it as a Captain configuration blocker naming the mechanism, and Captain disables that memory feature for role sessions before work resumes. The Boatswain note-hygiene read of `CAPTAIN.md` is exempt: `CAPTAIN.md` holds non-binding notes, not discovery transcript.
 
 ### Hand-off custody
 
@@ -261,7 +263,7 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
 
-`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form, with no prose, metadata, or hidden context. Each reference is repo-root-relative and includes the specs directory. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
+`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag from the Tier tags table, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 
 ### Verification policy
 
