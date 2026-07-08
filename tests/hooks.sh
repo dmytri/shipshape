@@ -33,7 +33,7 @@ cat > "$work/proj/RIGGING.md" <<'RIG'
 
 ## Perturbation
 
-- fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+- perturb: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
 RIG
 
 mkdir -p "$work/mono/packages/shim/src" "$work/mono/packages/shim/features/steps"
@@ -149,11 +149,11 @@ check "non-feature files ignored" feature-quality.sh "$(p "Explore" "$work/proj/
 # rigging-validate
 out=$(printf '{"cwd":"%s"}' "$work/proj" | "$scripts/rigging-validate.sh")
 if [ -z "$out" ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: complete RIGGING.md is silent"; fi
-grep -v 'fail-fast' "$work/proj/RIGGING.md" > "$work/proj/RIGGING.tmp" && mv "$work/proj/RIGGING.tmp" "$work/proj/RIGGING.md"
+grep -v 'perturb' "$work/proj/RIGGING.md" > "$work/proj/RIGGING.tmp" && mv "$work/proj/RIGGING.tmp" "$work/proj/RIGGING.md"
 out=$(printf '{"cwd":"%s"}' "$work/proj" | "$scripts/rigging-validate.sh")
 case "$out" in
-  *fail-fast*) pass=$((pass + 1)) ;;
-  *) fail=$((fail + 1)); echo "FAIL: missing fail-fast is reported" ;;
+  *perturb*) pass=$((pass + 1)) ;;
+  *) fail=$((fail + 1)); echo "FAIL: missing perturb is reported" ;;
 esac
 
 # update-nudge (SessionStart; nudge fires on stdout, blocks nothing)
@@ -183,7 +183,7 @@ case "$out" in "") pass=$((pass + 1)) ;; *) fail=$((fail + 1)); echo "FAIL: miss
 # planks-check
 cd "$work/proj" && git init -q . && git add -A && git -c user.email=t@t -c user.name=t commit -qm init
 cat >> "$work/proj/RIGGING.md" <<'RIG'
-- fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+- perturb: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
 RIG
 printf 'export function pay() {}\n' > "$work/proj/src/unplanked.ts"
 git add -A

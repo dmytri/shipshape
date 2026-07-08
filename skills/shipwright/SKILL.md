@@ -54,7 +54,7 @@ Fitting out is first-run setup of a project for Shipshape. It is a harbour activ
 2. Derive `RIGGING.md` values from the repository. Read the language, runtime, package manager, commands, directories, dependency policy, perturbation syntax, docblock inventory tooling, and tooling checks from project files and configuration.
 3. Verify the project tooling is runnable. Confirm the project init file, runtime, and package manager for the derived stack. If the project init file is missing or the runtime is not installed, raise a Captain blocker. Verify each derived tier authenticates: run the smallest real command for that tier. A tier that fails to authenticate here is a Captain blocker naming the credential to provision. Negative-test each derived methodology check: plant a violation, confirm the check reddens, remove the violation. Do not write `RIGGING.md` until tooling is verified and every derived check has been red once.
 4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the Rigging shape below. Append the README block to the project README without overwriting existing content. Write the derived search-exclusion artifact per the derivation notes.
-5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker naming the value. Write `RIGGING.md` with every derivable value and leave the underivable required slot empty. The required values are `language`, `implementation`, `specs`, `focused`, and perturbation `fail-fast`. Captain discovers the missing value with the user and writes it.
+5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker naming the value. Write `RIGGING.md` with every derivable value and leave the underivable required slot empty. The required values are `language`, `implementation`, `specs`, `focused`, and perturbation `perturb`. Captain discovers the missing value with the user and writes it.
 6. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
 
 ### Rigging shape
@@ -64,7 +64,7 @@ Fitting out is first-run setup of a project for Shipshape. It is a harbour activ
 - `## Stack`: `language`, `runtime`, and `packageManager`.
 - `## Directories`: `implementation`, `specs`, `verification`, `assets`, and optional `scantlings` paths, one path per line with the key repeated. A `*` matches one path segment, so `packages/*/src` covers every package in a workspace. List every directory that can hold a planked seam under `implementation`; the `plank-inventory` command scans exactly the `implementation` paths. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. Fitting out declares content directories as assets in place and moves nothing. `scantlings` lists machine-readable contract files in place when the project carries them.
 - `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations across the `implementation` paths. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. A project that carries a scantling MAY add a `conformance` command that validates seams against it, so a conformance step runs a real check. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
-- `## Perturbation`: the stable `message` and project-specific `fail-fast` statement. The `message` MUST contain the literal token `PERTURBATION` so a role can detect a live perturbation in the tree.
+- `## Perturbation`: the stable `message` and project-specific `perturb` statement. The `message` MUST contain the literal token `PERTURBATION` so a role can detect a live perturbation in the tree.
 - `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
 - `## Dependencies`: the dependency `policy` and any selected dependency names.
 - `## Outbound`: one entry per outbound target, each naming the target, its `ship` command, and its `verify` check against the live artifact. A runbook longer than a value lives in `AGENTS.md`, and the target entry points to it.
@@ -136,7 +136,7 @@ Procedure lives in the skills. Every role reads this on open.
 ## Perturbation
 
 - message: `PERTURBATION: consider current durable context; remove when fixed`
-- fail-fast: `<host-language fail-fast statement using the message>`
+- perturb: `<host-language perturbation statement using the message>`
 
 ## Tiers
 
@@ -162,10 +162,10 @@ Procedure lives in the skills. Every role reads this on open.
 For JavaScript and TypeScript, derive this perturbation value:
 
 ```markdown
-- fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+- perturb: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
 ```
 
-For other languages, use the normal fail-fast statement for that language. If the value is not clear, raise a Captain blocker.
+For other languages, use the normal throwing statement for that language. If the value is not clear, raise a Captain blocker.
 
 ### Derivation notes
 
@@ -178,7 +178,7 @@ For other languages, use the normal fail-fast statement for that language. If th
 - Content classification: content consumed by a build or generator, such as static-site pages, templates rendered as content, and data files, derives into the `assets` value, never `implementation`. List the existing content directories under `assets` in place; move nothing. On a content-heavy project, `implementation` is the build config and custom code only, and it is legitimately small.
 - Quality gates: derive `lint` and `typecheck` from the tooling the project already runs, and record a gap for the Captain where the project runs none. Prefer tooling native to the project's stack; a gate imported from another ecosystem for its popularity is weight, not fit. Name the command; the project owns the tool.
 - Coverage: derive `coverage` as a real per-line and per-branch coverage tool native to the project stack, such as c8 for Node and TypeScript, coverage.py for Python, SimpleCov for Ruby, or `go test -cover` for Go. Record a gap for the Captain where the stack has no such tool. Shipwright's own tier invocations always run through `coverage`, never a bare test command, because harbour work needs a full suite run either way and always wants the traceability data from it; running plain and then separately for coverage costs strictly more than running once with instrumentation. Where the coverage tool's overhead is negligible, such as c8's use of native V8 coverage counters, derive `coverage` and the tier's broad command as the same invocation rather than two separate values. Where the tool carries measurable overhead, keep them distinct; `coverage` stays reserved for Shipwright's harbour runs, and other roles' day-to-day tier commands stay uninstrumented.
-- Stop-on-first-failure commands: derive `discover` without stop-on-first-failure, since QM's worklist-building run needs the complete failing-target set to dispatch Crew per target. Derive `broad`, `coverage`, and every tier-suffixed variant with stop-on-first-failure enabled, such as Cucumber's `--fail-fast` flag, since every other role's full or broad run is confirmatory, not discovery: Shipwright's harbour boundary check, Boatswain's occasional broader custody recheck, or a Captain-offered pre-outbound boundary check. Stopping at the first failure lets the role fix and rerun rather than exhausting a full tier to enumerate failures it doesn't need. This is distinct from the Perturbation `fail-fast` statement, a source-code assertion that manufactures a failing target rather than a runner flag that stops execution at one.
+- Stop-on-first-failure commands: derive `discover` without stop-on-first-failure, since QM's worklist-building run needs the complete failing-target set to dispatch Crew per target. Derive `broad`, `coverage`, and every tier-suffixed variant with stop-on-first-failure enabled, such as Cucumber's `--fail-fast` flag, since every other role's full or broad run is confirmatory, not discovery: Shipwright's harbour boundary check, Boatswain's occasional broader custody recheck, or a Captain-offered pre-outbound boundary check. Stopping at the first failure lets the role fix and rerun rather than exhausting a full tier to enumerate failures it doesn't need.
 - Implementation and plank inventory: list every directory that can hold a planked seam under `implementation`, including entry-point directories such as `bin`. Derive the `plank-inventory` command to scan exactly the `implementation` paths, so every planked seam is inventoried.
 - Scantlings: declare existing scantling files under the `scantlings` directory value in place; move nothing. Derive a `conformance` command when the project carries a scantling validator. When a scantling is present but no validator is derivable, raise a Captain blocker naming the missing validator.
 - Outbound targets: derive each outbound target the project ships, such as a package registry publish or a live deploy. Write one entry per target under `## Outbound` naming the target, its `ship` command, and its `verify` check against the live artifact. A target with a multi-step runbook keeps the runbook in `AGENTS.md` and points to it.

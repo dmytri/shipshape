@@ -10,7 +10,7 @@ This command mechanizes the derived-state rule from the Shipshape skills: harbou
 Derive current deck state from repository signals and report it. Run read-only checks. Change nothing.
 
 1. Tree: run `git status --short` and, when an upstream exists, `git rev-list --count @{upstream}..HEAD`. Report working tree cleanliness and commits ahead of upstream.
-2. Rigging: report whether `RIGGING.md` exists at the project root and whether the required values are present: `language` under Stack, `implementation` and `specs` under Directories, `focused` under Commands, and `fail-fast` under Perturbation.
+2. Rigging: report whether `RIGGING.md` exists at the project root and whether the required values are present: `language` under Stack, `implementation` and `specs` under Directories, `focused` under Commands, and `perturb` under Perturbation.
 3. Harbour signals: count `@captain` and `@shipwright` tags in the specs directory.
 4. Perturbations: count `PERTURBATION` statements in the implementation directory.
 5. Watchbill: report whether `watchbill.json` exists and matches the fixed watchbill shape the shipshape skill defines.

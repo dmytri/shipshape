@@ -163,7 +163,7 @@ After context clears, QM reads only durable repository artifacts and runs focuse
 ## Perturbation
 
 - message: `PERTURBATION: consider current durable context; remove when fixed`
-- fail-fast: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+- perturb: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
 
 ## Tiers
 
@@ -287,7 +287,7 @@ Trace annotations explain why production seams exist. They do not create work, r
 
 Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance.
 
-A perturbation marks that seam for reimplementation. Captain adds the `fail-fast` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
+A perturbation marks that seam for reimplementation. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
 
 The perturbation statement carries a fixed message and nothing else: no step text, no scenario names, no rationale, no instructions. Requirements stay in durable artifacts.
 
