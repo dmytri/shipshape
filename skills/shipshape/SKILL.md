@@ -189,7 +189,7 @@ Teardown:
 Proof:
 
 - Green means the real thing happened. Assert the artifact only the real path can produce: the live reply, the served response, the persisted record, the package installed from the registry. An assertion a double could satisfy proves the harness, not the behaviour.
-- A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline with `@exceptional-double`. It MUST never replace normal-path real coverage.
+- A double is allowed only for one of two named conditions: a specific condition the real environment genuinely cannot produce on demand, or internal composition or wiring with no independent external verifier, per the Scantling agreement's scantling-or-double clause. Mark and justify it inline with `@exceptional-double`, naming which condition applies. It MUST never replace normal-path real coverage.
 - A recurring non-product failure is a harness defect. Engineer it out with a readiness gate, an isolation fix, or a reclaim at suite start, then strike its entry from `## Known false-failure modes`. An empty section is the healthy state.
 
 ## Role flow

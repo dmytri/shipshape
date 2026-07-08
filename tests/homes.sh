@@ -56,7 +56,7 @@ onehome() {
   fi
 }
 onehome "namespace every created object"
-onehome "A double is allowed only for a specific condition"
+onehome "A double is allowed only for one of two named conditions"
 onehome "It selects and orders a subset of verification-discovered work"
 onehome "poll the resource until it observably serves"
 onehome "reset to a fresh context at durable voyage boundaries"
