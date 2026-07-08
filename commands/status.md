@@ -1,5 +1,6 @@
 ---
 description: "Report Shipshape deck state derived from repository signals. Read-only."
+disable-model-invocation: false
 ---
 
 # Shipshape status

@@ -24,11 +24,13 @@ need() {
   esac
 }
 
-for n in Captain Quartermaster "Crew Mate" Boatswain Shipwright; do need "$n"; done
+# The lean map delegates roles to `.plugin/plugin.json` and commands to
+# `RIGGING.md`, so it enumerates neither. It still names the durable
+# artifacts, tags, and trace annotation, and every name it uses resolves
+# to a skill.
 for n in ".feature" "assets/**" "AGENTS.md" "RIGGING.md" "CAPTAIN.md" "watchbill.json"; do need "$n"; done
 for n in "@captain" "@shipwright" "@property" "@exceptional-double" "@logic" "@sandbox"; do need "$n"; done
 for n in "@planks(" ; do need "$n"; done
-for n in discover focused broad coverage step-usage plank-inventory typecheck lint; do need "$n"; done
 
 # Non-normative check: the map must carry no requirement language, in any
 # case. A normative sentence in a structural map is a defect.
@@ -63,7 +65,7 @@ if [ -z "$out" ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: 
 printf -- '- language: sh\n' > "$work/proj/RIGGING.md"
 out=$(printf '{"cwd":"%s"}' "$work/proj" | "$repo/hooks/scripts/session-orient.sh")
 case "$out" in
-  *"Shipshape Map"*"Deck state"*) pass=$((pass + 1)) ;;
+  *"Specifications are durable"*"Deck state"*) pass=$((pass + 1)) ;;
   *) fail=$((fail + 1)); echo "FAIL: orient injects map and deck state with RIGGING.md" ;;
 esac
 

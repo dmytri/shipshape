@@ -1,6 +1,6 @@
 {
   "name": "shipshape",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Context-isolated, spec-driven workflow for coding agents. Skills are canonical and sufficient alone; this plugin layer adds mechanical enforcement: role context isolation and write custody.",
   "author": {
     "name": "Dmytri Kleiner",
@@ -23,5 +23,6 @@
   "skills": "./skills/",
   "agents": "./agents/",
   "commands": "./commands/",
+  "rules": "./rules/",
   "hooks": "./hooks/hooks.json"
 }

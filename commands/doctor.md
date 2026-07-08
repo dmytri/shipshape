@@ -1,5 +1,6 @@
 ---
 description: "Audit Shipshape installation integrity: completeness, freshness, and coherence across channels and scopes. Read-only."
+disable-model-invocation: false
 ---
 
 # Shipshape doctor
