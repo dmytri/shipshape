@@ -142,8 +142,10 @@ nudge "internal role push not nudged" "$(b "shipshape:qm" "git push origin main"
 # feature-quality
 printf 'Feature: Pay\n\n  Scenario: Pays\n    Given a card\n    When paying\n    Then paid\n' > "$work/proj/features/good.feature"
 printf 'Scenario: floating scenario with no steps\n' > "$work/proj/features/bad.feature"
+printf 'Feature: Pay\n\n  # workaround for the flaky gateway, remove when fixed\n  Scenario: Pays\n    Given a card\n    When paying\n    Then paid\n' > "$work/proj/features/commented.feature"
 check "well-formed feature passes" feature-quality.sh "$(p "Explore" "$work/proj/features/good.feature")" 0
 check "malformed feature blocked" feature-quality.sh "$(p "Explore" "$work/proj/features/bad.feature")" 2
+check "commented feature blocked" feature-quality.sh "$(p "Explore" "$work/proj/features/commented.feature")" 2
 check "non-feature files ignored" feature-quality.sh "$(p "Explore" "$work/proj/src/pay.ts")" 0
 
 # rigging-validate
