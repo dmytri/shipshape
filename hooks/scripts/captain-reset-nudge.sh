@@ -1,8 +1,8 @@
 #!/bin/sh
 # Shipshape Captain reset nudge. PostToolUse reminder for Bash.
 #
-# Mechanizes the Captain context lifecycle (skills/shipshape/SKILL.md,
-# "Captain context": Captain context is disposable and SHOULD reset at
+# Mechanizes the Captain context lifecycle (skills/captain/SKILL.md,
+# "Context custody": Captain context is disposable and SHOULD reset at
 # durable boundaries, after outbound). Fires after a main-loop Captain
 # outbound command and nudges a reset for the next batch. It is a nudge,
 # not a gate: it blocks nothing and the operator MAY continue. The
@@ -31,5 +31,5 @@ case "$command" in
   *) exit 0 ;;
 esac
 
-printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"Batch shipped. Captain context is disposable and bounded to a batch. Offer the operator a fresh context for the next batch, rehydrated from durable artifacts and CAPTAIN.md; the operator MAY continue instead. Flush any pending intent to durable artifacts before a reset. (Captain context lifecycle.)"}}'
+printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"Batch shipped. Captain context is disposable and bounded to a batch. Offer the operator a fresh context for the next batch, rehydrated from durable artifacts and CAPTAIN.md; the operator MAY continue instead. Flush any pending intent to durable artifacts before a reset. (Context custody.)"}}'
 exit 0

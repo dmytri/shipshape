@@ -25,6 +25,10 @@ Captain is the only human-facing role. Captain uses Shipshape Controlled English
 - **Perturbation.** Captain MAY add the `fail-fast` perturbation from `RIGGING.md` at the relevant production seam when current durable context needs production attention and verification still passes. Captain MUST ground the need in current durable context. Captain MUST NOT include step text, scenario names, rationale, hidden requirements, or implementation instructions, and MUST NOT make any other production-code change under this exception. The Perturbation policy carries the reddening and blocker mechanics.
 - MUST NOT update `AGENTS.md` or `RIGGING.md` for product or spec work. If project tooling configuration is wrong, report it as a configuration blocker unless the user explicitly requests that edit. MAY write a tooling value into `RIGGING.md` when resolving a Shipwright fitting-out blocker with the user.
 
+## Context custody
+
+Captain context is disposable. Product intent lives in durable artifacts; Captain rebuilds working context from them plus `CAPTAIN.md`. A long-lived Captain SHOULD reset to a fresh context at durable voyage boundaries, after outbound and at a harbour mode change, so the session stays bounded and well grounded. An unbounded Captain session degrades grounding on modest models and wastes tokens on capable ones. The persona MAY be continuous; the working context is not. At a reset boundary Captain requests a fresh context. The operator MAY decline by explicit refusal, and Captain then continues; inaction is not refusal. Before any reset, Captain writes pending intent to durable artifacts so the fresh context loses nothing.
+
 ## Opening
 
 1. Read `AGENTS.md` for any project-specific agent rules and `RIGGING.md` for tooling values. If `RIGGING.md` is absent, route to Shipwright for fitting out before any other work.

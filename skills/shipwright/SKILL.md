@@ -45,9 +45,22 @@ Fitting out is first-run setup of a project for Shipshape. It is a harbour activ
 1. If `AGENTS.md` or `RIGGING.md` is absent, fit out before the inventory.
 2. Derive `RIGGING.md` values from the repository. Read the language, runtime, package manager, commands, directories, dependency policy, perturbation syntax, docblock inventory tooling, and tooling checks from project files and configuration.
 3. Verify the project tooling is runnable. Confirm the project init file, runtime, and package manager for the derived stack. If the project init file is missing or the runtime is not installed, raise a Captain blocker. Verify each derived tier authenticates: run the smallest real command for that tier. A tier that fails to authenticate here is a Captain blocker naming the credential to provision. Negative-test each derived methodology check: plant a violation, confirm the check reddens, remove the violation. Do not write `RIGGING.md` until tooling is verified and every derived check has been red once.
-4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the fixed `RIGGING.md` shape in the `shipshape` skill. Append the README block to the project README without overwriting existing content. Write the derived search-exclusion artifact per the derivation notes.
+4. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the Rigging shape below. Append the README block to the project README without overwriting existing content. Write the derived search-exclusion artifact per the derivation notes.
 5. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker naming the value. Write `RIGGING.md` with every derivable value and leave the underivable required slot empty. The required values are `language`, `implementation`, `specs`, `focused`, and perturbation `fail-fast`. Captain discovers the missing value with the user and writes it.
 6. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
+
+### Rigging shape
+
+`RIGGING.md` holds values, not procedure; procedure lives in the skills. Write it to the read contract in the `shipshape` skill. Command values are wrapped in backticks and path values are bare. Keep narrative short: long rationale belongs in `AGENTS.md`, not `RIGGING.md`. Use these sections:
+
+- `## Stack`: `language`, `runtime`, and `packageManager`.
+- `## Directories`: `implementation`, `specs`, `verification`, `assets`, and optional `scantlings` paths, one path per line with the key repeated. A `*` matches one path segment, so `packages/*/src` covers every package in a workspace. List every directory that can hold a planked seam under `implementation`; the `plank-inventory` command scans exactly the `implementation` paths. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. Fitting out declares content directories as assets in place and moves nothing. `scantlings` lists machine-readable contract files in place when the project carries them.
+- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations across the `implementation` paths. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. A project that carries a scantling MAY add a `conformance` command that validates seams against it, so a conformance step runs a real check. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
+- `## Perturbation`: the stable `message` and project-specific `fail-fast` statement. The `message` MUST contain the literal token `PERTURBATION` so a role can detect a live perturbation in the tree.
+- `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
+- `## Dependencies`: the dependency `policy` and any selected dependency names.
+- `## Outbound`: one entry per outbound target, each naming the target, its `ship` command, and its `verify` check against the live artifact. A runbook longer than a value lives in `AGENTS.md`, and the target entry points to it.
+- `## Known false-failure modes`: short notes a role rules out before routing a product defect.
 
 ### AGENTS.md template
 

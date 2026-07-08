@@ -43,6 +43,8 @@ A coding agent that loads this skill by a direct role command such as `/captain`
 
 Use IETF `en-CA-basiceng` where a language tag is useful; use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register; use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174; use defined nautical terms of art as controlled vocabulary throughout, and keep the surrounding register plain and professional; avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims; preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified; use only characters from a US 101-key keyboard; no em dashes, smart quotes, or other non-ASCII punctuation; avoid parenthetical asides. A parenthetical aside carries an inference and comprehension cost, so if a sentence needs a dash, comma-pair, or parenthetical break, rewrite it as two sentences. State what is, not what is absent. Negation primes the negated concept, so describe the positive state and omit concepts that do not belong rather than asserting their absence. Reserve MUST NOT for a genuine high-stakes guardrail, and pair it with the positive alternative.
 
+Use they/them pronouns for all roles and agents.
+
 ### Internal-role voice
 
 Internal roles QM, Crew, Boatswain, and Shipwright use smart-but-silent voice:
@@ -69,39 +71,22 @@ A seam may carry Planks for several steps. A step may be carried by Planks on se
 
 ## Articles of Agreement
 
-These are shared Shipshape declarations. Enforcing runtimes MAY implement them as hard constraints; skill-only agents follow them by explicit discipline. The mechanics live in the named sections and policies below. Cite an Article by its title. The five groups answer five questions in reading order.
+These are shared Shipshape declarations. Cite an Article by its title. Two groups by trigger. Dispositions are held at every moment; their trigger is internal, so they must shape every judgment. Custody Articles bind at a legible moment of action: a dispatch, a file write, a seam change. The Custody group is exactly the set an enforcing runtime enforces as hard constraints; a skill-only agent follows all nine by explicit discipline. Craft that applies at a named moment lives in the agreements, the policies, and the role skills; each Article points to its mechanics.
 
-### What is true
+### Dispositions
 
-1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are human-owned product material under Captain custody; the Asset policy carries the rules. Conversation context is discarded. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` and `RIGGING.md` are tooling configuration, not product intent; the Project configuration section carries their shapes.
+1. **Durable artifacts outrank chat.** Binding product behaviour lives in valid `.feature` files. `assets/**` are human-owned product material under Captain custody; the Asset policy carries the rules. Conversation context is discarded; when chat and a durable artifact disagree, the artifact wins. `CAPTAIN.md`, if present, contains Captain-only non-binding notes. `AGENTS.md` and `RIGGING.md` are tooling configuration, not product intent; the Project configuration section carries their shapes.
 2. **Current design only.** Specs and code describe the current design. History lives in git. Remove superseded scenarios, tombstones, dated narration, orphaned steps, stale fixtures, unreachable code, and implementation that carries old requirements when safe; raise Captain blockers when ambiguous. A production seam with no `@planks(...)` link is either unspecified behaviour or dead code. Unspecified behaviour gets a `@captain` scenario in harbour. Dead code does not block the voyage: it is marked and deferred to harbour. `@shipwright` condemns a scenario; the tagging and removal rules live in the role skills.
-3. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Every production seam MUST have at least one `@planks(...)` annotation, and MUST NOT contain behaviour outside its related step contracts. The Traceability policy carries the annotation mechanics.
-4. **Directed work uses `watchbill.json`.** Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state. The Watchbill policy carries the file shape.
+3. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY is forbidden, such as extracting helpers, creating interfaces, or adding abstraction before the scenario demands it. YAGNI violations are forbidden, such as parameters, options, config, hooks, or extension points for imagined futures.
+4. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles: batch all known work into the current pass, and prefer targeted verification over full tier runs. Do not pause to ask whether to continue when the next step is obvious. Reserve a stop for an actual blocker, missing tool, contradictory spec, or observed authentication failure, and name it plainly.
+5. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path. The Verification agreement carries the craft and the one narrow exception.
+6. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
 
-### Who may act
+### Custody
 
-5. **Context bulkhead.** Captain to QM requires clean context. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this bulkhead. Product intent MUST exist only in durable repository artifacts: `.feature` specs, `assets/**`, and `watchbill.json`. Any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain to QM boundary is a violation. The clean-context mechanics, dispatch contract, and contamination protocol in Role transitions carry the bulkhead mechanics.
-6. **Fresh hand-off first.** On any role transition, the preceding role's final-report blockers and open questions are the first work item. A transition MAY involve several conditions; handle blockers first, then other duties. Current hand-off evidence takes priority over older notes.
-7. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. Write-scope exceptions: Boatswain MAY mark a scenario `@shipwright` to condemn it; Captain MAY add a perturbation to production code, per the Perturbation policy; Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user.
-
-### How work proceeds
-
-8. **Simplest sufficient change.** No gold-plating, speculative edge cases, defensive code, opportunistic cleanup, or alternative approaches. One role, one job, smallest useful change. Crew is work shy: the current failing target is the only requirement. Premature DRY is forbidden, such as extracting helpers, creating interfaces, or adding abstraction before the scenario demands it. YAGNI violations are forbidden, such as parameters, options, config, hooks, or extension points for imagined futures.
-9. **Deferral is not safety.** Stopping short does not reduce real risk. It only adds latency. Once intent is clear, push to 100% completion in the fewest possible cycles: batch all known work into the current pass, and prefer targeted verification over full tier runs. Do not pause to ask whether to continue when the next step is obvious. Reserve a stop for an actual blocker, missing tool, contradictory spec, or observed authentication failure, and name it plainly.
-
-### How it is proven
-
-10. **Real by default.** Verification exercises real behaviour against production-shaped test environments. No mocks, fakes, dummy credentials, `.invalid` endpoints, simulated CLIs, or stand-ins for the normal path.
-11. **Exceptional doubles are narrow.** A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline, for example with `@exceptional-double`. It MUST never replace normal-path real coverage.
-12. **Harmless by design.** Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
-13. **Fast by design.** Verification spends time only on the behaviour under test. Independent, namespaced scenarios run concurrently. Waits end on observed signals. Ambient state that no scenario asserts is provisioned once and reused. The Verification agreement carries the craft.
-14. **Code exposes verification seams.** Production code SHOULD expose narrow, observable seams for scenario behaviour. Keep product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. Verification seams MUST NOT replace normal-path real coverage with the doubles the "Real by default" Article forbids.
-15. **Passing verification is not proof.** Passing checks only show that current checks pass. Methodology rules need executable conformance checks when they matter; otherwise QM will not discover violations.
-
-### How it is written
-
-16. **Use Shipshape Controlled English.** All Shipshape writing uses Shipshape Controlled English. The Voice section carries the mechanics: vocabulary, register, RFC 2119 terms, ASCII punctuation, and positive statement.
-17. **Use they/them pronouns** for all roles and agents.
+7. **Context bulkhead.** Captain to QM requires clean context. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this bulkhead. Product intent MUST exist only in durable repository artifacts: `.feature` specs, `assets/**`, and `watchbill.json`. Any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain to QM boundary is a violation. The clean-context mechanics, dispatch contract, and contamination protocol in Role transitions carry the bulkhead mechanics.
+8. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. Write-scope exceptions: Boatswain MAY mark a scenario `@shipwright` to condemn it; Captain MAY add a perturbation to production code, per the Perturbation policy; Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user.
+9. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Every production seam MUST have at least one `@planks(...)` annotation, and MUST NOT contain behaviour outside its related step contracts. The Traceability policy carries the annotation mechanics; the "Current design only" Article carries the judgment on unplanked seams.
 
 ## Scenario-writing agreement
 
@@ -147,7 +132,7 @@ Avoid:
 
 ## Verification agreement
 
-Verification is the disposable proof of durable scenarios. A scenario states what must be true; verification proves the real thing happened, as fast as real isolation allows. Speed and honesty share one source: every unit of work is bound to the behaviour under test. QM applies this agreement when writing verification; Captain, Shipwright, and Boatswain use it to judge existing verification. A violation in verification support routes to QM per the Blocker policy.
+Verification is the disposable proof of durable scenarios. A scenario states what must be true; verification proves the real thing happened, as fast as real isolation allows. Verification spends time only on the behaviour under test: speed and honesty share one source. QM applies this agreement when writing verification; Captain, Shipwright, and Boatswain use it to judge existing verification. A violation in verification support routes to QM per the Blocker policy.
 
 Signals:
 
@@ -156,9 +141,13 @@ Signals:
 - Give real-service steps explicit budgets sized to real latency. A budget is a failure ceiling; the step resolves the moment its signal fires.
 - Match backoff to the signal. Honour a served `Retry-After`. Give transient statuses and connection failures a bounded budget. Fail immediately on a permanent rejection such as an authentication or validation error, so real defects surface fast.
 
+Harmless by design:
+
+- Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
+
 Concurrency:
 
-- Run independent scenarios concurrently. The scenario-writing agreement makes scenarios independent and the "Harmless by design" Article makes their resources namespaced, so concurrency is safe by construction and serial execution of independent work buys nothing.
+- Run independent scenarios concurrently. The scenario-writing agreement makes scenarios independent and harmless-by-design namespacing makes their resources disjoint, so concurrency is safe by construction and serial execution of independent work buys nothing.
 - Isolation gates concurrency. Before raising worker count, extend the namespace to every path workers share: temp directories, session and state files, caches, ports, resource names. A target that passes only when re-run serially is not yet fixed.
 - Size concurrency to the tier's binding constraint: local compute for a local tier, the service's real limits for a remote tier. Observe the constraint; a constant guessed on one machine is wrong on the next.
 - Read yesterday's weather. The wake MAY record what each tier's last run observed: wall-clock time, green worker count, and pressure signals such as rate-limit and memory errors. Start from that record and adjust on live pressure.
@@ -170,7 +159,8 @@ Reuse:
 
 Seams:
 
-- Exercise behaviour through narrow seams with explicit inputs and observable outputs. Product logic reachable only through constructors, global state, static initialization, singletons, registries, service locators, or framework lifecycle hooks blocks real verification; report the seam per the "Code exposes verification seams" Article.
+- Exercise behaviour through narrow seams with explicit inputs and observable outputs. Production code SHOULD expose such seams for scenario behaviour, keeping product logic separate from side effects where practical so verification can exercise real behaviour deliberately. Product logic reachable only through constructors, global state, static initialization, singletons, registries, service locators, or framework lifecycle hooks blocks real verification; report the seam as a Crew target or harbour finding.
+- Testability refactors MUST serve current verification-discovered work, not speculative architecture cleanup. A verification seam MUST NOT replace normal-path real coverage with the doubles the "Real by default" Article forbids.
 
 Teardown:
 
@@ -179,6 +169,7 @@ Teardown:
 Proof:
 
 - Green means the real thing happened. Assert the artifact only the real path can produce: the live reply, the served response, the persisted record, the package installed from the registry. An assertion a double could satisfy proves the harness, not the behaviour.
+- A double is allowed only for a specific condition the real environment genuinely cannot produce on demand. Mark and justify it inline with `@exceptional-double`. It MUST never replace normal-path real coverage.
 - A recurring non-product failure is a harness defect. Engineer it out with a readiness gate, an isolation fix, or a reclaim at suite start, then strike its entry from `## Known false-failure modes`. An empty section is the healthy state.
 
 ## Role flow
@@ -187,7 +178,7 @@ User to Captain: intent becomes durable specs and optional `watchbill.json`. Con
 
 ### Role transitions
 
-A role hands off to the next role. How the hand-off happens depends on the coding agent.
+A role hands off to the next role. On any transition, the preceding role's final-report blockers and open questions are the first work item: handle blockers first, then other duties. Current hand-off evidence takes priority over older notes. How the hand-off happens depends on the coding agent.
 
 - If the agent supports context-isolated subagents, spawn the next role as an isolated subagent. This is preferred. A fresh context window carries no Captain content, which satisfies the clean-context bulkhead and prevents accidental contamination.
 - A fresh context window is the isolation floor. Where the runtime shares an on-disk transcript across that boundary, the transcript is a residual side channel. It is discarded conversation context, never product intent, and an internal role MUST NOT mine it. The runtime SHOULD block internal-role reads of the transcript; a fresh session carries a fresh transcript and closes the residual fully. Do not force a fresh session on a routine transition where a window-isolated subagent already carries no Captain content; reserve that cost for opt-in strict work.
@@ -216,20 +207,9 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 
 `RIGGING.md` holds the project tooling values that roles read on open. `AGENTS.md` is the human-facing entry document. It states that the project uses Shipshape and MAY point to `RIGGING.md`. Longer tooling prose, such as a detailed sandbox provisioning or outbound policy that does not fit a short value, belongs in `AGENTS.md`. The machine-read values belong in `RIGGING.md`. Shipwright scaffolds `AGENTS.md` and `RIGGING.md` during fitting out. The fitting-out procedure and the templates live in the Shipwright skill.
 
-### Rigging
+### Rigging read contract
 
-`RIGGING.md` uses a fixed Markdown shape. Roles read it on open and parse it by heading. It holds values, not procedure. Procedure lives in the skills. Each value is a Markdown list item `- <key>: <value>` on its own line, and a multi-value key repeats on a new line for each value. Command values are wrapped in backticks and path values are bare. Use these sections:
-
-- `## Stack`: `language`, `runtime`, and `packageManager`.
-- `## Directories`: `implementation`, `specs`, `verification`, `assets`, and optional `scantlings` paths, one path per line with the key repeated. A `*` matches one path segment, so `packages/*/src` covers every package in a workspace. List every directory that can hold a planked seam under `implementation`; the `plank-inventory` command scans exactly the `implementation` paths. Widen Crew scope only to work a falsifiable spec covers; work covered only by outbound policy stays Captain-owned. Fitting out declares content directories as assets in place and moves nothing. `scantlings` lists machine-readable contract files in place when the project carries them.
-- `## Commands`: `discover`, `focused`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`. Each value is a single command. The `focused` command uses `{scenario}` as the target placeholder. Watchbill-selected runs use the `focused` command for each scenario in the watch. The `plank-inventory` command lists docblock annotations across the `implementation` paths. A project MAY add tier-suffixed command variants, such as `coverage-sandbox`. A project that carries a scantling MAY add a `conformance` command that validates seams against it, so a conformance step runs a real check. All verification commands MUST exclude `@captain`-tagged and `@shipwright`-tagged scenarios.
-- `## Perturbation`: the stable `message` and project-specific `fail-fast` statement. The `message` MUST contain the literal token `PERTURBATION` so a role can detect a live perturbation in the tree.
-- `## Tiers`: the `default` tier tag, any `sandbox` tier tag, and the credentials or sandbox provisioning policy for each tier.
-- `## Dependencies`: the dependency `policy` and any selected dependency names.
-- `## Outbound`: one entry per outbound target, each naming the target, its `ship` command, and its `verify` check against the live artifact. A runbook longer than a value lives in `AGENTS.md`, and the target entry points to it.
-- `## Known false-failure modes`: short notes a role rules out before routing a product defect.
-
-A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` and `specs` under `## Directories`, `focused` under `## Commands`, and `fail-fast` under `## Perturbation`. Other sections are optional but SHOULD be present when the project needs them. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. `RIGGING.md` is Shipwright's to derive and repair; Captain routes a rigging configuration blocker to Shipwright, which refits the missing values. Captain discovers a value with the user only when Shipwright cannot derive it. Keep narrative short. Long rationale belongs in `AGENTS.md`, not `RIGGING.md`.
+`RIGGING.md` uses a fixed Markdown shape; the Shipwright skill carries the Rigging shape and derives the file. Roles read it on open and parse it by heading: each value is a Markdown list item `- <key>: <value>` on its own line, and a multi-value key repeats on a new line for each value. It holds values, not procedure. A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` and `specs` under `## Directories`, `focused` under `## Commands`, and `fail-fast` under `## Perturbation`. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. `RIGGING.md` is Shipwright's to derive and repair; Captain routes a rigging configuration blocker to Shipwright, which refits the missing values. Captain discovers a value with the user only when Shipwright cannot derive it.
 
 The project configuration files that `RIGGING.md` documents are the ship's rigging, such as the package manifest, the lockfile, and the tooling and lint configuration. Shipwright fits the rigging during fitting out. Boatswain maintains it as hygiene. Captain selects dependencies and records them under `## Dependencies`. Crew installs a selected dependency as the mechanical part of a spec-ordered change.
 
@@ -239,17 +219,13 @@ These policies apply to all Shipshape project work.
 
 ### Blocker policy
 
-If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM. An environment or tooling blocker, such as a missing tool or an observed authentication failure, is also reported to Captain; a rigging or configuration blocker routes to Shipwright per the Rigging section.
+If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, auto-clear or clear/start fresh before returning to QM. An environment or tooling blocker, such as a missing tool or an observed authentication failure, is also reported to Captain; a rigging or configuration blocker routes to Shipwright per the Rigging read contract.
 
 A methodology check failure routes by artifact ownership: verification support to QM, trace annotations and plank drift to harbour, specs and `watchbill.json` to Captain. Crew is dispatched only for production-code failures.
 
 ### Working tree
 
 Humans edit at any time. A role owns only the edits it makes and leaves every other working-tree change untouched. A role never treats the tree's existing state as its own work. Boatswain stages only role-advanced hunks and leaves unrelated operator work for Captain.
-
-### Captain context
-
-Captain context is disposable. Product intent lives in durable artifacts; Captain rebuilds working context from them plus `CAPTAIN.md`. A long-lived Captain SHOULD reset to a fresh context at durable voyage boundaries, after outbound and at a harbour mode change, so the session stays bounded and well grounded. An unbounded Captain session degrades grounding on modest models and wastes tokens on capable ones. The persona MAY be continuous; the working context is not. At a reset boundary Captain requests a fresh context. The operator MAY decline by explicit refusal, and Captain then continues; inaction is not refusal. Before any reset, Captain writes pending intent to durable artifacts so the fresh context loses nothing.
 
 ### Asset policy
 
@@ -262,6 +238,8 @@ Assets MAY be referenced by scenarios or verification. Assets MUST NOT define Sh
 Do not create extra binding Shipshape artifact types such as constitution, project-rules, memory-bank, decision-log, architecture-notes, roadmap, or backlog files. Product behaviour belongs in `.feature` files. Tooling configuration belongs in `AGENTS.md` and `RIGGING.md`. Directed work selection belongs in `watchbill.json`. Captain-only non-binding notes belong in `CAPTAIN.md`. Historical rationale belongs in git history and commit messages.
 
 ### Watchbill policy
+
+Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
 
 `watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form, with no prose, metadata, or hidden context. Each reference is repo-root-relative and includes the specs directory. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 
@@ -276,10 +254,6 @@ Methodology rules can be self-enforcing. A `@property` scenario MAY scan verific
 A perturbation marks a behaviour-stable seam for reimplementation. A perturbation MAY span a cluster of fragmented seams so Crew reimplements them as one cohesive seam; the scenarios passing again prove the consolidation preserved behaviour. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `fail-fast` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other failing target. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit.
 
 A perturbation MUST become a failing verification target. A perturbation that stays green has discovered an unexercised seam or a stale-green scenario. QM blocks to Captain with that evidence, and Boatswain treats a live perturbation in a green tree as a foul deck.
-
-### Verification-shaped code policy
-
-The "Code exposes verification seams" Article carries the seam obligations. Crew MAY refactor production code to expose a verification seam only when that is the smallest sufficient change for the assigned failing target. Role-specific seam guidance lives in QM, Crew, Boatswain, and Shipwright.
 
 ### Outbound verification policy
 
