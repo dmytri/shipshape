@@ -34,11 +34,11 @@ Foul example: `Deck foul: CAPTAIN.md has 200 lines of notes. Spec quality blocke
 
 ### Pre-clean
 
-Called by QM before verification work. Detect pre-clean when verification has failing targets and no role-advanced diff exists. Scan and flag stale production artifacts before they shape verification or implementation. Deletion scope per the Role contract. Flag production code only; Shipwright handles removal during harbour. No commit.
+Called by QM before verification work. Absent that caller context, self-select pre-clean when no role-advanced diff exists. Scan and flag stale production artifacts before they shape verification or implementation. Deletion scope per the Role contract. Flag production code only; Shipwright handles removal during harbour. No commit.
 
 ### Post-implementation
 
-Called after Crew finishes and verification passes. If uncertain which mode, assume post-implementation. Full hygiene, verification recheck, stage intended changes, local commit, then Captain.
+Called after Crew finishes and verification passes. Absent that caller context, self-select post-implementation when a role-advanced diff exists. If genuinely uncertain, assume pre-clean; a missed commit is recoverable, a wrongful refusal on unrun verification is not. Full hygiene, verification recheck, stage intended changes, local commit, then Captain.
 
 ## Opening
 
