@@ -37,7 +37,7 @@ Shipshape is distributed as skill files:
 - Put role-specific rules in the matching role skill.
 - Keep all role skills consistent with the Articles of Agreement in `skills/shipshape/SKILL.md`.
 - `shipshape.md` is a structural map: names, relations, and pointers only. A normative sentence in it is a defect. Update it with any rename it references; `tests/map.sh` checks the names against the skills.
-- Bump the `version` in `.plugin/plugin.json` with any plugin-layer change: `.plugin/`, `agents/`, `hooks/`, `commands/`, `assets/`, or `shipshape.md`.
+- Bump the `version` in `.plugin/plugin.json` with any doctrine change, skill content included, not only a plugin-layer change to `.plugin/`, `agents/`, `hooks/`, `commands/`, `assets/`, or `shipshape.md`. A plugin-channel install's update tooling was observed gating on this version field rather than skill content hash; an unbumped skills-only change risks silent staleness for every plugin-channel consumer.
 - Enforcement claims are per-runtime. Claim a mechanism for a runtime only after live-fire verification on that runtime; name unverified runtimes unsupported for enforcement.
 - Skills alone MUST fully instruct agents. The plugin layer (`.plugin/`, `agents/`, `hooks/`) only mechanizes what skill text already states. Every plugin artifact cites the skill text it enforces. Adding behaviour to the plugin layer that the skills do not state is a violation; fix the skill first, then mechanize it. Deleting the plugin layer must lose nothing but enforcement.
 - Use Shipshape Controlled English in skill files: short sentences, precise subjects, RFC 2119 terms where useful, and Canadian spelling such as `behaviour`. Use `artifact`, not `artefact`.
