@@ -123,13 +123,32 @@ What can be a scenario:
 - Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
 - Tag a cross-cutting invariant `@property`.
 - Content behaviour can be a scenario, but only the seam you own. When a third-party generator renders the content, that seam is invoking and configuring it correctly; assert that it runs and produces the expected output. The asset carries the copy and the generator owns its rendering.
-- A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy — an OpenAPI document, a JSON Schema, a GraphQL schema, or a proof contract (pre/post-conditions, invariants) discharged by a prover or symbolic checker. A scantling is always its own file; Captain owns a project-authored scantling and Crew never writes one, so the durable contract never shares a file with the disposable production code it constrains. A vendored scantling is read-only like any vendored file. A scantling creates no work; a scenario references it and asserts a seam conforms. When the scantling is a proof, the scenario attests rather than re-enacts: a proof already covers every input, so an example would be strictly weaker and would split the spec across two surfaces that can drift; the scenario instead names the seam, runs the verifier named in `RIGGING.md`, and asserts a clean discharge. The Gherkin holds the user or business behaviour; the scantling holds the mechanical shape or constraint — fields, status codes, structure, or a checked invariant. Do not duplicate scantling shapes or constraints in prose.
+- A scantling can be referenced by a scenario per the Scantling agreement; the scenario asserts conformance or, for a proof, attests a clean discharge.
 
 Avoid:
 
 - Steps that assert nothing observable, steps whose subject is an abstraction rather than a named actor or system, steps asserting an actor's intent rather than a result, and steps hedged with words such as `should probably` or `might`. Avoid executable requirements buried in `Rule:` prose; `Rule:` prose adds durable context only, and requirements belong in scenarios.
 - Bare `#` comments in `.feature` files. Durable non-requirement context belongs in `Rule:` prose; anything non-durable, chat, rationale, or hidden instructions, belongs in `CAPTAIN.md`, which QM, Crew, and Shipwright never read. A comment is neither and reaches every role that reads the spec, so it crosses the Context bulkhead by construction.
 - Automation and UI mechanics in step text: selectors, XPath, element IDs, and waits belong in step definitions, not scenarios.
+
+## Scantling agreement
+
+A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy — an OpenAPI document, a JSON Schema, a GraphQL schema, or a proof contract (pre/post-conditions, invariants) discharged by a prover or symbolic checker. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
+
+Ownership:
+
+- A scantling is always its own file. Captain owns a project-authored scantling; Crew never writes one, so the durable contract never shares a file with the disposable production code it constrains. A vendored scantling is read-only like any vendored file.
+- A scantling creates no work. A scenario references it and asserts a seam conforms; the scantling itself is inert until referenced.
+- Do not duplicate scantling shapes or constraints in prose. The Gherkin holds the user or business behaviour; the scantling holds the mechanical shape or constraint — fields, status codes, structure, or a checked invariant.
+
+Attestation:
+
+- When the scantling is a proof, the scenario attests rather than re-enacts: a proof already covers every input, so an example would be strictly weaker and would split the spec across two surfaces that can drift. The scenario names the seam, runs the verifier named in `RIGGING.md`, and asserts a clean discharge.
+
+Scantling or double:
+
+- Prefer a scantling when an independent tool discharges the constraint — a schema validator, a prover, a policy engine — or the same constraint is consumed by more than one scenario or seam.
+- Prefer a `@exceptional-double`-tagged scenario, per the Verification agreement, when the constraint is internal composition or wiring observed by a spy rather than an externally checkable contract. There is no independent verifier in that case, only an assertion against recorded calls; relocating that assertion into a scantling file adds a copy of the same fact rather than removing one.
 
 ## Verification agreement
 
