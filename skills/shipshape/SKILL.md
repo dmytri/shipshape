@@ -133,7 +133,7 @@ Avoid:
 
 ## Scantling agreement
 
-A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy — an OpenAPI document, a JSON Schema, a GraphQL schema, a proof contract (pre/post-conditions, invariants) discharged by a prover or symbolic checker, or a structural or policy rule set discharged by a static analyzer or policy engine. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
+A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy. Examples include an OpenAPI document, a JSON Schema, a GraphQL schema, a proof contract with pre-conditions, post-conditions, and invariants discharged by a prover or symbolic checker, or a structural or policy rule set discharged by a static analyzer or policy engine, such as dependency-cruiser or eslint-plugin-boundaries for a JavaScript or TypeScript import-boundary policy, or import-linter for a Python layer contract. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
 
 Ownership:
 
