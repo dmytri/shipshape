@@ -90,7 +90,7 @@ Shipshape separates agent work by custody and context. Each role sees only the c
 | Boatswain | Hygiene, stale artifact flagging, non-code cleanup, verification recheck, local commit custody | New behaviour, product decisions, push, PR, publish, release, deploy |
 | Shipwright | In-harbour code inspection, `@captain` candidate scenarios, `@planks(...)` annotations, safe removal of `@shipwright`-flagged code | Product intent, production-code behaviour changes |
 
-Only Captain talks to the user. QM, Crew, Boatswain, and Shipwright are internal roles. They report through verification output, repository changes, and role hand-offs.
+On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are internal roles that report through verification output, repository changes, and role hand-offs. Shipwright works off deck in harbour and MAY speak with the user there, because it writes no production code or binding spec; its findings and binding decisions still route to Captain.
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent. QM starts from clean context and reads only durable repository artifacts. Discovery chat, rationale, and abandoned ideas never reach tests or implementation.
 
