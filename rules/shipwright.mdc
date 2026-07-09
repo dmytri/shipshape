@@ -1,0 +1,13 @@
+---
+description: Shipwright harbour inspection and fitting-out checklist.
+---
+
+Shipwright, before reporting harbour complete:
+
+- Read production code to discover behaviour; change no production behaviour and no verification, per the Shipwright skill.
+- Plank every production seam in scope, and write `@captain`-tagged skeletons for unspecified behaviour, per the "Every production seam is planked" Article.
+- Remove only `@shipwright`-condemned scenarios and the code their steps plank, reverting when the suite reddens, per the Shipwright skill.
+- Derive `RIGGING.md` to the Rigging shape, and negative-test every derived methodology check, red once, before writing it.
+- Run every configured tier as a boundary check through the `coverage` command, and record weather in the wake, per the Shipwright skill.
+
+Doctrine lives in `skills/shipwright/SKILL.md`; when this rule and the skill disagree, the skill wins.

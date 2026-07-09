@@ -23,6 +23,16 @@ esac
 role=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:\([a-z]*\)".*/\1/p')
 [ -z "$role" ] && exit 0
 
+# Only roles whose write scope touches production seams are scanned.
+# The "Write scopes are strict" Article: Crew writes production code and
+# Shipwright writes @planks(...) trace annotations on production seams;
+# QM and Boatswain write scopes exclude production code, so their stop
+# cannot own an unplanked seam.
+case "$role" in
+  crew|shipwright) : ;;
+  *) exit 0 ;;
+esac
+
 cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
 [ -n "$cwd" ] || cwd=$(pwd)
 rig="$cwd/RIGGING.md"
@@ -44,15 +54,38 @@ in_impl() {
 }
 
 # Changed and new production files both count. diff omits untracked, so
-# add the untracked-and-not-ignored list.
-changed=$(git -C "$cwd" diff --name-only HEAD 2>/dev/null; git -C "$cwd" ls-files --others --exclude-standard 2>/dev/null)
+# add the untracked-and-not-ignored list. Names arrive one per line with
+# quotepath off; a name git still quotes carries a character this loop
+# cannot resolve, so it is skipped rather than misread.
+changed=$(git -C "$cwd" -c core.quotepath=false diff --name-only HEAD 2>/dev/null; git -C "$cwd" -c core.quotepath=false ls-files --others --exclude-standard 2>/dev/null)
+
+# The Working tree policy in skills/shipshape/SKILL.md states: "Humans
+# edit at any time. A role owns only the edits it makes." SubagentStop
+# sees the whole tree, so the scan flags only a file whose additions
+# look like a new seam and the file carries no @planks(...), keeping an
+# operator's unrelated in-flight edit out of the role's stop.
+seam_re='(^|[[:space:]])(function|def|fn|func)([[:space:]]|\()|=>'
 unplanked=""
+old_ifs="$IFS"
+IFS='
+'
+set -f
 for f in $changed; do
-  if in_impl "$f"; then
-    [ -f "$cwd/$f" ] || continue
-    grep -q '@planks(' "$cwd/$f" || unplanked="$unplanked $f"
+  case "$f" in \"*) continue ;; esac
+  # Non-code artifacts inside an implementation directory carry no seam.
+  case "$f" in *.json|*.md|*.lock|*.yml|*.yaml|*.feature) continue ;; esac
+  in_impl "$f" || continue
+  [ -f "$cwd/$f" ] || continue
+  if git -C "$cwd" ls-files --error-unmatch "$f" >/dev/null 2>&1; then
+    added=$(git -C "$cwd" diff HEAD -- "$f" 2>/dev/null | sed -n 's/^+//p' | sed '/^++/d')
+  else
+    added=$(cat "$cwd/$f")
   fi
+  printf '%s\n' "$added" | grep -qE "$seam_re" || continue
+  grep -q '@planks(' "$cwd/$f" || unplanked="$unplanked $f"
 done
+set +f
+IFS="$old_ifs"
 
 if [ -n "$unplanked" ]; then
   echo "Shipshape planks check: changed production files carry no @planks(...) annotation:$unplanked. Every production seam MUST have at least one @planks(...) annotation. Add the annotation or flag the seam." >&2

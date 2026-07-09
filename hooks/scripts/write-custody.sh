@@ -2,8 +2,9 @@
 # Shipshape write custody. PreToolUse guard for Edit/Write/MultiEdit/NotebookEdit.
 #
 # Enforces the "Write scopes are strict" Article from skills/shipshape/SKILL.md
-# and the role contracts in skills/qm, skills/crew, skills/boatswain, and
-# skills/shipwright. Doctrine lives in the skills; this script adds none.
+# and the role contracts in skills/captain, skills/qm, skills/crew,
+# skills/boatswain, and skills/shipwright. Doctrine lives in the skills;
+# this script adds none.
 # Delete this plugin and nothing is lost but enforcement.
 #
 # Role identity: the runtime names the running agent in the hook payload
@@ -22,9 +23,44 @@ file_path=$(printf '%s' "$payload" | sed -n 's/.*"file_path":[[:space:]]*"\([^"]
 [ -z "$file_path" ] && file_path=$(printf '%s' "$payload" | sed -n 's/.*"notebook_path":[[:space:]]*"\([^"]*\)".*/\1/p')
 [ -z "$file_path" ] && exit 0
 
+# Resolve "." and ".." path segments lexically so a traversal such as
+# src/../elsewhere/x.ts cannot slip past a directory check. Pure sh
+# with no filesystem calls: a clean path passes through unchanged and
+# symlink resolution stays out of scope.
+normalize() {
+  np_in="$1"; np_out=""; np_abs=0
+  case "$np_in" in /*) np_abs=1 ;; esac
+  np_old="$IFS"; IFS=/
+  set -f
+  set -- $np_in
+  set +f
+  IFS="$np_old"
+  for np_seg in "$@"; do
+    case "$np_seg" in
+      ''|.) ;;
+      ..)
+        case "$np_out" in
+          ''|..|*/..)
+            if [ -n "$np_out" ]; then np_out="$np_out/.."
+            elif [ "$np_abs" -eq 0 ]; then np_out=".."
+            fi
+            ;;
+          */*) np_out="${np_out%/*}" ;;
+          *) np_out="" ;;
+        esac
+        ;;
+      *)
+        if [ -n "$np_out" ]; then np_out="$np_out/$np_seg"; else np_out="$np_seg"; fi
+        ;;
+    esac
+  done
+  if [ "$np_abs" -eq 1 ]; then printf '/%s' "$np_out"; else printf '%s' "$np_out"; fi
+}
+
 cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
+file_path=$(normalize "$file_path")
 rel="$file_path"
-[ -n "$cwd" ] && rel="${file_path#"$cwd"/}"
+[ -n "$cwd" ] && rel="${file_path#"$(normalize "$cwd")"/}"
 base=$(basename "$file_path")
 
 deny() {
@@ -67,6 +103,18 @@ in_dirs() {
 }
 
 case "$role" in
+  captain)
+    # skills/captain/SKILL.md Role contract: "Write only Captain-custodied
+    # durable artifacts", meaning .feature specs, referenced assets/**,
+    # CAPTAIN.md, and optional watchbill.json, and "MUST NOT write
+    # production code or verification, except for the perturbation rule
+    # below." The perturbation exception lands in production code and the
+    # tooling-value exception lands in RIGGING.md; neither is mechanically
+    # decidable here, so those paths stay open. Verification carries no
+    # such exception, so a verification directory derived from RIGGING.md
+    # is denied.
+    [ -n "$verif" ] && in_dirs "$rel" "$verif" && deny "MUST NOT write production code or verification, except for the perturbation rule below."
+    ;;
   qm)
     # skills/qm/SKILL.md: "Write only verification: tests, fixtures, step
     # definitions, harness, test support." "MUST NOT read CAPTAIN.md."

@@ -34,7 +34,18 @@ if grep -q 'Scenario' "$file_path"; then
 - scenarios declare no Given, When, or Then steps"
 fi
 
-grep -qE '^[[:space:]]*#' "$file_path" && problems="$problems
+# The scenario-writing agreement bans bare # comments: "Bare # comments
+# in .feature files ... crosses the Context bulkhead by construction".
+# The Gherkin "# language: xx" directive is parser configuration, not a
+# comment, and a # line inside a doc string is step data owned by the
+# triple-quote delimiters, so both stay open.
+awk '
+  /^[[:space:]]*("""|```)/ { indoc = 1 - indoc; next }
+  indoc { next }
+  /^[[:space:]]*#[[:space:]]*language[[:space:]]*:/ { next }
+  /^[[:space:]]*#/ { bare = 1 }
+  END { exit bare ? 0 : 1 }
+' "$file_path" && problems="$problems
 - contains a # comment; the Context bulkhead disallows comments in .feature files, durable context belongs in Rule: prose, non-durable notes belong in CAPTAIN.md"
 
 if command -v gplint >/dev/null 2>&1; then

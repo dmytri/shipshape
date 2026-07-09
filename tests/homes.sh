@@ -18,7 +18,7 @@ fail=0
 # Every "Title" Article citation in skills and hooks names a numbered
 # Article heading in the core skill, so a demoted or renamed Article
 # cannot leave a dangling citation.
-cites=$(grep -rho '"[^"]*" Article' $skillfiles "$repo"/hooks/scripts/*.sh 2>/dev/null | sed 's/^"//; s/" Article$//' | sort -u)
+cites=$(grep -rho '"[^"]*" Article' $skillfiles "$repo"/hooks/scripts/*.sh "$repo"/rules/*.mdc 2>/dev/null | sed 's/^"//; s/" Article$//' | sort -u)
 while IFS= read -r t; do
   [ -z "$t" ] && continue
   if grep -qF ". **$t.**" "$core"; then

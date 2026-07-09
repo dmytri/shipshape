@@ -1,6 +1,9 @@
 #!/bin/sh
 # Shipshape update nudge. SessionStart hook.
 #
+# Mechanizes the AGENTS.md template sentence from skills/shipwright/
+# SKILL.md: "Update Shipshape at a voyage boundary".
+#
 # Compares the installed plugin version against main and emits one line
 # when a newer release exists. Nudge only: it applies nothing and blocks
 # nothing. An update is a voyage boundary, a Captain decision, so the

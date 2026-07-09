@@ -24,10 +24,9 @@ need() {
   esac
 }
 
-# The lean map delegates roles to `.plugin/plugin.json` and commands to
-# `RIGGING.md`, so it enumerates neither. It still names the durable
-# artifacts, tags, and trace annotation, and every name it uses resolves
-# to a skill.
+# The lean map names the component directories and delegates commands to
+# `RIGGING.md`. It still names the durable artifacts, tags, and trace
+# annotation, and every name it uses resolves to a skill.
 for n in ".feature" "assets/**" "AGENTS.md" "RIGGING.md" "CAPTAIN.md" "watchbill.json"; do need "$n"; done
 for n in "@captain" "@shipwright" "@property" "@exceptional-double" "@logic" "@sandbox"; do need "$n"; done
 for n in "@planks(" ; do need "$n"; done

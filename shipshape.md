@@ -5,7 +5,7 @@ Specifications are durable. Code is disposable. Agents are replaceable.
 Shipshape is a context-isolated, spec-driven workflow for coding agents. Start with the durable specification in `skills/shipshape/SKILL.md` to learn the Articles of Agreement and workflow. Each role skill (`captain`, `qm`, `crew`, `boatswain`, `shipwright`) documents its own contract and duties. The skills are canonical; when this map and a skill disagree, the skill wins.
 
 **Discovery:**
-- Components: see `.plugin/plugin.json`
+- Components: `skills/`, `agents/`, `hooks/`, `commands/`, `rules/`; manifest metadata in `.plugin/plugin.json`
 - Onboarding: see `AGENTS.md`
 - Workflow: see `skills/shipshape/SKILL.md`
 - Role tasks: see `skills/<role>/SKILL.md`
@@ -19,6 +19,6 @@ Shipshape is a context-isolated, spec-driven workflow for coding agents. Start w
 - Tags: `@captain` (skeleton), `@shipwright` (condemned), `@property` (invariant), `@exceptional-double` (justified double), `@logic`/`@sandbox` (tiers)
 
 **Entry:**
-- `RIGGING.md` absent → `/shipwright` fits out
-- Working tree dirty → Boatswain cleans
-- Otherwise → `/captain`
+- `RIGGING.md` absent: `/shipwright` fits out
+- Working tree dirty: Boatswain cleans
+- Otherwise: `/captain`

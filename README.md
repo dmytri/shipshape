@@ -246,7 +246,7 @@ Rules:
 
 - Top-level keys are ordered watch groups such as `watch1`, `watch2`, and `watch3`.
 - Each watch contains only `scenarios`.
-- Each scenario reference uses `<spec>.feature:<Scenario Name>`.
+- Each watch entry is a scenario reference in `<spec>.feature:<Scenario Name>` form or a tier tag directing an unfiltered tier run.
 - QM processes watches in order unless verification, product intent, environment, or tooling blocks.
 - If Watchbill and verification disagree, verification wins.
 
@@ -358,10 +358,11 @@ Shipshape is not an IDE, a memory bank, a backlog format, a task-list generator,
 
 Shipshape skills work anywhere a coding agent can read repository files and follow role instructions. The workflow is portable by design: Cucumber specs, verification output, `@planks(...)` annotations, and git history carry the durable state.
 
-Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. This repository ships an optional plugin layer in the vendor-neutral [open-plugin format](https://open-plugins.com/) that mechanizes two disciplines on supporting runtimes:
+Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. This repository ships an optional plugin layer in the vendor-neutral [open-plugin format](https://open-plugins.com/) that mechanizes these disciplines on supporting runtimes:
 
-- **Context isolation.** Role agents run QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM bulkhead becomes mechanical.
-- **Custody.** Hooks block writes outside each role's write scope, block QM, Crew, and Shipwright from reading `CAPTAIN.md` and the session transcript, hold local commits to Boatswain, and keep outbound actions Captain-only. Custody hooks bind the internal role agents. The human-facing main loop stays unrestricted; Captain's discipline is instructional, by design.
+- **Context isolation.** Role agents run Captain, QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM bulkhead becomes mechanical.
+- **Custody.** Hooks block writes outside each role's write scope, block QM, Crew, and Shipwright from reading `CAPTAIN.md` and the session transcript, hold local commits to Boatswain, and keep outbound actions in the human-facing main session. Custody hooks bind the role agents. The human-facing main loop stays unrestricted; Captain's discipline is instructional, by design.
+- **Rules.** The open-plugin rules component carries cited role checklists that restate skill custody for runtimes that attach rules as context. The skills stay canonical; when a rule and a skill disagree, the skill wins.
 - **Derived status.** The `/shipshape:status` command reports deck state from repository signals: tree cleanliness, commits ahead of upstream, `@captain` and `@shipwright` counts, perturbations, and watchbill validity.
 - **Install audit.** The `/shipshape:doctor` command audits the installation itself: completeness of each installed copy, freshness against upstream, and coherence across channels and scopes, so stale or shadowed doctrine is found instead of trusted.
 - **Orientation.** On session start in a project with `RIGGING.md`, the plugin injects `shipshape.md`, a structural map of roles, artifacts, tags, and routing, plus one derived deck-state line suggesting the entry role. The map is non-normative; the skills stay canonical, and `tests/map.sh` checks its names against them.

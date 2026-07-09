@@ -24,10 +24,12 @@ else
   tree="clean"
   route="/captain"
 fi
+# Count exact tags only: the boundary of whitespace or line end keeps a
+# longer tag such as @captain-review out of the @captain count.
 if git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
-  tags=$(git -C "$cwd" grep -h -o -E '@captain|@shipwright' -- '*.feature' 2>/dev/null)
+  tags=$(git -C "$cwd" grep -h -o -E '@(captain|shipwright)([[:space:]]|$)' -- '*.feature' 2>/dev/null)
 else
-  tags=$(grep -r -h -o -E '@captain|@shipwright' --include='*.feature' "$cwd" 2>/dev/null)
+  tags=$(grep -r -h -o -E '@(captain|shipwright)([[:space:]]|$)' --include='*.feature' "$cwd" 2>/dev/null)
 fi
 captains=$(printf '%s\n' "$tags" | grep -c '@captain')
 condemned=$(printf '%s\n' "$tags" | grep -c '@shipwright')

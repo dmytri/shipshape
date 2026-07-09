@@ -20,8 +20,10 @@ Shipshape is distributed as skill files:
 | `agents/` | Role agents for context isolation (thin adapters over role skills) |
 | `hooks/` | Custody enforcement hooks (mechanize Article text only) |
 | `commands/` | Plugin slash commands (derived-state reporting and install diagnostics, no doctrine) |
+| `rules/` | Open-plugin rule files (`.mdc`): cited role checklists restating skill text, no added doctrine |
+| `CAPTAIN.md` | Captain-only non-binding notes for this repository's own Shipshape work |
 | `assets/logo.svg` | Plugin logo |
-| `tests/` | Hook behaviour, map drift, style, and bulkhead conformance tests |
+| `tests/` | Hook behaviour, map drift, style, doctrine-home, and bulkhead conformance tests |
 | `README.md` | Public project positioning and usage overview |
 | `llms.txt` | Agent-facing index of canonical files (pointers only, no doctrine) |
 | `shipshape.md` | Structural orientation map (names, relations, pointers; non-normative) |
@@ -39,7 +41,7 @@ Shipshape is distributed as skill files:
 - `shipshape.md` is a structural map: names, relations, and pointers only. A normative sentence in it is a defect. Update it with any rename it references; `tests/map.sh` checks the names against the skills.
 - Bump the `version` in `.plugin/plugin.json` with any doctrine change, skill content included, not only a plugin-layer change to `.plugin/`, `agents/`, `hooks/`, `commands/`, `assets/`, or `shipshape.md`. A plugin-channel install's update tooling was observed gating on this version field rather than skill content hash; an unbumped skills-only change risks silent staleness for every plugin-channel consumer.
 - Enforcement claims are per-runtime. Claim a mechanism for a runtime only after live-fire verification on that runtime; name unverified runtimes unsupported for enforcement.
-- Skills alone MUST fully instruct agents. The plugin layer (`.plugin/`, `agents/`, `hooks/`) only mechanizes what skill text already states. Every plugin artifact cites the skill text it enforces. Adding behaviour to the plugin layer that the skills do not state is a violation; fix the skill first, then mechanize it. Deleting the plugin layer must lose nothing but enforcement.
+- Skills alone MUST fully instruct agents. The plugin layer (`.plugin/`, `agents/`, `hooks/`, `rules/`) only mechanizes or restates what skill text already states. Every plugin artifact cites the skill text it enforces. Adding behaviour to the plugin layer that the skills do not state is a violation; fix the skill first, then mechanize it. Deleting the plugin layer must lose nothing but enforcement.
 - Use Shipshape Controlled English in skill files: short sentences, precise subjects, RFC 2119 terms where useful, and Canadian spelling such as `behaviour`. Use `artifact`, not `artefact`.
 - The README Ship of Theseus section is the only text with relaxed Controlled English rules, for literary effect. Every other file follows Controlled English in full, including the punctuation rules: no em dashes and no parenthetical asides.
 - Do not add project-specific assumptions from Jolly, Saleor, or other adopters to shared Shipshape rules.

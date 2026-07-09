@@ -234,6 +234,73 @@ nudge "push in tool output does not fire nudge" "{\"cwd\":\"$work/proj\",\"tool_
 printf 'export function extra() {}\n' > "$work/proj/src/untracked.ts"
 check "untracked unplanked file blocked for crew" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 2
 
+# --- regression tests for custody hardening ---
+
+# bash-custody resolves a path-prefixed git binary, a command git form,
+# and a shell -c string; a quoted echo argument stays innocent.
+check "path-prefixed git push blocked" bash-custody.sh "$(b "shipshape:crew" "/usr/bin/git push origin main")" 2
+check "command git push blocked" bash-custody.sh "$(b "shipshape:boatswain" "command git push origin main")" 2
+check "sh -c git push blocked" bash-custody.sh "$(b "shipshape:crew" "sh -c \\\"git push origin main\\\"")" 2
+check "quoted echo git push stays open" bash-custody.sh "$(b "shipshape:crew" "echo \\\"git push\\\"")" 0
+check "path-prefixed git status stays open" bash-custody.sh "$(b "shipshape:crew" "/usr/bin/git status")" 0
+
+# write-custody normalizes . and .. segments before directory matching.
+check "crew traversal into specs blocked" write-custody.sh "$(p "shipshape:crew" "$work/proj/src/../features/notes.txt")" 2
+check "qm traversal into src blocked" write-custody.sh "$(p "shipshape:qm" "$work/proj/features/steps/../../src/pay.ts")" 2
+check "dotdot absolute path into src blocked" write-custody.sh "$(p "shipshape:qm" "/x/..$work/proj/src/pay.ts")" 2
+check "clean path still allowed after normalize" write-custody.sh "$(p "shipshape:crew" "$work/proj/src/pay.ts")" 0
+
+# write-custody captain branch: verification denied, specs and the
+# perturbation seam stay open.
+check "captain blocked from step defs" write-custody.sh "$(p "shipshape:captain" "$work/proj/features/steps/pay.steps.ts")" 2
+check "captain allowed to write specs" write-custody.sh "$(p "shipshape:captain" "$work/proj/features/pay.feature")" 0
+check "captain src write stays open for perturbation" write-custody.sh "$(p "shipshape:captain" "$work/proj/src/pay.ts")" 0
+
+# dispatch-guard: the cap binds the Captain seat including a spawned
+# Captain, and measures the prompt, not the payload.
+check "spawned captain fat dispatch blocked" dispatch-guard.sh "{\"agent_type\":\"shipshape:captain\",\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:qm\",\"prompt\":\"$filler\"}}" 2
+check "spawned captain thin dispatch allowed" dispatch-guard.sh "{\"agent_type\":\"shipshape:captain\",\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:qm\",\"prompt\":\"Role: qm. Base: abc123.\"}}" 0
+check "long payload with thin prompt allowed" dispatch-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"subagent_type\":\"shipshape:qm\",\"prompt\":\"Role: qm. Base: abc123.\",\"description\":\"$filler\"}}" 0
+
+# planks-check scopes to roles that write production code and to added
+# seam lines, skipping non-code files and operator-style edits.
+rm "$work/proj/src/untracked.ts"
+printf 'export function extra() {}\n' > "$work/proj/src/seam.ts"
+check "qm stop unaffected by unplanked seam" planks-check.sh "{\"agent_type\":\"shipshape:qm\",\"cwd\":\"$work/proj\"}" 0
+check "boatswain stop unaffected by unplanked seam" planks-check.sh "{\"agent_type\":\"shipshape:boatswain\",\"cwd\":\"$work/proj\"}" 0
+check "crew still blocked by added unplanked seam" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 2
+rm "$work/proj/src/seam.ts"
+printf '{"map": "x => y"}\n' > "$work/proj/src/config.json"
+check "operator json edit in impl ignored" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 0
+rm "$work/proj/src/config.json"
+printf 'export const flag = true\n' > "$work/proj/src/notes.ts"
+check "non-seam addition ignored" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 0
+rm "$work/proj/src/notes.ts"
+printf 'export function spaced() {}\n' > "$work/proj/src/pay mate.ts"
+check "unplanked seam in spaced path blocked" planks-check.sh "{\"agent_type\":\"shipshape:crew\",\"cwd\":\"$work/proj\"}" 2
+rm "$work/proj/src/pay mate.ts"
+
+# feature-quality exempts the language directive and doc-string # lines
+# while a bare comment stays blocked, pinned above.
+printf '# language: fr\nFeature: Pay\n\n  Scenario: Pays\n    Given a card\n    When paying with:\n      """\n      # raw payload line\n      amount: 5\n      """\n    Then paid\n' > "$work/proj/features/lang.feature"
+check "language directive and doc-string hash allowed" feature-quality.sh "$(p "Explore" "$work/proj/features/lang.feature")" 0
+
+# captain-reset-nudge shares the hardened git matcher.
+nudge "path-prefixed git push nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"/usr/bin/git push origin main\"}}" "fire"
+nudge "git -C push nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git -C . push origin main\"}}" "fire"
+nudge "git stash push not nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git stash push\"}}" "silent"
+nudge "git tag -l not nudged" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git tag -l\"}}" "silent"
+
+# session-orient counts exact tags only: @captain-review is not @captain.
+printf '@captain\nFeature: Tagged\n\n  Scenario: A\n    Given x\n    When y\n    Then z\n' > "$work/proj/features/tagged.feature"
+printf '@captain-review\nFeature: Reviewed\n\n  Scenario: B\n    Given x\n    When y\n    Then z\n' > "$work/proj/features/reviewed.feature"
+git -C "$work/proj" add features/tagged.feature features/reviewed.feature
+out=$(printf '{"cwd":"%s"}' "$work/proj" | "$scripts/session-orient.sh")
+case "$out" in
+  *"@captain scenarios: 1;"*) pass=$((pass + 1)) ;;
+  *) fail=$((fail + 1)); echo "FAIL: session-orient counts exact @captain tags" ;;
+esac
+
 # frozen sentinel: in the Captain template, in no other hook script, absent from every deny message
 grep -q "STOP. Captain's notes" "$repo/skills/captain/SKILL.md" && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: sentinel present in Captain template"; }
 stray=$(grep -rl "STOP. Captain's notes" "$repo/hooks" | grep -v dispatch-guard.sh)

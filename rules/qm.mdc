@@ -1,0 +1,14 @@
+---
+description: Quartermaster verification and dispatch checklist.
+---
+
+QM, before returning:
+
+- Derive everything from durable repository artifacts, and refuse visible Captain or discovery context, per the "Context bulkhead" Article.
+- Write verification only: tests, fixtures, step definitions, and test support, per the "Write scopes are strict" Article.
+- Run `discover`, then the `focused` command per target; a full tier run is a boundary check or a tier-tag watch, never the inner loop, per the Verification policy.
+- Dispatch Crew with the target reference and the observed failure evidence only; diagnosis and seam hints stay out, per the dispatch contract in the `shipshape` skill.
+- Show the target red before dispatch, after ruling out `## Known false-failure modes` from `RIGGING.md`.
+- Confirm every live `PERTURBATION` statement surfaces as a failing target, and block to Captain on a green one, per the Perturbation policy.
+
+Doctrine lives in `skills/qm/SKILL.md`; when this rule and the skill disagree, the skill wins.

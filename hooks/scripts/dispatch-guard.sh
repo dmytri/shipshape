@@ -9,9 +9,14 @@
 #
 # Role identity: the runtime names the dispatching agent in the hook
 # payload as agent_type. A payload with no shipshape agent_type is the
-# Captain seat: the main loop or Captain. The length cap applies to
-# Captain-seat dispatches only; QM dispatches carry failure evidence and
-# are exempt. The sentinel check applies to every dispatcher.
+# Captain seat: the main loop or Captain. A spawned Captain carries
+# agent_type shipshape:captain and holds the same seat, so the cap
+# binds there too: a Captain-originated dispatch carries the role, the
+# base commit, and an optional watchbill pointer, whoever spawned the
+# Captain. QM dispatches carry failure evidence and are exempt. The
+# sentinel check applies to every dispatcher. The cap measures the
+# dispatch prompt, not the whole payload, so runtime fields such as
+# long environment paths spend none of the budget.
 
 payload=$(cat)
 
@@ -26,11 +31,18 @@ case "$payload" in
 esac
 
 dispatcher=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:\([a-z]*\)".*/\1/p')
-if [ -z "$dispatcher" ]; then
-  if [ "${#payload}" -gt 2500 ]; then
-    echo "Shipshape dispatch guard: the dispatch to $target exceeds the thin-dispatch cap. A Captain-originated dispatch carries the role, the base commit, and an optional watchbill pointer; the durable artifacts are the hand-off. Trim and re-dispatch. (Dispatch contract.)" >&2
-    exit 2
-  fi
-fi
+case "$dispatcher" in
+  ''|captain)
+    # Bound the measure to the prompt string. JSON-escaped quotes are
+    # swapped for an unprintable placeholder before extraction so a
+    # quoted fragment cannot truncate the prompt, then restored.
+    esc=$(printf '\001')
+    prompt=$(printf '%s' "$payload" | sed "s/\\\\\"/$esc/g" | sed -n 's/.*"prompt":[[:space:]]*"\([^"]*\)".*/\1/p' | tr "$esc" '"')
+    if [ "${#prompt}" -gt 2500 ]; then
+      echo "Shipshape dispatch guard: the dispatch to $target exceeds the thin-dispatch cap. A Captain-originated dispatch carries the role, the base commit, and an optional watchbill pointer; the durable artifacts are the hand-off. Trim and re-dispatch. (Dispatch contract.)" >&2
+      exit 2
+    fi
+    ;;
+esac
 
 exit 0

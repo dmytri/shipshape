@@ -1,0 +1,15 @@
+---
+description: Shipshape Articles of Agreement checklist for all roles.
+alwaysApply: true
+---
+
+All roles, at every role transition, verify:
+
+- Binding behaviour lives in `.feature` specs and referenced `assets/**`; durable artifacts win over chat, per the "Durable artifacts outrank chat" Article.
+- Context clears at the Captain to QM boundary, and internal roles carry no Captain or discovery content, per the "Context bulkhead" Article.
+- Every write stays inside the acting role's write scope, per the "Write scopes are strict" Article.
+- Every production seam carries at least one `@planks(...)` annotation, per the "Every production seam is planked" Article.
+- Verification exercises real behaviour, and any double carries an `@exceptional-double` justification, per the "Real by default" Article and the Verification agreement.
+- Passing checks are evidence, not proof, per the "Passing verification is not proof" Article.
+
+Doctrine lives in the skills under `skills/`; when this rule and a skill disagree, the skill wins.

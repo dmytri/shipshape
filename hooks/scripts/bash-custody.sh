@@ -56,15 +56,23 @@ esac
 # Resolve every git subcommand in the command, skipping git's global
 # flags such as "-C <dir>", so "git -C /x push" and "git status && git
 # push" both resolve to their true subcommands while "git stash push"
-# and "git log --grep push" stay innocent.
+# and "git log --grep push" stay innocent. A path-prefixed binary such
+# as /usr/bin/git and a "command git" form resolve the same way. A
+# token that opens a shell -c string sheds its leading quote, so
+# sh -c "git push" resolves too; a quoted word anywhere else, such as
+# an echo argument, keeps its quote and stays innocent.
 gitsubs=$(printf '%s' "$norm" | awk '{
   for (i = 1; i <= NF; i++) {
-    if ($i != "git") continue
+    tok = $i; inq = 0
+    if (i > 1 && $(i-1) == "-c" && sub(/^["'\'']/, "", tok)) inq = 1
+    if (tok != "git" && tok !~ /\/git$/) continue
     j = i + 1
     while (j <= NF) {
-      if ($j == "-C" || $j == "-c") { j += 2; continue }
-      if ($j ~ /^-/) { j++; continue }
-      print $j
+      s = $j
+      if (s == "-C" || s == "-c") { j += 2; continue }
+      if (s ~ /^-/) { j++; continue }
+      if (inq) sub(/["'\'']+$/, "", s)
+      print s
       break
     }
   }
