@@ -338,7 +338,7 @@ Feature files are canon. Shipshape derives trace from current feature files, thr
 
 An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
 
-Use the project comment form for trace annotations. `@planks("<Gherkin step>")` marks a production seam whose behaviour is required by that exact step. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
+`@planks("<Gherkin step>")` is a documentation-comment tag on the seam declaration whose behaviour that exact step requires. Write it in the language's docblock form, such as `/** */` in JavaScript or TypeScript, attached to the declaration that is the seam. A plank in a line comment or on an in-body fragment is malformed; hoist it to the seam declaration. Docblock placement lets a docblock or AST reader inventory every plank completely, and makes plank placement an executable form check rather than a human-read judgment. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
 
 Not every step requires Planks. Setup and assertion steps often use only verification support.
 
