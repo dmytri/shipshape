@@ -38,42 +38,45 @@ Called by QM before verification work. Absent that caller context, self-select p
 
 ### Post-implementation
 
-Called after Crew finishes and verification passes. Absent that caller context, self-select post-implementation when a role-advanced diff exists. If genuinely uncertain, assume pre-clean; a missed commit is recoverable, a wrongful refusal on unrun verification is not. Full hygiene, verification recheck, stage intended changes, local commit, then return to the caller.
+Called after Crew finishes and verification passes. Post-implementation also serves harbour custody: Captain calls it after a Shipwright harbour with a green boundary check, and the role-advanced diff is the harbour-scoped edits. Absent that caller context, self-select post-implementation when a role-advanced diff exists. If genuinely uncertain, assume pre-clean; a missed commit is recoverable, a wrongful refusal on unrun verification is not. Full hygiene, verification recheck, stage intended changes, local commit, then return to the caller.
 
 ## Opening
 
 1. Read `RIGGING.md` for project tooling values.
-2. Read preceding role blockers first, if any.
-3. Read `CAPTAIN.md` if needed for spec quality or watchbill completeness. Flag bloated or outdated notes as blockers.
-4. Run the `discover` command from `RIGGING.md` to establish the current verification surface. The discovery output lists which scenarios are in scope and which steps are undefined. Use this as the scope boundary for hygiene checks. If `RIGGING.md` defines no `discover` command, take scope from the dispatched target references and the uncommitted diff.
-5. Inspect `git status`, `git diff` against the dispatched base commit, HEAD when none was dispatched per the dispatch contract, and recent log.
-6. Identify mode: pre-clean or post-implementation. The QM dispatch names the mode per the dispatch contract; the self-select heuristics in Modes apply only without a dispatch.
+2. Verify the dispatch against the Boatswain row of the Dispatch contract; on content beyond it, report contamination per the Contamination protocol and await a fresh dispatch.
+3. Read preceding role blockers first, if any.
+4. Read `CAPTAIN.md` if needed for spec quality or watchbill completeness. Flag bloated or outdated notes as blockers.
+5. Run the `discover` command from `RIGGING.md` to establish the current verification surface. Discovery is static and executes nothing. The output lists which scenarios are in scope and which steps are undefined. Use this as the scope boundary for hygiene checks. If `RIGGING.md` defines no `discover` command, take scope from the dispatched target references and the uncommitted diff.
+6. Inspect `git status`, `git diff` against the dispatched base commit, HEAD when none was dispatched per the dispatch contract, and recent log.
+7. Identify mode: pre-clean or post-implementation. The dispatch names the mode per the Dispatch contract; the self-select heuristics in Modes apply only without a dispatch.
 
 ## Hygiene checks
 
-- Touched `.feature` files: concrete, executable, current, not padded. Do not let Captain pass weak, vague, stale, or non-falsifiable specs.
-- Bare `#` comments in touched `.feature` files: a Context bulkhead violation per the scenario-writing agreement. Flag as a spec-quality blocker even when the comment looks harmless; durable context belongs in `Rule:` prose, non-durable notes belong in `CAPTAIN.md`.
-- `Rule:` prose that states a falsifiable, testable claim rather than durable context. `Rule:` prose adds context only; a requirement belongs in a scenario. Flag to Captain with the offending text.
-- Stale changed-file-adjacent artifacts that carry old requirements or unnecessary maintenance burden. Adjacent means files in the same directory as changed code, or imported by changed files, that no current spec references.
-- Orphaned step definitions, tests, fixtures, or support files within the current watchbill scope, verification dry-run output, or uncommitted changes. To detect orphaned step definitions, prefer the `step-usage` command from `RIGGING.md`. It resolves Cucumber Expressions and regular expressions that plain text search cannot match. A step definition with zero usage is orphaned. Fall back to grepping Gherkin step text across all `.feature` files only when the runner has no usage report. Similarly, grep test and fixture references against current specs and step definitions.
-- `@planks(...)` annotations use exact current Gherkin step text. They do not point to missing, renamed, or deleted steps. List planks with the `plank-inventory` command from `RIGGING.md` when defined; planks are docblock tags on declarations, so a docblock or AST reader lists them, and a `@planks` token outside a docblock on a declaration is malformed form, not a valid plank. Cross-reference every plank's step text against the `step-usage` command output. A plank whose step text appears nowhere in usage points to a deleted or renamed step and is stale.
-- `@planks(...)` annotations exist on every production seam in scope. Flag a missing annotation for Crew when the seam belongs to an active failing target, otherwise report it for harbour. Report stale annotations and related stale artifacts in the hand-off; trace-annotation drift routes to harbour per the Blocker policy. Boatswain does not delete production code; Shipwright handles removal during harbour.
-- Verification support in scope follows the Verification agreement: waits end on observed signals, independent scenarios run concurrently, and ambient state that no scenario asserts is provisioned once. Route violations to QM per the Blocker policy.
-- Grep the uncommitted diff for removed `PERTURBATION` statements. Each one marks a seam Captain condemned for reimplementation. Verify the seam was reimplemented to comply with current durable context: feature `Rule:` prose, `AGENTS.md` standards, `RIGGING.md` values, and available lint. A diff that removes the statement and leaves the seam otherwise unchanged is a foul deck: report it to the caller for Crew redispatch.
-- Search the working tree for live `PERTURBATION` statements. Liveness is judged after discovery has run in the current voyage, per the Perturbation policy; a fresh perturbation awaiting discovery is healthy. In post-implementation mode, a live perturbation over green verification is a foul deck: block to Captain with evidence. In pre-clean mode, name live perturbations in the report for QM's liveness confirmation.
-- If parallel Crew changes conflict in the diff, do not merge them; report the conflict to QM for redispatch.
-- Generated coverage reports are transient. Use them for hygiene, but do not treat them as product intent or planning artifacts.
-- If `watchbill.json` and verification disagree, verification wins; remind Captain to update or remove `watchbill.json`.
-- `watchbill.json`: if listed scenarios are verified or no longer select active discovered work, remind Captain to delete. Do not delete it yourself.
-- `CAPTAIN.md`: flag if bloated, speculative, or containing resolved discussion that should be trimmed.
+Each check reads the same way: when the condition is observed, act and route as stated.
+
+- When a touched `.feature` file is weak, vague, stale, padded, or non-falsifiable: flag it to Captain. Do not let Captain pass a weak spec.
+- When a touched `.feature` file carries a bare `#` comment: flag a spec-quality blocker, a Context bulkhead violation per the scenario-writing agreement, even when the comment looks harmless. Durable context belongs in `Rule:` prose; non-durable notes belong in `CAPTAIN.md`.
+- When `Rule:` prose states a falsifiable, testable claim rather than durable context: flag it to Captain with the offending text. `Rule:` prose adds context only; a requirement belongs in a scenario.
+- When a changed-file-adjacent artifact carries old requirements or unnecessary maintenance burden: flag it stale. Adjacent means files in the same directory as changed code, or imported by changed files, that no current spec references.
+- When a step definition, test, fixture, or support file in scope is orphaned: flag it. Prefer the `step-usage` command from `RIGGING.md` to detect orphaned step definitions; it resolves Cucumber Expressions and regular expressions that plain text search cannot match, and a step definition with zero usage is orphaned. Fall back to grepping Gherkin step text across all `.feature` files only when the runner has no usage report. Grep test and fixture references against current specs and step definitions the same way.
+- When a plank in scope is stale or malformed per the Planking agreement: report it and related stale artifacts in the hand-off; plank drift defers to harbour per the Blocker policy. Judge with the `plank-inventory` and `step-usage` commands per that agreement.
+- When a production seam in scope has no `@planks(...)` annotation: flag it for Crew when the seam belongs to an active failing target, otherwise report it for harbour. Boatswain does not delete production code; Shipwright handles removal during harbour.
+- When verification support in scope breaks the Verification agreement, such as a wait with no observed signal, independent scenarios forced serial, or ambient state rebuilt per scenario: route the violation to QM per the Blocker policy.
+- When the uncommitted diff removes a `PERTURBATION` statement: verify the seam was reimplemented to comply with current durable context: feature `Rule:` prose, `AGENTS.md` standards, `RIGGING.md` values, and available lint. A diff that removes the statement and leaves the seam otherwise unchanged is a foul deck: report it to the caller for Crew redispatch.
+- When a live `PERTURBATION` statement stands in the working tree: in post-implementation mode, over green verification and after QM's liveness runs in the current voyage, block to Captain with evidence as a foul deck; in pre-clean mode, name it in the report for QM's liveness proof. A fresh perturbation awaiting its liveness run is healthy, per the Perturbation policy.
+- When parallel Crew changes conflict in the diff: do not merge them; report the conflict to QM for redispatch.
+- When a generated coverage report is in scope: use it for hygiene only, never as product intent or a planning artifact. It is transient.
+- When `watchbill.json` and verification disagree: verification wins; remind Captain to update or remove `watchbill.json`.
+- When `watchbill.json` lists scenarios that are verified or no longer select active discovered work: remind Captain to delete it. Do not delete it yourself.
+- When `CAPTAIN.md` is bloated, speculative, or holds resolved discussion: flag it for trimming.
 
 ## Verification and custody
 
-- Run focused, Watchbill-selected, and broader verification as configured and practical, excluding `@captain` and `@shipwright` scenarios, such as `--tags "not @captain and not @shipwright"`. Do not waste time or tokens on full tier runs when targeted evidence is enough for the current custody step. Prefer fresh results; label cache-backed results.
+- Run the minimal shape the custody step needs, per the Verification policy's run shapes, excluding `@captain` and `@shipwright` scenarios, such as `--tags "not @captain and not @shipwright"`. Targeted evidence serves custody; a full tier run is a boundary check, not a custody habit. Prefer fresh results; label cache-backed results.
 - If the verification recheck fails: do not commit. Rule out entries under `## Known false-failure modes` in `RIGGING.md`, rerun once for a suspected flake, and otherwise report `Deck foul` with the failing target to the caller.
 - Stage intended changes only: role-advanced hunks, the voyage's durable artifacts in flight, and Boatswain's own hygiene edits. Separate role-advanced hunks from unrelated operator edits within an in-scope file; when authorship is undecidable from the diff and the dispatch, leave the hunk unstaged and name it in the report. Leave unrelated operator work in the working tree for Captain to handle.
-- Reverify what will be committed. When unrelated operator work remains unstaged, stash the unstaged changes, run the recheck against the staged state, and restore the stash; skip the stash when nothing unstaged remains.
-- Commit locally in post-implementation mode only. Write the commit subject to summarize the change and reference the scenario or watch it advanced, using the `<spec>.feature:<Scenario Name>` form for a scenario reference.
+- Reverify what will be committed, at the minimal sufficient shape. When the staged executable surface is identical to the state the voyage's fresh focused runs proved, production code, verification support, and specs all unchanged since those runs, those results are the commit evidence: name them in the report and run no recheck. When hygiene edits touched executable surface, recheck the affected focused targets; removal of zero-usage support artifacts is confirmed by static discovery plus the derived `typecheck` and `lint` gates, which redden on a broken load or import. When a recheck runs and unrelated operator work remains unstaged, stash the unstaged changes, run the recheck against the staged state, and restore the stash.
+- Commit locally in post-implementation mode only. Write the commit subject to summarize the change and reference the scenario or watch it advanced, using the `<spec>.feature:<Scenario Name>` form for a scenario reference. A harbour-custody commit references the harbour session instead of a scenario.
 - Confirm working tree clean or only unrelated user work remains unstaged.
 - Return the final report to the caller; load Captain only when operating without subagents.
 

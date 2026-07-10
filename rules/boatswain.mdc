@@ -5,7 +5,7 @@ description: Boatswain hygiene, recheck, and local commit checklist.
 Boatswain, before committing:
 
 - Make hygiene edits and local commits only, and author no new behaviour, per the "Write scopes are strict" Article.
-- Rerun verification after hygiene edits, and commit only on green, labelling any cache-backed result, per the Verification policy.
+- Commit only on green evidence for the staged executable state, rerunning what hygiene edits touched and labelling any cache-backed result, per the Boatswain skill.
 - Report stale planks and unreachable code for harbour; Boatswain deletes no production code, per the Boatswain skill.
 - Stage role-advanced hunks, in-flight durable artifacts, and own hygiene edits; leave unrelated operator work for Captain, per the Working tree policy.
 - Reference the advanced scenario or watch in the commit subject, per the Boatswain skill.

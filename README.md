@@ -94,7 +94,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent. QM starts from clean context and reads only durable repository artifacts. Discovery chat, rationale, and abandoned ideas never reach tests or implementation.
 
-Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist. Passing checks are evidence, not proof. QM prefers focused runs over full tier runs. Full tier runs are boundary checks, not the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
+Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist. Passing checks are evidence, not proof. QM's standing discovery is static and executes nothing; execution is spent on focused runs, ordered enumeration sweeps, and boundary checks. Full tier runs are boundary checks, not the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
 
 Verification works best when production code exposes narrow behaviour seams. Shipshape discourages hidden product behaviour in global state, constructors, static initialization, and service locators. Seams serve real verification. They never replace normal-path real coverage with mocks, fakes, or test-only branches.
 
@@ -168,7 +168,8 @@ After context clears, QM reads only durable repository artifacts and runs focuse
 ## Tiers
 
 - default: @logic
-- sandbox: @sandbox; requires test API keys in the environment
+- sandbox: @sandbox
+- policy: @sandbox requires test API keys in the environment
 
 ## Dependencies
 
@@ -176,7 +177,9 @@ After context clears, QM reads only durable repository artifacts and runs focuse
 
 ## Outbound
 
-- target: npm - ship `pnpm publish`; verify `npm view <package> version`
+- outbound: npm
+- ship: `pnpm publish`
+- verify: `npm view <package> version`
 ```
 
 ```text

@@ -5,7 +5,7 @@ description: Crew Mate production-change checklist for one failing target.
 Crew, before returning:
 
 - Write production code only, and make the smallest change the failing target requires, per the "Write scopes are strict" and "Simplest sufficient change" Articles.
-- Annotate every changed seam with `@planks("<step>")`, normalized to the inherited Gherkin keyword, per the Traceability policy.
+- Annotate every changed seam with `@planks("<step>")`, normalized to the inherited Gherkin keyword, per the Planking agreement.
 - Run the `focused` command from `RIGGING.md` on the target and report the fresh result.
 - Let errors propagate with their original traceback; add no defensive handling the scenario does not require.
 - Stop and report when one correction fails, or when the test or spec seems wrong, per the Crew skill.

@@ -34,7 +34,7 @@ CITES
 for h in "Scenario-writing agreement" "Verification agreement" \
   "Blocker policy" "Watchbill policy" "Perturbation policy" \
   "Asset policy" "Artifact authority policy" "Verification policy" \
-  "Outbound verification policy" "Traceability policy" \
+  "Outbound verification policy" "Planking agreement" "Harbour flow" \
   "Transient output" "Tier tags" "Rigging read contract" \
   "Rigging shape" "Context custody"; do
   if grep -q "^##* $h" $skillfiles; then
@@ -63,6 +63,26 @@ onehome "reset to a fresh context at durable voyage boundaries"
 onehome "The minimum required values are"
 onehome "and a multi-value key repeats on a new line"
 onehome "Testability refactors MUST serve current verification-discovered work"
+onehome "reason over the import graph"
+onehome "smallest stable seam that owns the behaviour"
+onehome "Normalize \`And\` and \`But\` to the inherited"
+onehome "Selection MAY narrow intermediate confirmation"
+onehome "a cadence change is a tier retag"
+onehome "docblock or AST reader inventory every plank completely"
+onehome "spent once its red list is dispatched"
+
+# README rigging example conforms to the Rigging shape keys, so a copied
+# example cannot teach a key the read contract rejects.
+if grep -q '^- target:' "$repo/README.md"; then
+  fail=$((fail + 1)); echo "FAIL: README rigging example uses 'target:' instead of 'outbound:'"
+else
+  pass=$((pass + 1))
+fi
+if grep -q '^- outbound:' "$repo/README.md" && grep -q '^- ship:' "$repo/README.md" && grep -q '^- verify:' "$repo/README.md"; then
+  pass=$((pass + 1))
+else
+  fail=$((fail + 1)); echo "FAIL: README Outbound example missing outbound/ship/verify keys"
+fi
 
 echo "pass: $pass fail: $fail"
 [ "$fail" -eq 0 ]

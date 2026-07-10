@@ -32,7 +32,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 When loaded bare via `/shipshape`, this skill routes to the correct role. The routing depends on the project state.
 
 1. Look for `RIGGING.md` at the project root. If absent, the project is not fitted out. Route to `/shipwright` for fitting out and harbour inventory.
-2. If `RIGGING.md` is present, the project is fitted out. Route to `/captain` for normal spec-driven work.
+2. If `RIGGING.md` is present, the project is fitted out. Route to `/captain` for normal spec-driven work. A dirty working tree does not change the route: Captain loads Boatswain to clean before continuing, per the Captain skill.
 3. Load the chosen role's `SKILL.md`. The role skill inherits these shared Articles and policies.
 
 A coding agent that loads this skill by a direct role command such as `/captain` skips this routing and enters the role directly.
@@ -68,14 +68,6 @@ Internal roles QM, Crew, Boatswain, and Shipwright use smart-but-silent voice:
 - Pattern: `[thing] [action] [reason]. [next step].`
 
 Shipwright keeps this voice for its written findings and durable writes. When Shipwright speaks with the user during harbour, per the Harbour flow, it uses a plain and clear human-facing register while keeping the same precision.
-
-### Play-by-play
-
-Shipshape narrates long-running work to the user by default, and does not run dark. A long QM discovery, a Crew cycle, an `@sandbox` tier, a Shipwright harbour, or a background implementer produces no user-facing signal on its own, so the user cannot tell it is progressing and cannot catch a wrong turn early. During such work the human-facing layer, Captain in the main session or the runtime, surfaces what is happening as it happens, so the user stays informed and can intervene early.
-
-This holds the on-deck rule that only Captain faces the user. Internal roles stay terse in their artifacts; the human-facing layer narrates their observable signals, not their context. Two signal sources serve: streamed verification output, such as a streaming formatter reporting each scenario as it crosses the line with its wall-clock and announcing tier transitions; and footprint-watching for a background agent, such as the files a working tree shows touched and whether a live run's process is up, narrated as innings.
-
-Visibility is observability: a live signal surfaces an outlier or a wrong turn while a human can still act, where silence hides it until too late. Match cadence to the work, favour meaningful events over per-second noise, keep narration easy to quiet, and default long work toward narration. An announcer tone is welcome, since an engaged user stays in the loop.
 
 ## Core concepts
 
@@ -114,6 +106,13 @@ Verification runs in tiers; the Tier tags table at the end of this skill defines
 | `@captain` | A non-binding scenario skeleton awaiting Captain review | Harbour flow, Shipwright skill |
 | `@shipwright` | A condemned scenario, a harbour removal work order | Harbour flow, role skills |
 
+`@captain` and `@shipwright` are workflow state with a bounded lifecycle; the homes above carry the rules this index points to:
+
+| Tag | Created by | Ignored by | Resolved by | Blocks voyage resume |
+|---|---|---|---|---|
+| `@captain` | Shipwright, from code inspection | QM and every derived verification command | Captain review: promote by removing the tag, or discard by retagging `@shipwright` | No |
+| `@shipwright` | Captain retag at review, or Boatswain mark at sea | QM and every derived verification command | Shipwright in harbour: remove the code its steps plank, then the scenario | Yes |
+
 ## Articles of Agreement
 
 These are shared Shipshape declarations. Cite an Article by its title. Two groups by trigger: six Dispositions and three Custody Articles. Dispositions are held at every moment; their trigger is internal, so they must shape every judgment. Custody Articles bind at a legible moment of action: a dispatch, a file write, a seam change. An enforcing runtime enforces the Custody group as hard constraints, within the reach its hooks state; a skill-only agent follows all nine by explicit discipline. Craft that applies at a named moment lives in the agreements, the policies, and the role skills; each Article points to its mechanics.
@@ -130,8 +129,13 @@ These are shared Shipshape declarations. Cite an Article by its title. Two group
 ### Custody
 
 7. **Context bulkhead.** Captain to QM requires clean context. No agent memory system, memory bank, persistent context store, or similar mechanism MAY be used to circumvent this bulkhead. Product intent MUST exist only in durable repository artifacts: `.feature` specs, `assets/**`, and `watchbill.json`. Any agent-internal memory that preserves discovery chat, rationale, abandoned ideas, or hidden instructions across the Captain to QM boundary is a violation. The clean-context mechanics, dispatch contract, and contamination protocol in Role transitions carry the bulkhead mechanics.
-8. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. Write-scope exceptions: Boatswain MAY mark a scenario `@shipwright` to condemn it; Captain MAY add a perturbation to production code, per the Perturbation policy; Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user; QM MAY strike an entry from `## Known false-failure modes` in `RIGGING.md` after engineering the failure mode out; during harbour only, Shipwright MAY create and refit `AGENTS.md` and `RIGGING.md`, append the Shipshape README block, write the derived search-exclusion artifact, and remove `@shipwright`-condemned scenarios and the code their steps plank, per the Shipwright skill.
-9. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Every production seam MUST have at least one `@planks(...)` annotation, and MUST NOT contain behaviour outside its related step contracts. The Traceability policy carries the annotation mechanics; the "Current design only" Article carries the judgment on unplanked seams.
+8. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. The write-scope exceptions, one per line:
+   - Boatswain MAY mark a scenario `@shipwright` to condemn it.
+   - Captain MAY add a perturbation to production code, per the Perturbation policy.
+   - Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user.
+   - QM MAY strike an entry from `## Known false-failure modes` in `RIGGING.md` after engineering the failure mode out.
+   - During harbour only, Shipwright MAY create and refit `AGENTS.md` and `RIGGING.md`, append the Shipshape README block, write the derived search-exclusion artifact, and remove `@shipwright`-condemned scenarios and the code their steps plank, per the Shipwright skill.
+9. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Every production seam MUST have at least one `@planks(...)` annotation, and MUST NOT contain behaviour outside its related step contracts. The Planking agreement carries the annotation mechanics; the "Current design only" Article carries the judgment on unplanked seams.
 
 ## Scenario-writing agreement
 
@@ -178,7 +182,13 @@ Avoid:
 
 ## Scantling agreement
 
-A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy. Examples include an OpenAPI document, a JSON Schema, a GraphQL schema, a proof contract with pre-conditions, post-conditions, and invariants discharged by a prover or symbolic checker, or a structural or policy rule set discharged by a static analyzer or policy engine, such as dependency-cruiser or eslint-plugin-boundaries for a JavaScript or TypeScript import-boundary policy, or import-linter for a Python layer contract. These named policy engines reason over the import graph. A structural query engine such as GritQL discharges a different class, a call pattern or an argument-literal pattern the import-graph engines cannot see, expressed as a declarative query rather than owned imperative code. Biome runs GritQL as a plugin, so a project already on Biome adopts one with no new dependency. Semgrep covers the same class as a cross-language engine over Python, JavaScript, and other stacks, discharged by its own rule engine rather than a host linter. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
+A scantling is a machine-readable, testable specification of mechanical shape or a non-behavioural constraint a seam must satisfy. Examples include an OpenAPI document, a JSON Schema, a GraphQL schema, a proof contract with pre-conditions, post-conditions, and invariants discharged by a prover or symbolic checker, or a structural or policy rule set discharged by an engine from the named-engine catalog below. Captain applies this agreement when authoring a scantling; Shipwright uses it to judge a detected candidate for adoption; QM and Boatswain use it to judge existing scantling references.
+
+Named-engine catalog, the one home for the example tools; other text cites this catalog:
+
+- **Import-graph policy engines**: dependency-cruiser or eslint-plugin-boundaries for a JavaScript or TypeScript import-boundary policy, import-linter for a Python layer contract. These reason over the import graph, so they fit import-boundary and layer constraints and see nothing else.
+- **Structural query engines**: GritQL or Semgrep, declarative queries over syntax. They fit a call-pattern or argument-literal constraint the import-graph engines cannot see. Biome runs GritQL as a plugin, so a project already on Biome adopts one with no new dependency; Semgrep covers Python, JavaScript, and other stacks as a standalone engine. Prefer a declarative query over a grep or regex scan of the source, which matches text rather than syntax and reddens on incidental formatting.
+- **Duplication scanners**: an off-the-shelf scanner for copy-paste or token-similar duplication.
 
 Ownership:
 
@@ -192,7 +202,7 @@ Attestation:
 
 Scantling or double:
 
-- Prefer an independent tool when one discharges the constraint, such as a schema validator, a prover, or a policy engine, or when the same constraint is consumed by more than one scenario or seam. The named policy engines reason over the import graph, so they fit import-boundary and layer constraints. A structural query engine such as GritQL or Semgrep fits a call-pattern or argument-literal constraint the import-graph engines cannot see. GritQL adds no dependency where the project already runs Biome; Semgrep covers Python and other stacks as a standalone engine. Prefer such a declarative query over a grep or regex scan of the source, which matches text rather than syntax and reddens on incidental formatting. Copy-paste or token-similar duplication fits an off-the-shelf duplication scanner.
+- Prefer an independent tool when one discharges the constraint, such as a schema validator, a prover, or an engine from the named-engine catalog above, or when the same constraint is consumed by more than one scenario or seam. Match the engine class to the constraint class per the catalog.
 - Reach for a bespoke conformance checker when the constraint is structural yet no independent tool expresses it, neither an import-graph engine nor a structural query engine, such as a single-implementation-per-named-behaviour rule that keys on the project's own naming or registration mechanism, or a call-pattern or argument-literal constraint on a stack where no query engine is available. This checker is owned code that asserts real structure, so it is verification support under QM, not a Captain-owned scantling file. It asserts real structure rather than a spied call, so it is not a double.
 - Prefer a `@exceptional-double`-tagged scenario, per the Verification agreement, when the constraint is internal composition or wiring observed by a spy rather than an externally checkable contract. There is no independent verifier in that case, only an assertion against recorded calls; relocating that assertion into a scantling file adds a copy of the same fact rather than removing one.
 - A `Scenario Outline` whose examples all exercise the same central structural seam is a scantling smell, not coverage, and the cost compounds when each example executes a full command or service. The outline's legitimate job is input variation over one behaviour. When the variation collapses to one restated structural fact, such as one argument parser reading one flag registry, prefer a single structural scantling that discharges it once. Distinguish structural acceptance, which a scantling proves, from runtime effect, which one behaviour scenario proves and one feature owns.
@@ -222,7 +232,7 @@ Concurrency:
 
 Reuse:
 
-- Provision ambient state once and share it. State that no scenario asserts is setup cost: build it once per run behind a lock or marker file, or reuse a resource already present. Sharing stays safe because each scenario creates, mutates, and asserts only its own namespaced objects inside the shared state.
+- Provision ambient state once and share it. State that no scenario asserts is setup cost: build it once per run behind a lock or marker file, or reuse a resource already present. Sharing stays safe because each scenario creates, mutates, and asserts only its own namespaced objects inside the shared state. The amortization horizon is the voyage: a later run MAY reuse ambient state an earlier run built, and the reclaim at suite start stays the safety net.
 - A scenario provisions its own copy only when provisioning is the behaviour under assertion.
 - Contain real creation of an expensive external resource to the one seam that creates it, tested for real there and reused per this rule. A seam that only calls into that creation seam is tested for the call, tagged `@exceptional-double` on the composition ground, not for creating the resource again.
 - Excess setup cost is verification debt. A fixture provisioned larger than the behaviour asserts, or a resource re-created per scenario where once-per-run sharing would serve, breaks this reuse rule; a harbour audit reports it and it routes to QM like any verification-support finding, per the Blocker policy.
@@ -243,9 +253,35 @@ Proof:
 - A double is allowed only for one of three named conditions: a specific condition the real environment genuinely cannot produce on demand; internal composition or wiring with no independent external verifier, per the Scantling agreement's scantling-or-double clause; or a real dependency that the subject under test only calls into, where the subject is a layer above it, the dependency's real behaviour is covered for real in another tier, and every canned response is a golden capture recorded from the real dependency and re-verified against it on a stated cadence such as harbour. The golden-capture and refresh discipline is the guardrail for the third condition: a hand-authored canned response drifts from the real dependency silently, and is the forbidden fake. Mark and justify it inline with `@exceptional-double`, naming which condition applies. It MUST never replace normal-path real coverage.
 - A recurring non-product failure is a harness defect. Engineer it out with a readiness gate, an isolation fix, or a reclaim at suite start, then strike its entry from `## Known false-failure modes` in `RIGGING.md`. An empty section is the healthy state.
 
+## Planking agreement
+
+Feature files are canon. Shipshape derives trace from current feature files, through scenarios and steps, into step definitions and production seams. An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value, so trace annotations are hoisted to seams: Planks may be distributed below that boundary. Crew and Shipwright apply this agreement when planking; QM and Boatswain use it to judge planks. The "Every production seam is planked" Article carries the seam obligations: at least one `@planks(...)` annotation, and behaviour only within the related step contracts.
+
+Form:
+
+- `@planks("<Gherkin step>")` is a documentation-comment tag on the seam declaration whose behaviour that exact step requires. Write it in the language's docblock form, such as `/** */` in JavaScript or TypeScript, attached to the declaration that is the seam. Docblock placement lets a docblock or AST reader inventory every plank completely, and makes plank placement an executable form check rather than a human-read judgment.
+- Use exact current Gherkin step text. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
+- Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual lines, expressions, branches, or helper fragments. A plank in a line comment or on an in-body fragment is malformed; hoist it to the seam declaration.
+- A seam MAY carry Planks for several steps. A step MAY be carried by several seams. Not every step requires Planks: setup and assertion steps often use only verification support.
+
+Judging:
+
+- List planks with the `plank-inventory` command from `RIGGING.md` when defined. Also scan for bare `@planks` tokens across the implementation paths, because a token outside a docblock on a declaration is a malformed plank the docblock reader cannot see.
+- Cross-reference each plank's step text against the `step-usage` command output. A plank whose step text appears nowhere in usage points to a deleted or renamed step and is stale. Stale and malformed planks are corrected, never trusted.
+- A missing annotation on a seam in an active failing target routes to Crew; other plank drift defers to harbour, per the Blocker policy.
+
+Limits:
+
+- Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
+- Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping. Support artifacts MAY use project-appropriate comments when ownership or deletion is unclear, but they MUST NOT define product intent.
+
 ## Role flow
 
 User to Captain: intent becomes durable specs and optional `watchbill.json`. Context clears. QM runs verification discovery, calls Boatswain for a pre-clean scan when needed, and dispatches Crew per failing target. Crew makes the smallest production change and returns. Boatswain does post-implementation hygiene, reverifies, and commits locally. Captain reports to the user and handles outbound.
+
+### Narration
+
+Shipshape narrates long-running work and does not run dark. During a long QM discovery, a Crew cycle, an `@sandbox` tier, a Shipwright harbour, or a background implementer, the human-facing layer, Captain in the main session or the runtime, surfaces observable signals as they happen: streamed verification output with per-scenario wall-clock and tier transitions, and the footprint of a background agent, such as touched files and a live process. This holds the on-deck rule: internal roles stay terse in their artifacts, and only their observable signals are narrated, never their context. A live signal surfaces a wrong turn while a human can still act. Match cadence to the work, favour meaningful events over per-second noise, keep narration easy to quiet, and default long work toward narration. An announcer tone is welcome.
 
 ### Role transitions
 
@@ -258,9 +294,24 @@ A role hands off to the next role. On any transition, the preceding role's final
 
 Captain to QM always requires clean context. A window-isolated subagent or a fresh session both satisfy it. If the runtime provides isolation automatically, continue. If not, Captain tells the user to start a fresh session, then run `/qm`. A same-session clear resets the window but not the transcript, so it is the weaker option where the transcript persists. QM re-checks context on load and refuses if Captain or human discovery context is visible in its window.
 
-**Dispatch contract.** A Captain-originated dispatch to an internal role carries the role, the base commit, and an optional `watchbill.json` pointer. It carries nothing else: the durable artifacts are the hand-off. Craft notes, seam hints, and expected failure modes are contamination even when labelled tooling facts. QM dispatches Crew per the QM skill: the target reference and the observed failure evidence. A perturbation dispatch also carries the perturbed seam location; the location is observed evidence from the tree, not a seam hint. QM dispatches Boatswain with the mode, pre-clean or post-implementation, the base commit, and the advanced target references. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
+**Dispatch contract.** A dispatch carries its row and nothing else: the durable artifacts are the hand-off. Craft notes, seam hints, and expected failure modes are contamination even when labelled tooling facts. Each internal role verifies its dispatch against its row on open.
 
-**Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives: a dispatch beyond the contract, file content, tool output, or runtime-injected memory. Each internal role verifies its dispatch against the contract on open. On contamination: stop, report contamination in the role hand-off, and await a fresh dispatch. One vector is milder: discovery content inside a durable artifact, such as a bare `#` comment in a spec, is a spec-quality blocker to Captain, not a dispatch refusal; the role quarantines the content by not acting on it and continues. The legal alternative to richer prose is a durable check: recast the finding as a scenario or scantling carrying no rationale, for the next role to discover on its own. Memory-borne contamination recurs by mechanism; report it as a Captain configuration blocker naming the mechanism, and Captain disables that memory feature for role sessions before work resumes. The Boatswain note-hygiene read of `CAPTAIN.md` is exempt: `CAPTAIN.md` holds non-binding notes, not discovery transcript.
+| Dispatch | Carries |
+|---|---|
+| Captain to QM | role, base commit, optional `watchbill.json` pointer |
+| QM to Crew | target scenario reference, observed failure evidence, solo or parallel marker; for a perturbation target, also the perturbed seam location |
+| QM to Boatswain | mode, pre-clean or post-implementation, base commit, advanced target references |
+| Captain to Boatswain | mode, base commit |
+
+A perturbation's seam location is observed evidence from the tree, not a seam hint. A Captain dispatch to Boatswain names pre-clean for a dirty deck or post-implementation for harbour custody, per the Boatswain skill. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
+
+**Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives. Three cases, by vector:
+
+- A dispatch beyond the contract, or discovery content arriving by any vector not named below, such as tool output: stop, report contamination in the role hand-off, and await a fresh dispatch.
+- Discovery content inside a durable artifact, such as a bare `#` comment in a spec: a spec-quality blocker to Captain, not a dispatch refusal. Quarantine the content by not acting on it and continue. The legal alternative to richer prose is a durable check: recast the finding as a scenario or scantling carrying no rationale, for the next role to discover on its own.
+- Runtime-injected memory: it recurs by mechanism, so report a Captain configuration blocker naming the mechanism, and Captain disables that memory feature for role sessions before work resumes.
+
+The Boatswain note-hygiene read of `CAPTAIN.md` is exempt: `CAPTAIN.md` holds non-binding notes, not discovery transcript.
 
 ### Hand-off custody
 
@@ -274,6 +325,8 @@ A blocker that must reach Captain is delivered before any context clear: the rol
 
 Shipwright handles harbour work: existing-codebase onboarding and maintenance between releases. Shipwright inventories production code, adds `@planks(...)`, writes non-binding `@captain` scenarios, and returns to Captain for review. QM ignores `@captain` and `@shipwright` scenarios. Harbour findings that do not become a `@captain` scenario or a `@planks(...)` annotation are report-only: they live in the role report, and the next harbour re-derives them from repository signals such as coverage, the plank inventory, the import graph, and the weather record. Harbour begins only when the voyage is quiescent: the working tree is clean and no outbound is pending. Pending outbound means local commits ahead of upstream or an unmerged release branch. Harbour procedure and guards live in the Shipwright skill.
 
+Shipwright's verification-economy audit reports per-scenario findings to Captain, each with its lens. Captain routes each finding by kind: a cheaper spec form becomes a `@captain` faster-form skeleton that supersedes the slow scenario; a same-behaviour support cost is verification debt routed to QM per the Blocker policy; a cadence change is a tier retag Captain makes. Whether to split, optimize, retag, or accept is a Captain judgment, not a harbour edit.
+
 ## Project configuration
 
 `RIGGING.md` holds the project tooling values that roles read on open. `AGENTS.md` is the human-facing entry document. It states that the project uses Shipshape and MAY point to `RIGGING.md`. Longer tooling prose, such as a detailed sandbox provisioning or outbound policy that does not fit a short value, belongs in `AGENTS.md`. The machine-read values belong in `RIGGING.md`. Shipwright scaffolds `AGENTS.md` and `RIGGING.md` during fitting out. The fitting-out procedure and the templates live in the Shipwright skill.
@@ -282,7 +335,7 @@ Shipwright handles harbour work: existing-codebase onboarding and maintenance be
 
 `RIGGING.md` uses a fixed Markdown shape; the Shipwright skill carries the Rigging shape and derives the file. Roles read it on open and parse it by heading: each value is a Markdown list item `- <key>: <value>` on its own line, and a multi-value key repeats on a new line for each value. It holds values, not procedure. A context-isolated Crew mate MUST be able to succeed from `RIGGING.md` alone. The minimum required values are `language` under `## Stack`, `implementation` and `specs` under `## Directories`, `focused` under `## Commands`, and `perturb` under `## Perturbation`. Roles validate `RIGGING.md` on read. A malformed file or a missing required value is a configuration blocker to Captain. `RIGGING.md` is Shipwright's to derive and repair; Captain routes a rigging configuration blocker to Shipwright, which refits the missing values. Captain discovers a value with the user only when Shipwright cannot derive it.
 
-Beyond the minimum, roles rely on these read-side conventions. The `focused` command uses `{scenario}` as the target placeholder, and a target reference uses the repo-root-relative `<spec>.feature:<Scenario Name>` form. Optional command keys under `## Commands` are `discover`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`, each a single command, with tier-suffixed variants such as `coverage-sandbox` where a tier needs its own invocation; an underivable slot reads `none`. The `## Perturbation` `message` value always contains the literal token `PERTURBATION`, so any role finds a live perturbation by searching for that token. The `## Dependencies` `policy` value `locked` means installed versions stay pinned until a spec or a Captain decision moves them. The `## Known false-failure modes` section lives in `RIGGING.md`; roles rule its entries out before routing a product defect.
+Beyond the minimum, roles rely on these read-side conventions. The `focused` command uses `{scenario}` as the target placeholder, and a target reference uses the repo-root-relative `<spec>.feature:<Scenario Name>` form. The `discover` command is static discovery: the runner's dry-run form, listing undefined and unimplemented steps and executing nothing; the failing set comes from focused runs and ordered enumeration sweeps per the Verification policy. Optional command keys under `## Commands` are `discover`, `broad`, `coverage`, `step-usage`, `plank-inventory`, `typecheck`, and `lint`, each a single command, with tier-suffixed variants such as `coverage-sandbox` where a tier needs its own invocation; an underivable slot reads `none`. The `## Perturbation` `message` value always contains the literal token `PERTURBATION`, so any role finds a live perturbation by searching for that token. The `## Dependencies` `policy` value `locked` means installed versions stay pinned until a spec or a Captain decision moves them. The `## Known false-failure modes` section lives in `RIGGING.md`; roles rule its entries out before routing a product defect.
 
 The project configuration files that `RIGGING.md` documents are the ship's rigging, such as the package manifest, the lockfile, and the tooling and lint configuration. Shipwright fits the rigging during fitting out. Boatswain maintains it as hygiene. Captain selects dependencies and records them under `## Dependencies`. Crew installs a selected dependency as the mechanical part of a spec-ordered change.
 
@@ -292,9 +345,19 @@ These policies apply to all Shipshape project work.
 
 ### Blocker policy
 
-If QM, Crew, Boatswain, or Shipwright encounters missing or contradictory product intent, they report a Captain blocker with concrete evidence in their role hand-off. Captain updates durable specs, and assets when the asset itself changes. After Captain resolves product intent, the return to QM crosses the bulkhead again: an isolated subagent, a runtime auto-clear, or a fresh session, per Role transitions. An environment or tooling blocker, such as a missing tool or an observed authentication failure, is also reported to Captain. A rigging or configuration blocker is likewise reported to Captain, who routes it to Shipwright per the Rigging read contract.
+Every role reports blockers with concrete evidence in its role hand-off. A finding routes by artifact ownership:
 
-A methodology check failure routes by artifact ownership: verification support to QM, trace annotations and plank drift to harbour, specs and `watchbill.json` to Captain. Crew is dispatched only for production-code failures.
+| Finding | Reported to | Resolved by |
+|---|---|---|
+| Missing or contradictory product intent | Captain | Captain updates durable specs, and assets when the asset itself changes |
+| Environment or tooling fault, such as a missing tool or an observed authentication failure | Captain | Captain |
+| Rigging or configuration fault | Captain | Shipwright refits, per the Rigging read contract |
+| Verification-support violation | QM | QM, in place |
+| Trace annotation or plank drift | Role hand-off, deferred | Shipwright, at harbour |
+| Spec or `watchbill.json` methodology failure | Captain | Captain |
+| Production-code failure | QM | Crew, and Crew is dispatched only for production-code failures |
+
+After Captain resolves product intent, the return to QM crosses the bulkhead again: an isolated subagent, a runtime auto-clear, or a fresh session, per Role transitions.
 
 ### Working tree
 
@@ -314,11 +377,24 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
 
-`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag from the Tier tags table, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. A tier-tag watch is the sanctioned full-tier exception: QM runs that tier as a directed watch, distinct from inner-loop discovery. A tier-tag watch is one enumeration sweep, spent once its red list is dispatched to focused targets; it does not stand as an order to rerun the tier after every fix. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
+`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag from the Tier tags table, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. A tier-tag watch is the sanctioned full-tier exception: QM runs that tier as a directed watch, distinct from inner-loop discovery. A tier-tag watch is one enumeration sweep, spent once its red list is dispatched to focused targets; it does not stand as an order to rerun the tier after every fix. When tier-tag watches cover several tiers, order them cheapest tier first; a red tier's dispatches complete before a costlier tier runs. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 
 ### Verification policy
 
-Use project-specific commands from `RIGGING.md`. Progress is measured by verification status, not by a separate checklist. Prefer discovery, Watchbill-selected runs, and focused checks over full tier runs. Full tier runs are boundary checks, not the default inner loop. Within a voyage a fix is proven by its own target's focused run. A full tier run is an enumeration sweep that lists every current failure at once, or a boundary check, not a per-fix re-proof; re-running known-green scenarios to reach the next failure is wasted cost, acute on a paid tier. Passing checks are evidence, not proof. Skipped verification is unverified. Fitting out verifies credentials for every configured tier, raising a Captain blocker to provision what fails, so every configured tier is runnable by construction once fitting out completes. Run each configured tier whenever the work calls for it. A tier run that fails to authenticate is evidence that fitting out is incomplete: report a Captain blocker with the failure output. Reports MUST distinguish fresh results from cache-backed results. QM owns verification procedure details.
+Use project-specific commands from `RIGGING.md`. Progress is measured by verification status, not by a separate checklist. Passing checks are evidence, not proof. Skipped verification is unverified. Reports MUST distinguish fresh results from cache-backed results, and a deck-clean claim states which discovery produced it. QM owns verification procedure details.
+
+Verification runs in named shapes. Each question has one minimal shape; spend execution only on the question asked:
+
+| Question | Shape | Cost |
+|---|---|---|
+| Which steps are undefined or unimplemented? | Static discovery: the `discover` dry-run | Executes nothing |
+| Does this target pass? | Focused run: the `focused` command for the target | One scenario |
+| What currently fails in a tier? | Enumeration sweep: the tier unfiltered, without stop-on-first-failure, ordered by a tier-tag watch | One full tier, spent when its reds are dispatched |
+| Is the boundary sound? | Boundary check: every configured tier, cheapest tier first, with stop-on-first-failure | Full suite, at voyage and harbour boundaries only |
+
+Within a voyage a fix is proven by its own target's focused run, not a tier rerun; re-running known-green scenarios to reach the next failure is wasted cost, acute on a paid tier. Selection MAY narrow intermediate confirmation, never terminal proof: the pre-outbound boundary check and the harbour boundary check always execute in full.
+
+Fitting out verifies credentials for every configured tier, raising a Captain blocker to provision what fails, so every configured tier is runnable by construction once fitting out completes. Run each configured tier whenever the work calls for it. A tier run that fails to authenticate is evidence that fitting out is incomplete: report a Captain blocker with the failure output.
 
 Methodology rules can be self-enforcing. A `@property` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable. A derived methodology check is proven by a negative test: plant a violation, confirm the check reddens, remove the violation. A check that has never been red is unproven.
 
@@ -326,25 +402,11 @@ Methodology rules can be self-enforcing. A `@property` scenario MAY scan verific
 
 A perturbation marks a behaviour-stable seam for reimplementation. A perturbation MAY span a cluster of fragmented seams so Crew reimplements them as one cohesive seam; the scenarios passing again prove the consolidation preserved behaviour. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other failing target. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit.
 
-A perturbation MUST become a failing verification target. A perturbation that stays green has discovered an unexercised seam or a stale-green scenario. Liveness is judged against discovery output: QM confirms every live perturbation surfaces as a failing target and blocks to Captain when one stays green. Boatswain treats a live perturbation in a green tree as a foul deck only after discovery has run in the current voyage; a fresh perturbation awaiting discovery is healthy.
+A perturbation MUST become a failing verification target. A perturbation that stays green has discovered an unexercised seam or a stale-green scenario. Liveness is proven by execution, not by static discovery, because a perturbation throws only when its seam runs. QM finds live perturbations by the `PERTURBATION` token, proves each red with a focused run of a scenario whose steps plank the perturbed seam, and blocks to Captain when the planked scenarios stay green. Boatswain treats a live perturbation in a green tree as a foul deck only after QM's liveness runs in the current voyage; a fresh perturbation awaiting its liveness run is healthy.
 
 ### Outbound verification policy
 
 Outbound is any action that places durable state where a party outside the voyage can consume it, such as a pushed branch, a published artifact, or a deployed or updated live service. A local commit and disposable, namespaced, self-cleaning test resources stay inside the voyage and are not outbound. Captain handles outbound decisions such as push, PR, publish, release, and deploy. Outbound runs only in the human-facing main session, where the user's explicit approval is given; a spawned Captain agent reports outbound options, and the main session performs the action. Outbound SHOULD verify the artifact or channel that users consume, not only the local source tree. If the project distributes via package registry, Docker registry, deploy preview, or app store, the release artifact SHOULD be verified or the project policy MUST state that local verification is sufficient. Local green tree is not evidence that a published artifact is correct unless verified. A project MAY ship several distribution targets, such as a package and a separately deployed site. Name every target in `RIGGING.md` under `## Outbound` and verify each; targets deploy independently unless the policy states otherwise.
-
-### Traceability policy
-
-Feature files are canon. Shipshape derives trace from current feature files, through scenarios and steps, into step definitions and production seams. Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
-
-An individual plank may be as small as an argument, expression, branch, call, state change, or persisted value. Trace annotations are hoisted to seams because Planks may be distributed below that boundary.
-
-`@planks("<Gherkin step>")` is a documentation-comment tag on the seam declaration whose behaviour that exact step requires. Write it in the language's docblock form, such as `/** */` in JavaScript or TypeScript, attached to the declaration that is the seam. A plank in a line comment or on an in-body fragment is malformed; hoist it to the seam declaration. Docblock placement lets a docblock or AST reader inventory every plank completely, and makes plank placement an executable form check rather than a human-read judgment. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
-
-Not every step requires Planks. Setup and assertion steps often use only verification support.
-
-A seam MAY carry Planks for several steps. A step MAY be carried by several seams. The "Every production seam is planked" Article carries the seam obligations: at least one `@planks(...)` annotation, and behaviour only within the related step contracts.
-
-Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping. Support artifacts MAY use project-appropriate comments when ownership or deletion is unclear, but they MUST NOT define product intent.
 
 ### Transient output
 
