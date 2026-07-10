@@ -55,7 +55,7 @@ Fitting out is first-run setup of a project for Shipshape. It is a harbour activ
 2. Derive `RIGGING.md` values from the repository. Read the language, runtime, package manager, commands, directories, dependency policy, perturbation syntax, docblock inventory tooling, and tooling checks from project files and configuration.
 3. Verify the project tooling is runnable. Confirm the package manifest or equivalent project init file, the runtime, and the package manager for the derived stack. If the init file is missing or the runtime is not installed, raise a Captain blocker. Verify each derived tier authenticates: run the smallest real command for that tier, a read-only or dry-run probe where the tier offers one. A tier that fails to authenticate here is a Captain blocker naming the credential to provision. Negative-test each derived methodology check: plant a violation, confirm the check reddens, remove the violation. Planting is a fitting-out-scoped write exception: the plant and any scratch `watchbill.json` it needs leave the tree fully with the test, and fitting out ends with no planted violation. Hold candidate commands in the session until each has been red once, then write them together. Do not write `RIGGING.md` until tooling is verified and every derived check has been red once.
 4. If the stack has no Gherkin runner, `focused`, `discover`, and `step-usage` are underivable: raise a Captain blocker naming the runner as a dependency decision for Captain and the user. Existing non-Gherkin tests still derive `coverage` and the quality gates, and their modules count as covered for triage only after scenarios bind them.
-5. Write `RIGGING.md` and `AGENTS.md` from the templates below with the derived values. Follow the Rigging shape below. Append the README block to the project README without overwriting existing content. Write the derived search-exclusion artifact per the derivation notes.
+5. Write `RIGGING.md` and `AGENTS.md` from the templates in `templates.md` beside this skill, with the derived values, following the Rigging shape below. Append the README block from `templates.md` to the project README without overwriting existing content. When `templates.md` is absent, derive all three artifacts from the Rigging shape and the Rigging read contract directly. Write the derived search-exclusion artifact per the derivation notes.
 6. For any required value Shipwright cannot derive, or where the repository is ambiguous, raise a Captain blocker naming the value. Write `RIGGING.md` with every derivable value and leave the underivable required slot empty. The required values are `language`, `implementation`, `specs`, `focused`, and perturbation `perturb`. Captain discovers the missing value with the user and writes it.
 7. Leave `CAPTAIN.md` to Captain. Shipwright does not create it.
 
@@ -72,110 +72,11 @@ Fitting out is first-run setup of a project for Shipshape. It is a harbour activ
 - `## Outbound`: per target, an `outbound` line naming the target, a `ship` line with its command, and a `verify` line with its check against the live artifact. A runbook longer than a value lives in `AGENTS.md`, and the target's `verify` line points to it.
 - `## Known false-failure modes`: one `mode` line per short note a role rules out before routing a product defect.
 
-### AGENTS.md template
-
-Create `AGENTS.md` at project root. If `AGENTS.md` already exists, append the Shipshape block and never remove existing content.
-
-````markdown
-# Agent Instructions
-
-This project uses Shipshape, a context-isolated spec-driven workflow for coding agents.
-
-Agent opening this project: ensure Shipshape is installed, then load the `shipshape` skill (`shipshape:shipshape` under the plugin channel) and follow its routing before other work. Decide how to involve the human per your configured preferences.
-
-Tooling values such as stack, directories, and commands live in `RIGGING.md`.
-
-Install with the open skills CLI, which works across most agent runtimes:
-
-```bash
-npx skills add dmytri/shipshape --skill '*'
-```
-
-If your runtime supports the open-plugin format, such as Claude Code or Cursor, install the experimental plugin build instead:
-
-```bash
-npx plugins add dmytri/shipshape
-```
-
-Update Shipshape at a voyage boundary with `npx skills update` for the skills install, or re-run `npx plugins add dmytri/shipshape` for the plugin build.
-````
-
-### RIGGING.md template
-
-Create `RIGGING.md` at project root. Fill in the derived values. Keep it to values, not procedure.
-
-````markdown
-# Rigging
-
-Project tooling values for Shipshape roles. Values only, not procedure.
-Procedure lives in the skills. Every role reads this on open.
-
-## Stack
-
-- language: <derived>
-- runtime: <derived or none>
-- packageManager: <derived or none>
-
-## Directories
-
-- implementation: <every directory that can hold a planked seam, one path per line, key repeated; `*` matches one path segment>
-- specs: <one path per line>
-- verification: <one path per line, or none>
-- assets: <one path per line, or none>
-- scantlings: <machine-readable contract files in place, one path per line, or none>
-
-## Commands
-
-- discover: `<derived or none>`
-- focused: `<derived command with {scenario}>`
-- broad: `<derived or none>`
-- coverage: `<derived or none>`
-- step-usage: `<derived or none>`
-- plank-inventory: `<derived or none>`
-- typecheck: `<derived or none>`
-- lint: `<derived or none>`
-
-## Perturbation
-
-- message: `PERTURBATION: consider current durable context; remove when fixed`
-- perturb: `<host-language perturbation statement using the message>`
-
-## Tiers
-
-- default: <derived or @logic>
-- sandbox: <derived or none>
-- policy: <tier tag and its credentials or provisioning policy, one line per tier>
-- weather: <wake path for the weather record, or none>
-
-## Dependencies
-
-- policy: <derived or locked>
-- dependency: <selected name, one line per name, or none>
-
-## Outbound
-
-- outbound: <target name, or none>
-- ship: `<derived command>`
-- verify: `<derived live-artifact check>`
-
-## Known false-failure modes
-
-- mode: <derived note, one line per note, or none>
-````
-
-For JavaScript and TypeScript, derive this perturbation value:
-
-```markdown
-- perturb: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
-```
-
-For other languages, use the normal throwing statement for that language. If the value is not clear, raise a Captain blocker.
-
 ### Derivation notes
 
 #### Commands
 
-- Verification commands: derive every command with the `not @captain and not @shipwright` tag filter or the runner's equivalent, so QM never runs a skeleton or a condemned scenario.
+- Verification commands: derive every command with the tag exclusions per the Rigging read contract, so QM never runs a skeleton or a condemned scenario.
 - `discover`: derive the runner's static dry-run form. Per the Verification policy's run shapes, it lists undefined and unimplemented steps and executes nothing.
 - `focused`: where the runner accepts several scenario references in one invocation, derive `focused` to accept a list, so a batch of targets amortizes ambient setup into one run.
 - `step-usage`: derive a machine-readable format that does not truncate step text, such as Cucumber's `usage-json`. Truncated usage output produces false stale-plank reports.
@@ -207,16 +108,6 @@ For other languages, use the normal throwing statement for that language. If the
 - Methodology checks: derive executable conformance checks so methodology violations surface as failing verification targets. Two checks are required: watchbill shape conformance, and perturbation liveness, where every `PERTURBATION` token in the tree surfaces as a failing target. Five checks are derived when the stack supports them: a stale-plank join of `plank-inventory` against `step-usage`, a plank-form check where every `@planks` token resolves to a docblock tag on a declaration so a line-comment or in-body plank reddens, a forbidden-doubles scan that honours `@exceptional-double`, a feature lint config such as `.gplintrc`, and a standing tier auth probe command. Record `none` with a note where the stack supports no derivation; a missing optional check is a finding, not a blocker. Prefer a `@property` scenario where a scenario can observe the signal, so failures surface through normal discovery; add a tier-suffixed command only when a scenario cannot observe the signal.
 - Check tooling: derive every check against structured output first, such as AST tooling, docblock tooling, or `usage-json`. Text search is the last-resort fallback, and a text-search-derived check MUST record its weakness under `## Known false-failure modes`.
 
-### README.md block
-
-Append this block to the project README, never overwriting existing content:
-
-````markdown
-## Built with Shipshape
-
-This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context-isolated spec-driven workflow for coding agents. Install with `npx skills add dmytri/shipshape --skill '*'`, or the experimental open-plugin build with `npx plugins add dmytri/shipshape`.
-````
-
 ## Work loop
 
 1. Verify the harbour-entry guard per Harbour custody.
@@ -236,9 +127,9 @@ This repository uses [Shipshape](https://github.com/dmytri/shipshape), a context
    - **Verification debt:** verification support that breaks the Verification agreement, such as a guessed delay where a signal is observable, independent scenarios forced serial, or ambient state rebuilt per scenario. Report findings for QM through the Captain hand-off per the Blocker policy.
    - **Verification economy:** ride the per-scenario duration from the boundary check's weather record, step 12, into a per-scenario audit. Assess five lenses per scenario: cost, its duration against the rest of its tier; spec-bearing, whether it proves a real falsifiable behaviour needed now or restates one another scenario owns; form, whether a structural fact could move to a scantling or bespoke checker instead of an executing example; fixture, whether its setup is minimal-sufficient or amortizable to once-per-run; and cadence, whether the cost must be paid every inner-loop run or belongs at harbour cadence. A first harbour reads a prior session's weather when the wake carries it; otherwise this category populates when step 12 runs. Report each finding to Captain with its scenario and lens; routing is Captain's per the Harbour flow. Where Shipwright speaks with the user during harbour, interrogate the outliers with them directly.
    - **Missing boundary scantling:** a `Rule:` prose block or a code comment states an internal module or layer boundary constraint, such as which layer may import which, that a structural or policy rule set tool could check directly instead. Also derive a candidate from the real import graph alone: when scope holds multiple internal modules or layers with a consistent one-directional import pattern, such as domain code never importing infrastructure code, that observed pattern is boundary-constraint evidence even with no comment stating it. Report the constraint or the observed pattern, its location, and a boundary-policy scantling candidate from the Scantling agreement's named-engine catalog, as a Captain finding. Include the observed pattern as evidence for Captain to refine into the actual scantling. Do not author the scantling; adoption and its exact shape are a Captain product decision.
-8. On a content-heavy project, write content-agnostic build invariants as `@captain @property` scenarios, such as the build exits clean and every content entry yields an output; the `@captain` tag keeps them non-binding until Captain promotes them. A scenario that enumerates a content-derived route or page is a defect: it mirrors assets into specs and drifts with every content edit. Write `@captain`-tagged scenario skeletons for every finding from the uncovered-module search and the policy scan. Write under the specs directory from `RIGGING.md`, one `Feature` per file, named in kebab-case after the module or area. Append a scenario to an existing feature file when its `Feature` already exists. `@captain` tags an individual `Scenario`, never a `Feature`. When appending to an existing feature file, tag only the new scenario. Leave the `Feature` and its other scenarios untagged. Follow the scenario-writing agreement: concrete, falsifiable, domain-level, independent. Skeleton granularity follows the same agreement: one scenario per discovered behaviour, so a module with several behaviours yields several skeletons. The completion discipline's "best `@captain` scenario the code supports" bounds quality under uncertainty, never count. Use realistic data. The Gherkin steps you write here become the canonical step text for any uncovered code.
+8. On a content-heavy project, write content-agnostic build invariants as `@captain @property` scenarios, such as the build exits clean and every content entry yields an output; the `@captain` tag keeps them non-binding until Captain promotes them. A scenario that enumerates a content-derived route or page is a defect: it mirrors assets into specs and drifts with every content edit. Write `@captain`-tagged scenario skeletons for every finding from the uncovered-module search and the policy scan. Write per the scenario-writing agreement's feature-file rules, naming each file after the module or area. Append a scenario to an existing feature file when its `Feature` already exists. `@captain` tags an individual `Scenario`, never a `Feature`. When appending to an existing feature file, tag only the new scenario. Leave the `Feature` and its other scenarios untagged. Follow the scenario-writing agreement: concrete, falsifiable, domain-level, independent. Skeleton granularity follows the same agreement: one scenario per discovered behaviour, so a module with several behaviours yields several skeletons. The completion discipline's "best `@captain` scenario the code supports" bounds quality under uncertainty, never count. Use realistic data. The Gherkin steps you write here become the canonical step text for any uncovered code.
 9. Add `@planks(...)` annotations to every production seam, following the Planking agreement's form. For covered code, use the saved step-text mapping. For uncovered code, use the step text from the `@captain` scenarios you wrote. For `@planks(...)` annotations pointing to deleted or renamed steps, correct the annotation if the step still exists under new text, or create a `@captain` scenario and replank if the original step is gone.
-10. Process condemned scenarios. For each `@shipwright` scenario, remove the code its planked steps trace to, then delete the scenario. Match planks by normalized step text; when no plank matches a condemned step, report the miss to Captain rather than removing nothing silently. If a seam also carries a plank for a live step, remove only the condemned behaviour and its plank, and keep the seam. Also remove the unreachable code the reference analysis confirmed in step 7; uncovered-but-reachable code keeps its `@captain` scenario instead. Remove safely, per the Verification policy's selection principle: after each removal batch, `typecheck` and `lint` stay clean where derived, the reference analysis reports no new breakage, and the scenarios whose steps plank the touched seams pass focused runs. The step 12 boundary check stays the terminal proof and catches what the scoped confirmation missed, still inside harbour. If a removal breaks verification, revert and flag to Captain; the scenario stays condemned in the tree, and resolving it is Captain and user work. Exclude `@captain` and `@shipwright` scenarios in every harbour run, such as `--tags "not @captain and not @shipwright"`.
+10. Process condemned scenarios. For each `@shipwright` scenario, remove the code its planked steps trace to, then delete the scenario. Match planks by normalized step text; when no plank matches a condemned step, report the miss to Captain rather than removing nothing silently. If a seam also carries a plank for a live step, remove only the condemned behaviour and its plank, and keep the seam. Also remove the unreachable code the reference analysis confirmed in step 7; uncovered-but-reachable code keeps its `@captain` scenario instead. Remove safely, per the Verification policy's selection principle: after each removal batch, `typecheck` and `lint` stay clean where derived, the reference analysis reports no new breakage, and the scenarios whose steps plank the touched seams pass focused runs. The step 12 boundary check stays the terminal proof and catches what the scoped confirmation missed, still inside harbour. If a removal breaks verification, revert and flag to Captain; the scenario stays condemned in the tree, and resolving it is Captain and user work. Every harbour run composes the tag exclusions per the Rigging read contract.
 11. Complete the full inventory. Do not stop until every module in scope has been analysed and all `@shipwright`-condemned scenarios and code have been processed.
 12. Run the full test suite across all tiers as a boundary check, cheapest tier first, each tier by its tier tag from `RIGGING.md`, through the `coverage` command rather than a separate plain test command. One invocation per tier yields both the green or red boundary signal and refreshed coverage data, since harbour work such as condemned-code removal can change what executes. Compose the tier tag with the tag exclusions, for example `--tags "@sandbox and not @captain and not @shipwright"`. The harbour session changes the codebase; verify nothing broke. Fitting out provisions credentials for every configured tier. Run every configured tier; report an authentication failure as a Captain blocker naming fitting out incomplete. Record per-scenario duration from this run into the wake as yesterday's weather per the Verification agreement, and feed it into the verification-economy audit in step 7, flagging cost outliers.
 13. Report to Captain. Leave the harbour-scoped changes uncommitted for Captain, who loads Boatswain for custody.

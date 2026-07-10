@@ -71,6 +71,13 @@ onehome "a cadence change is a tier retag"
 onehome "docblock or AST reader inventory every plank completely"
 onehome "spent once its red list is dispatched"
 
+# Shipwright templates travel with the skill; fitting out reads them.
+if [ -f "$repo/skills/shipwright/templates.md" ]; then
+  pass=$((pass + 1))
+else
+  fail=$((fail + 1)); echo "FAIL: skills/shipwright/templates.md is missing"
+fi
+
 # README rigging example conforms to the Rigging shape keys, so a copied
 # example cannot teach a key the read contract rejects.
 if grep -q '^- target:' "$repo/README.md"; then

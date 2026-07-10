@@ -14,7 +14,7 @@
 set -u
 
 repo=$(cd "$(dirname "$0")/.." && pwd)
-files="$repo/skills/*/SKILL.md $repo/agents/*.md $repo/commands/*.md $repo/rules/*.mdc $repo/hooks/scripts/*.sh $repo/shipshape.md $repo/llms.txt $repo/AGENTS.md"
+files="$repo/skills/*/*.md $repo/agents/*.md $repo/commands/*.md $repo/rules/*.mdc $repo/hooks/scripts/*.sh $repo/shipshape.md $repo/llms.txt $repo/AGENTS.md"
 
 pass=0
 fail=0

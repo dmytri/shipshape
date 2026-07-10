@@ -16,6 +16,7 @@ Shipshape is distributed as skill files:
 | `skills/crew/SKILL.md` | Crew Mate role skill |
 | `skills/boatswain/SKILL.md` | Boatswain role skill |
 | `skills/shipwright/SKILL.md` | Shipwright role skill |
+| `skills/shipwright/templates.md` | Fitting-out scaffold templates: RIGGING.md, AGENTS.md, README block |
 | `.plugin/plugin.json` | Vendor-neutral plugin manifest |
 | `agents/` | Role agents for context isolation (thin adapters over role skills) |
 | `hooks/` | Custody enforcement hooks (mechanize Article text only) |
