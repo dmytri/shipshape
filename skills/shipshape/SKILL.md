@@ -217,7 +217,7 @@ Scantling or double:
 
 ## Verification agreement
 
-Verification is the disposable proof of durable scenarios. A scenario states what must be true; verification proves the real thing happened, as fast as real isolation allows. Verification spends time only on the behaviour under test: speed and honesty share one source. In a spec-driven workflow the suite sits on the critical path of every change, so verification latency is iteration latency: a cost paid on every inner-loop run is paid by every future change. QM applies this agreement when writing verification; Captain, Shipwright, and Boatswain use it to judge existing verification. A violation in verification support routes to QM per the Blocker policy.
+Verification is the disposable proof of durable scenarios. A scenario states what must be true; verification proves the real thing happened, as fast as real isolation allows. Verification spends time only on the behaviour under test: speed and honesty share one source. In a spec-driven workflow the suite sits on the critical path of every change, so verification latency is iteration latency: a cost paid on every inner-loop run is paid by every future change. QM applies this agreement when writing verification; Shipwright and Boatswain use it to judge existing verification, and Captain routes their findings. A violation in verification support routes to QM per the Blocker policy.
 
 Signals:
 
@@ -277,6 +277,11 @@ Judging:
 - Cross-reference each plank's step text against the `step-usage` command output. A plank whose step text appears nowhere in usage points to a deleted or renamed step and is stale. Stale and malformed planks are corrected, never trusted.
 - A missing annotation on a seam in an active failing target routes to Crew; other plank drift defers to harbour, per the Blocker policy.
 
+Selection:
+
+- The planks of a touched seam select its recheck. Follow the seam's planks to step text, join through `step-usage` to scenarios, and run that focused set. When attribution inside a file is unclear, take every plank in the file.
+- A touched production hunk with no plank to follow is plank drift, judged per this agreement; static discovery and the derived `typecheck` and `lint` gates stand as its proof meanwhile.
+
 Limits:
 
 - Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, selected and ordered per the Watchbill policy.
@@ -284,7 +289,7 @@ Limits:
 
 ## Role flow
 
-User to Captain: intent becomes durable specs and optional `watchbill.json`. Context clears. QM runs verification discovery, calls Boatswain for a pre-clean scan when needed, and dispatches Crew per failing target. Crew makes the smallest production change and returns. Boatswain does post-implementation hygiene, reverifies, and commits locally. Captain reports to the user and handles outbound.
+User to Captain: intent becomes durable specs and optional `watchbill.json`. Captain routes a dirty deck through Boatswain before dispatch. Context clears. QM derives targets from durable artifacts and dispatches Crew per failing target. Crew makes the smallest production change and returns. Boatswain does post-implementation hygiene, reverifies, and commits locally. Captain reports to the user and handles outbound.
 
 ### Narration
 
@@ -307,10 +312,10 @@ Captain to QM always requires clean context. A window-isolated subagent or a fre
 |---|---|
 | Captain to QM | role, base commit, optional `watchbill.json` pointer |
 | QM to Crew | target scenario reference, observed failure evidence, solo or parallel marker; for a perturbation target, also the perturbed seam location |
-| QM to Boatswain | mode, pre-clean or post-implementation, base commit, advanced target references |
+| QM to Boatswain | post-implementation mode, base commit, advanced target references |
 | Captain to Boatswain | mode, base commit |
 
-A perturbation's seam location is observed evidence from the tree, not a seam hint. A Captain dispatch to Boatswain names pre-clean for a dirty deck or post-implementation for harbour custody, per the Boatswain skill. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
+A perturbation's seam location is observed evidence from the failure output, not a seam hint. A Captain dispatch to Boatswain names pre-clean for a dirty deck or post-implementation for harbour custody, per the Boatswain skill. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
 
 **Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives. Three cases, by vector:
 
@@ -368,7 +373,7 @@ After Captain resolves product intent, the return to QM crosses the bulkhead aga
 
 ### Working tree
 
-Humans edit at any time. A role owns only the edits it makes and leaves every other working-tree change untouched. A role never treats the tree's existing state as its own work. Boatswain stages only role-advanced hunks and leaves unrelated operator work for Captain. Dirt is a change no role in the current voyage owns. Uncommitted durable artifacts that order the current voyage's work, such as Captain's freshly written specs, are work in flight, not dirt: QM proceeds over them, and Boatswain stages and commits them together with the role hygiene edits and the production change they order.
+Humans edit at any time. A role owns only the edits it makes and leaves every other working-tree change untouched. A role never treats the tree's existing state as its own work. Boatswain stages only role-advanced hunks and leaves unrelated operator work for Captain. Dirt is a change no role in the current voyage owns. Uncommitted durable artifacts that order the current voyage's work, such as Captain's freshly written specs, are work in flight, not dirt: QM reads the artifacts as they stand, and Boatswain stages and commits them together with the role hygiene edits and the production change they order.
 
 ### Asset policy
 
@@ -382,7 +387,7 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 ### Watchbill policy
 
-Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. The watchbill is also the only channel that points QM at an implemented scenario: static discovery lists undefined and unimplemented steps only, so a failing or edited scenario whose steps are all implemented becomes a target through a watchbill entry, a scenario reference when the target is known, or a tier tag to enumerate a tier's failing set. A live perturbation is its own durable order per the Perturbation policy. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
+Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. The watchbill is also the only channel that points QM at an implemented scenario: static discovery lists undefined and unimplemented steps only, so a failing or edited scenario whose steps are all implemented becomes a target through a watchbill entry, a scenario reference when the target is known, or a tier tag to enumerate a tier's failing set. A perturbation's planked scenarios enter the watchbill at plant time, per the Perturbation policy. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
 
 `watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag from the Tier tags table, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. A tier-tag watch is the sanctioned full-tier exception: QM runs that tier as a directed watch, distinct from inner-loop discovery. A tier-tag watch is one enumeration sweep, spent once its red list is dispatched to focused targets; it does not stand as an order to rerun the tier after every fix. When tier-tag watches cover several tiers, order them cheapest tier first; a red tier's dispatches complete before a costlier tier runs. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 
@@ -407,9 +412,9 @@ Methodology rules can be self-enforcing. An `@invariant` scenario MAY scan verif
 
 ### Perturbation policy
 
-A perturbation marks a behaviour-stable seam for reimplementation. A perturbation MAY span a cluster of fragmented seams so Crew reimplements them as one cohesive seam; the scenarios passing again prove the consolidation preserved behaviour. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other failing target. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit. A perturbation proves preservation only of what scenarios pin. Before planting, Captain confirms the seam's scenarios pin the behaviour that must survive, and strengthens them first when in doubt.
+A perturbation marks a behaviour-stable seam for reimplementation. A perturbation MAY span a cluster of fragmented seams so Crew reimplements them as one cohesive seam; the scenarios passing again prove the consolidation preserved behaviour. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `perturb` statement from `RIGGING.md` at the seam and writes the seam's planked scenarios into `watchbill.json`; the pinning confirmation has already named them. The seam becomes a failing verification target: any scenario exercising it fails with the `PERTURBATION` message, and QM dispatches the failure like any other failing target, carrying the seam location from the failure evidence. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit. A perturbation proves preservation only of what scenarios pin. Before planting, Captain confirms the seam's scenarios pin the behaviour that must survive, and strengthens them first when in doubt.
 
-A perturbation MUST become a failing verification target. A perturbation that stays green has discovered an unexercised seam or a stale-green scenario. Liveness is proven by execution, not by static discovery, because a perturbation throws only when its seam runs. QM finds live perturbations by the `PERTURBATION` token, proves each red with a focused run of a scenario whose steps plank the perturbed seam, and blocks to Captain when the planked scenarios stay green. Boatswain treats a live perturbation in a green tree as a foul deck only after QM's liveness runs in the current voyage; a fresh perturbation awaiting its liveness run is healthy.
+A perturbation MUST become a failing verification target. A perturbation whose scenarios stay green has discovered an unexercised seam or a stale-green scenario: a listed green scenario reports complete, so Captain reads the alarm from QM's report. A skipped or forgotten watchbill entry leaves the perturbation standing until the harbour full regression reddens on its seam. Boatswain names any live `PERTURBATION` statement in its report as the earlier signal.
 
 ### Outbound verification policy
 

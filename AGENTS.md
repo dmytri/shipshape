@@ -39,6 +39,7 @@ Shipshape is distributed as skill files:
 - Put shared workflow rules in `skills/shipshape/SKILL.md`.
 - Put role-specific rules in the matching role skill.
 - Keep all role skills consistent with the Articles of Agreement in `skills/shipshape/SKILL.md`.
+- A role duty MUST name its trigger in the role's walkthrough, read only evidence inside that role's organic scope, and load no more context than its decision needs. Mechanize, move, or delete a duty that fails any of the three.
 - `shipshape.md` is a structural map: names, relations, and pointers only. A normative sentence in it is a defect. Update it with any rename it references; `tests/map.sh` checks the names against the skills.
 - Bump the `version` in `.plugin/plugin.json` with any doctrine change, skill content included, not only a plugin-layer change to `.plugin/`, `agents/`, `hooks/`, `commands/`, `assets/`, or `shipshape.md`. A plugin-channel install's update tooling was observed gating on this version field rather than skill content hash; an unbumped skills-only change risks silent staleness for every plugin-channel consumer.
 - Enforcement claims are per-runtime. Claim a mechanism for a runtime only after live-fire verification on that runtime; name unverified runtimes unsupported for enforcement.

@@ -39,7 +39,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 ## Work loop
 
 1. Reproduce or inspect the failure. If the target passes before any edit, report the pass with the fresh run output and stop.
-2. Edit minimum production code only. Add or update `@planks(...)` annotations on every changed seam per the Role contract; for a perturbation target, the perturbation statement leaves with the reimplemented seam.
+2. Edit minimum production code only. Add or update `@planks(...)` annotations on every changed seam per the Role contract; for a perturbation target, the perturbation statement leaves with the reimplemented seam. A changed seam whose behaviour now exceeds its planked steps stops the work: report to QM per the Role contract.
 3. Run focused verification using the `focused` command from `RIGGING.md`.
 4. If pass, return the final report to the caller.
 5. If blocked, or if the approach fails after one correction, report the blocker to QM and stop.

@@ -311,11 +311,11 @@ Perturbation treats the codebase as a reconciled system. Durable specs and conte
 
 Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance.
 
-A perturbation marks that seam for reimplementation. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
+A perturbation marks that seam for reimplementation. Captain adds the `perturb` statement from `RIGGING.md` at the seam and lists the seam's scenarios in `watchbill.json`, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
 
 The perturbation statement carries a fixed message and nothing else: no step text, no scenario names, no rationale, no instructions. Requirements stay in durable artifacts.
 
-A perturbation must become a failing verification target. One that stays green has discovered an unexercised seam or a stale-green scenario, and that evidence routes to Captain as a blocker.
+A perturbation must become a failing verification target. One whose scenarios stay green has discovered an unexercised seam or a stale-green scenario, and Captain reads that from the verification report.
 
 ## Harbour mode
 
@@ -376,7 +376,7 @@ The authoritative surface stays small:
 
 If asset or catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
 
-The mechanisms check each other. Perturbation audits what planks claim, the context bulkhead keeps perturbation free of rationale, scantlings give the spec a channel for structure that scenarios express badly, the planted-red gate proves every check can redden, and verification economy keeps the loop cheap enough to run on every change. Each mechanism's exposed edge is another mechanism's job.
+The mechanisms check each other. Perturbation audits what planks claim, planks select each commit's recheck, the context bulkhead keeps perturbation free of rationale, scantlings give the spec a channel for structure that scenarios express badly, the planted-red gate proves every check can redden, and verification economy keeps the loop cheap enough to run on every change. Each mechanism's exposed edge is another mechanism's job.
 
 The vocabulary works with model training, not against it. An established term keeps its established meaning, such as Gherkin and the Meszaros test-double taxonomy, so the trained concept carries the rule. A coined term of art, such as plank, scantling, or watchbill, claims a name no established software meaning contests. A term that fights its trained meaning misleads every fresh context that reads it.
 
