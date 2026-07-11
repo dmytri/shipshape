@@ -38,7 +38,7 @@ Called by QM before verification work. Absent that caller context, self-select p
 
 ### Post-implementation
 
-Called after Crew finishes and verification passes. Post-implementation also serves harbour custody: Captain calls it after a Shipwright harbour with a green boundary check, and the role-advanced diff is the harbour-scoped edits. Absent that caller context, self-select post-implementation when a role-advanced diff exists. If genuinely uncertain, assume pre-clean; a missed commit is recoverable, a wrongful refusal on unrun verification is not. Full hygiene, verification recheck, stage intended changes, local commit, then return to the caller.
+Called after Crew finishes and verification passes. Post-implementation also serves harbour custody: Captain calls it after a Shipwright harbour with a green full regression, and the role-advanced diff is the harbour-scoped edits. Absent that caller context, self-select post-implementation when a role-advanced diff exists. If genuinely uncertain, assume pre-clean; a missed commit is recoverable, a wrongful refusal on unrun verification is not. Full hygiene, verification recheck, stage intended changes, local commit, then return to the caller.
 
 ## Opening
 
@@ -47,7 +47,7 @@ Called after Crew finishes and verification passes. Post-implementation also ser
 3. Read preceding role blockers first, if any.
 4. Read `CAPTAIN.md` if needed for spec quality or watchbill completeness. Flag bloated or outdated notes as blockers.
 5. Run the `discover` command from `RIGGING.md` to establish the current verification surface. Discovery is static and executes nothing. The output lists which scenarios are in scope and which steps are undefined. Use this as the scope boundary for hygiene checks. If `RIGGING.md` defines no `discover` command, take scope from the dispatched target references and the uncommitted diff.
-6. Inspect `git status`, `git diff` against the dispatched base commit, HEAD when none was dispatched per the dispatch contract, and recent log.
+6. Inspect `git status`, `git diff` against the dispatched base commit, HEAD when none was dispatched per the dispatch contract, and recent log. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain naming the operator's initial commit as the ask, per the Shipwright skill's harbour guard.
 7. Identify mode: pre-clean or post-implementation. The dispatch names the mode per the Dispatch contract; the self-select heuristics in Modes apply only without a dispatch.
 
 ## Hygiene checks
@@ -67,13 +67,14 @@ Each check reads the same way: when the condition is observed, act and route as 
 - When a live `PERTURBATION` statement stands in the working tree: in post-implementation mode, over green verification and after QM's liveness runs in the current voyage, block to Captain with evidence as a foul deck; in pre-clean mode, name it in the report for QM's liveness proof. A fresh perturbation awaiting its liveness run is healthy, per the Perturbation policy.
 - When parallel Crew changes conflict in the diff: do not merge them; report the conflict to QM for redispatch.
 - When a generated coverage report is in scope: use it for hygiene only, never as product intent or a planning artifact. It is transient.
+- When the uncommitted diff edits a binding scenario whose steps are all implemented and no watchbill selects it: flag the watchbill omission to Captain, per the Watchbill policy.
 - When `watchbill.json` and verification disagree: verification wins; remind Captain to update or remove `watchbill.json`.
 - When `watchbill.json` lists scenarios that are verified or no longer select active discovered work: remind Captain to delete it. Do not delete it yourself.
 - When `CAPTAIN.md` is bloated, speculative, or holds resolved discussion: flag it for trimming.
 
 ## Verification and custody
 
-- Run the minimal shape the custody step needs, per the Verification policy's run shapes, with the tag exclusions per the Rigging read contract. Targeted evidence serves custody; a full tier run is a boundary check, not a custody habit. Prefer fresh results; label cache-backed results.
+- Run the minimal shape the custody step needs, per the Verification policy's run shapes, with the tag exclusions per the Rigging read contract. Targeted evidence serves custody; a full tier run is a full regression at a pivot, not a custody habit. Prefer fresh results; label cache-backed results.
 - If the verification recheck fails: do not commit. Rule out entries under `## Known false-failure modes` in `RIGGING.md`, rerun once for a suspected flake, and otherwise report `Deck foul` with the failing target to the caller.
 - Stage intended changes only: role-advanced hunks, the voyage's durable artifacts in flight, and Boatswain's own hygiene edits. Separate role-advanced hunks from unrelated operator edits within an in-scope file; when authorship is undecidable from the diff and the dispatch, leave the hunk unstaged and name it in the report. Leave unrelated operator work in the working tree for Captain to handle.
 - Reverify what will be committed, at the minimal sufficient shape. When the staged executable surface is identical to the state the voyage's fresh focused runs proved, production code, verification support, and specs all unchanged since those runs, those results are the commit evidence: name them in the report and run no recheck. When hygiene edits touched executable surface, recheck the affected focused targets; removal of zero-usage support artifacts is confirmed by static discovery plus the derived `typecheck` and `lint` gates, which redden on a broken load or import. When a recheck runs and unrelated operator work remains unstaged, stash the unstaged changes, run the recheck against the staged state, and restore the stash.

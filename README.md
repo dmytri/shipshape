@@ -113,7 +113,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent. QM starts from clean context and reads only durable repository artifacts. Discovery chat, rationale, and abandoned ideas never reach tests or implementation.
 
-Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist. Passing checks are evidence, not proof. QM's standing discovery is static and executes nothing; execution is spent on focused runs, ordered enumeration sweeps, and boundary checks. Full tier runs are boundary checks, not the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
+Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist. Passing checks are evidence, not proof. QM's standing discovery is static and executes nothing; execution is spent on focused runs, ordered enumeration sweeps, and full regressions. The full regression runs at voyage and harbour pivots, not as the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
 
 Verification works best when production code exposes narrow behaviour seams. Shipshape discourages hidden product behaviour in global state, constructors, static initialization, and service locators. Seams serve real verification. They never replace normal-path real coverage with mocks, fakes, or test-only branches.
 
@@ -245,7 +245,7 @@ Boatswain flags stale artifacts, cleans non-code cruft, reruns configured verifi
 
 ## Watchbill
 
-`watchbill.json` lets Captain focus QM and Crew on a selected order of verification-discoverable scenarios. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing.
+`watchbill.json` lets Captain focus QM and Crew on a selected order of verification-discoverable scenarios. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing. It is also the channel that points QM at implemented scenarios: QM's own discovery lists only undefined and unimplemented steps.
 
 Example:
 
@@ -376,7 +376,7 @@ The authoritative surface stays small:
 
 If asset or catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
 
-The mechanisms check each other. Perturbation audits what planks claim, the context bulkhead keeps perturbation free of rationale, scantlings give the spec a channel for structure that scenarios express badly, the negative-test gate proves every check can redden, and verification economy keeps the loop cheap enough to run on every change. Each mechanism's exposed edge is another mechanism's job.
+The mechanisms check each other. Perturbation audits what planks claim, the context bulkhead keeps perturbation free of rationale, scantlings give the spec a channel for structure that scenarios express badly, the planted-red gate proves every check can redden, and verification economy keeps the loop cheap enough to run on every change. Each mechanism's exposed edge is another mechanism's job.
 
 The vocabulary works with model training, not against it. An established term keeps its established meaning, such as Gherkin and the Meszaros test-double taxonomy, so the trained concept carries the rule. A coined term of art, such as plank, scantling, or watchbill, claims a name no established software meaning contests. A term that fights its trained meaning misleads every fresh context that reads it.
 

@@ -93,7 +93,7 @@ Verification runs in tiers; the Tier tags table at the end of this skill defines
 - Wake: generated build and verification output, git-ignored; the Transient output policy carries the rules.
 - Yesterday's weather: observed run data the wake carries as the next run's starting prior; the Verification agreement carries the use.
 - Rigging: the project configuration files that `RIGGING.md` documents; the Project configuration section carries the shapes.
-- Boundary check: a full tier run at a voyage or harbour boundary, in contrast to the focused inner loop.
+- Full regression: a run of every configured tier at a voyage or harbour pivot, in contrast to the focused inner loop.
 - Role-advanced work: the edits the current role made in the current session; the Working tree policy carries the custody rules.
 - Craft: worked technique and judgment guidance, in contrast to binding behaviour. Agreements and policies carry craft for roles; asset bodies carry craft for humans.
 
@@ -204,7 +204,7 @@ Attestation:
 
 Adoption:
 
-- Prove a newly referenced scantling red once: plant a violation, confirm the conformance step reddens, remove the plant, per the Verification policy's negative-test rule.
+- Prove a newly referenced scantling red once: plant a violation, confirm the conformance step reddens, remove the plant, per the Verification policy's planted-red rule.
 - Plant at the cheapest legal layer: a violating fixture or example is QM verification support; a constraint only a production violation can redden, such as an import boundary, waits for Shipwright's harbour plant exception, and reports name it unproven until it has been red.
 
 Scantling or double:
@@ -235,7 +235,7 @@ Concurrency:
 - Run independent scenarios concurrently. The scenario-writing agreement makes scenarios independent and harmless-by-design namespacing makes their resources disjoint, so concurrency is safe by construction and serial execution of independent work buys nothing.
 - Isolation gates concurrency. Before raising worker count, extend the namespace to every path workers share: temp directories, session and state files, caches, ports, resource names. A target that passes only when re-run serially is not yet fixed.
 - Size concurrency to the tier's binding constraint: local compute for a local tier, the service's real limits for a remote tier. Observe the constraint; a constant guessed on one machine is wrong on the next.
-- Read yesterday's weather. The wake MAY record what each tier's last run observed: wall-clock time, green worker count, and pressure signals such as rate-limit and memory errors. Start from that record and adjust on live pressure. Per-scenario timing is a harbour concern, captured during Shipwright's boundary check per the Shipwright skill, not a standing obligation of this at-sea record.
+- Read yesterday's weather. The wake MAY record what each tier's last run observed: wall-clock time, green worker count, and pressure signals such as rate-limit and memory errors. Start from that record and adjust on live pressure. Per-scenario timing is a harbour concern, captured during Shipwright's full regression per the Shipwright skill, not a standing obligation of this at-sea record.
 
 Reuse:
 
@@ -279,7 +279,7 @@ Judging:
 
 Limits:
 
-- Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, optionally selected and ordered by `watchbill.json`.
+- Trace annotations MUST NOT define product intent, create worklists, or replace verification discovery. Worklists come from undefined, unimplemented, or failing verification, selected and ordered per the Watchbill policy.
 - Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping. Support artifacts MAY use project-appropriate comments when ownership or deletion is unclear, but they MUST NOT define product intent.
 
 ## Role flow
@@ -330,7 +330,7 @@ A blocker that must reach Captain is delivered before any context clear: the rol
 
 ### Harbour flow
 
-Shipwright handles harbour work: existing-codebase onboarding and maintenance between releases. Shipwright inventories production code, adds `@planks(...)`, writes non-binding `@captain` scenarios, and returns to Captain for review. QM ignores `@captain` and `@shipwright` scenarios. Harbour findings that do not become a `@captain` scenario or a `@planks(...)` annotation are report-only: they live in the role report, and the next harbour re-derives them from repository signals such as coverage, the plank inventory, the import graph, and the weather record. Harbour begins only when the voyage is quiescent: the working tree is clean and no outbound is pending. Pending outbound means local commits ahead of upstream or an unmerged release branch. Harbour procedure and guards live in the Shipwright skill.
+Shipwright handles harbour work: existing-codebase onboarding and maintenance between releases. Shipwright inventories production code, adds `@planks(...)`, writes non-binding `@captain` scenarios, and returns to Captain for review. QM ignores `@captain` and `@shipwright` scenarios. Harbour findings that do not become a `@captain` scenario or a `@planks(...)` annotation are report-only: they live in the role report, and the next harbour re-derives them from repository signals such as coverage, the plank inventory, the import graph, and the weather record. Harbour begins on a clean working tree; uncommitted voyage work routes through Boatswain custody first, so it enters harbour committed. Pending outbound, local commits ahead of upstream or an unmerged release branch, is no bar: Shipwright names it in the report, harbour work rides the next outbound, and the harbour full regression is the strongest pre-outbound proof. Harbour procedure and guards live in the Shipwright skill.
 
 Shipwright's verification-economy audit reports per-scenario findings to Captain, each with its lens. Captain routes each finding by kind: a cheaper spec form becomes a `@captain` faster-form skeleton that supersedes the slow scenario; a same-behaviour support cost is verification debt routed to QM per the Blocker policy; a cadence change is a tier retag Captain makes. Whether to split, optimize, retag, or accept is a Captain judgment, not a harbour edit.
 
@@ -382,7 +382,7 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 ### Watchbill policy
 
-Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
+Captain SHOULD write fixed-shape `watchbill.json` when QM or Crew work should stay focused. It selects and orders a subset of verification-discovered work and creates none. The watchbill is also the only channel that points QM at an implemented scenario: static discovery lists undefined and unimplemented steps only, so a failing or edited scenario whose steps are all implemented becomes a target through a watchbill entry, a scenario reference when the target is known, or a tier tag to enumerate a tier's failing set. A live perturbation is its own durable order per the Perturbation policy. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state.
 
 `watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag from the Tier tags table, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. A tier-tag watch is the sanctioned full-tier exception: QM runs that tier as a directed watch, distinct from inner-loop discovery. A tier-tag watch is one enumeration sweep, spent once its red list is dispatched to focused targets; it does not stand as an order to rerun the tier after every fix. When tier-tag watches cover several tiers, order them cheapest tier first; a red tier's dispatches complete before a costlier tier runs. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 
@@ -397,13 +397,13 @@ Verification runs in named shapes. Each question has one minimal shape; spend ex
 | Which steps are undefined or unimplemented? | Static discovery: the `discover` dry-run | Executes nothing |
 | Does this target pass? | Focused run: the `focused` command for the target | One scenario |
 | What currently fails in a tier? | Enumeration sweep: the tier unfiltered, without stop-on-first-failure, ordered by a tier-tag watch | One full tier, spent when its reds are dispatched |
-| Is the boundary sound? | Boundary check: every configured tier, cheapest tier first, with stop-on-first-failure | Full suite, at voyage and harbour boundaries only |
+| Is the ship sound? | Full regression: every configured tier, cheapest tier first, with stop-on-first-failure | Full suite, at voyage and harbour pivots only |
 
-Within a voyage a fix is proven by its own target's focused run, not a tier rerun; re-running known-green scenarios to reach the next failure is wasted cost, acute on a paid tier. Selection MAY narrow intermediate confirmation, never terminal proof: the pre-outbound boundary check and the harbour boundary check always execute in full.
+Within a voyage a fix is proven by its own target's focused run, not a tier rerun; re-running known-green scenarios to reach the next failure is wasted cost, acute on a paid tier. Selection MAY narrow intermediate confirmation, never terminal proof: the pre-outbound full regression and the harbour full regression always run whole. When outbound immediately follows harbour, the harbour full regression is the pre-outbound proof.
 
 Fitting out verifies credentials for every configured tier, raising a Captain blocker to provision what fails, so every configured tier is runnable by construction once fitting out completes. Run each configured tier whenever the work calls for it. A tier run that fails to authenticate is evidence that fitting out is incomplete: report a Captain blocker with the failure output.
 
-Methodology rules can be self-enforcing. An `@invariant` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable. A derived methodology check is proven by a negative test: plant a violation, confirm the check reddens, remove the violation. A check that has never been red is unproven.
+Methodology rules can be self-enforcing. An `@invariant` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable. A derived methodology check is proven by a planted red: plant a violation, confirm the check reddens, remove the plant. A check that has never been red is unproven.
 
 ### Perturbation policy
 
@@ -417,7 +417,7 @@ Outbound is any action that places durable state where a party outside the voyag
 
 ### Transient output
 
-Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact. The wake MAY carry yesterday's weather: observed run data such as tier wall-clock time, green worker counts, and pressure signals, read by the next run as a starting prior for concurrency per the Verification agreement. During a harbour boundary check, the wake MAY also carry per-scenario duration, read by Shipwright for the harbour verification-economy audit per the Shipwright skill.
+Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact. The wake MAY carry yesterday's weather: observed run data such as tier wall-clock time, green worker counts, and pressure signals, read by the next run as a starting prior for concurrency per the Verification agreement. During a harbour full regression, the wake MAY also carry per-scenario duration, read by Shipwright for the harbour verification-economy audit per the Shipwright skill.
 
 ### Tier tags
 
