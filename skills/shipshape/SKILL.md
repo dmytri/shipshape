@@ -194,11 +194,17 @@ Ownership:
 
 - A scantling is always its own file. Captain owns a project-authored scantling; Crew never writes one, so the durable contract never shares a file with the disposable production code it constrains. A vendored scantling is read-only like any vendored file.
 - A scantling creates no work. A scenario references it and asserts a seam conforms; the scantling itself is inert until referenced.
+- Every path under `scantlings` in `RIGGING.md` is referenced by at least one scenario. An unreferenced entry is a Captain finding with three outcomes: adopt it with a referencing scenario, remove it, or reclassify it by striking it from the `scantlings` value, so the file stays as tooling or asset material.
 - Do not duplicate scantling shapes or constraints in prose. The Gherkin holds the user or business behaviour; the scantling holds the mechanical shape or constraint: fields, status codes, structure, or a checked invariant.
 
 Attestation:
 
 - When the scantling is a proof, the scenario attests rather than re-enacts: a proof already covers every input, so an example would be strictly weaker and would split the spec across two surfaces that can drift. The scenario names the seam, runs the verifier named in `RIGGING.md`, and asserts a clean discharge.
+
+Adoption:
+
+- Prove a newly referenced scantling red once: plant a violation, confirm the conformance step reddens, remove the plant, per the Verification policy's negative-test rule.
+- Plant at the cheapest legal layer: a violating fixture or example is QM verification support; a constraint only a production violation can redden, such as an import boundary, waits for Shipwright's harbour plant exception, and reports name it unproven until it has been red.
 
 Scantling or double:
 
@@ -400,7 +406,7 @@ Methodology rules can be self-enforcing. A `@property` scenario MAY scan verific
 
 ### Perturbation policy
 
-A perturbation marks a behaviour-stable seam for reimplementation. A perturbation MAY span a cluster of fragmented seams so Crew reimplements them as one cohesive seam; the scenarios passing again prove the consolidation preserved behaviour. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other failing target. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit.
+A perturbation marks a behaviour-stable seam for reimplementation. A perturbation MAY span a cluster of fragmented seams so Crew reimplements them as one cohesive seam; the scenarios passing again prove the consolidation preserved behaviour. Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other failing target. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation against current durable context before commit. A perturbation proves preservation only of what scenarios pin. Before planting, Captain confirms the seam's scenarios pin the behaviour that must survive, and strengthens them first when in doubt.
 
 A perturbation MUST become a failing verification target. A perturbation that stays green has discovered an unexercised seam or a stale-green scenario. Liveness is proven by execution, not by static discovery, because a perturbation throws only when its seam runs. QM finds live perturbations by the `PERTURBATION` token, proves each red with a focused run of a scenario whose steps plank the perturbed seam, and blocks to Captain when the planked scenarios stay green. Boatswain treats a live perturbation in a green tree as a foul deck only after QM's liveness runs in the current voyage; a fresh perturbation awaiting its liveness run is healthy.
 

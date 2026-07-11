@@ -70,6 +70,9 @@ onehome "Selection MAY narrow intermediate confirmation"
 onehome "a cadence change is a tier retag"
 onehome "docblock or AST reader inventory every plank completely"
 onehome "spent once its red list is dispatched"
+onehome "reclassify it by striking it from the"
+onehome "pin the behaviour that must survive"
+onehome "cheapest legal layer"
 
 # Shipwright templates travel with the skill; fitting out reads them.
 if [ -f "$repo/skills/shipwright/templates.md" ]; then

@@ -12,6 +12,23 @@ AI agents make the old question urgent. An agent can rewrite code, tests, fixtur
 
 Shipshape's answer is that the ship was never its planks. Identity lives in the specification. Durable specs, traceable Planks, and verified behaviour preserve what matters while everything else remains free to change.
 
+## Why Shipshape
+
+Most spec-driven tools define what a spec looks like. Shipshape defines what makes a spec binding.
+
+A spec governs only while something reddens when it is violated. Without that, spec-driven development is document-driven development: progress becomes checked boxes, and the spec's authority is social rather than mechanical. So Shipshape ships the whole loop, not only the spec format:
+
+- Scenarios give behaviour a falsifiable form.
+- Verification doctrine keeps the green honest: real by default, every double justified and named, every methodology check proven by a planted red.
+- Planks trace every production seam to the steps that require it, so spec and code cannot drift apart silently.
+- Verification economy keeps the loop cheap enough to run on every change. An expensive truth procedure gets rationed, and a rationed truth procedure stops governing.
+- Fitting out brings an existing codebase under the same discipline, seam by seam.
+- Role custody and the context bulkhead keep discovery chat out of implementation, so the spec stays the single source of intent.
+
+This scope matters more with agents than with humans. An agent is an optimizer pointed at green: when a mock, a weakened assertion, or a vacuous check satisfies the target, the spec holds while the product does not. A human team backfills missing discipline from its engineering culture. An agent has no ambient culture; the discipline is in the harness or it is nowhere.
+
+Shipshape spends what agents have in surplus to protect what they cannot be trusted to conserve. Inference, repo-wide upkeep, and re-derivation from durable artifacts are cheap for an agent, so the design uses them freely: planks key on human-readable step text, roles re-derive state instead of remembering it, and Shipwright infers latent structure for Captain to ratify. Honest green, clean context, and current design are what agents cannot be trusted to conserve, so those are guarded by mechanism.
+
 ## Install
 
 ```bash
@@ -288,6 +305,8 @@ Trace annotations explain why production seams exist. They do not create work, r
 
 ## Perturbation
 
+Perturbation treats the codebase as a reconciled system. Durable specs and context are the declared state, verification is the diff, and a perturbation deliberately marks a seam out of conformance so the normal loop rebuilds it, the way an infrastructure tool taints a resource to force recreation from declared state. The reconciler here is an agent rebuilding from durable context, and the scenarios passing again prove the behaviour survived.
+
 Scenarios pin behaviour. Durable context also carries requirements that leave behaviour unchanged: a `Rule:` in a feature, a coding standard in `AGENTS.md`, a dependency or tooling value in `RIGGING.md`. When such a requirement changes, a seam can pass every step and still fall out of compliance.
 
 A perturbation marks that seam for reimplementation. Captain adds the `perturb` statement from `RIGGING.md` at the seam, and the seam becomes a failing verification target. QM discovers the failure and dispatches it like any other. Crew reimplements the seam from current durable context and removes the perturbation statement with the reimplemented seam. The scenarios passing again prove the behaviour survived the rebuild. Boatswain verifies each removed perturbation before commit.
@@ -355,13 +374,15 @@ The authoritative surface stays small:
 
 If asset or catalog content must be protected as behaviour, specify that behaviour in a `.feature` scenario.
 
-Shipshape is not an IDE, a memory bank, a backlog format, a task-list generator, a project constitution, a code generator, or a replacement for Cucumber.
+The mechanisms check each other. Perturbation audits what planks claim, the context bulkhead keeps perturbation free of rationale, scantlings give the spec a channel for structure that scenarios express badly, the negative-test gate proves every check can redden, and verification economy keeps the loop cheap enough to run on every change. Each mechanism's exposed edge is another mechanism's job.
+
+Shipshape is not an IDE, a memory bank, a backlog format, a task-list generator, a project constitution, a code generator, or a replacement for Cucumber. Partial adoption is a non-goal: the workflow is adopted whole, fitted out by Shipwright, not mixed piecemeal into an existing process.
 
 ## Enforcement and portability
 
 Shipshape skills work anywhere a coding agent can read repository files and follow role instructions. The workflow is portable by design: Cucumber specs, verification output, `@planks(...)` annotations, and git history carry the durable state.
 
-Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. This repository ships an optional plugin layer in the vendor-neutral [open-plugin format](https://open-plugins.com/) that mechanizes these disciplines on supporting runtimes:
+Skill-only agents follow the rules by explicit discipline. Enforcing runtimes turn the same rules into mechanical checks. Skill-only is the baseline and strengthens as models improve. An enforcing runtime is preferred, and holds the workflow even for small models, because a blocked write and a red check are legible at any capability. This repository ships an optional plugin layer in the vendor-neutral [open-plugin format](https://open-plugins.com/) that mechanizes these disciplines on supporting runtimes:
 
 - **Context isolation.** Role agents run Captain, QM, Crew, Boatswain, and Shipwright in isolated context windows. The Captain to QM bulkhead becomes mechanical.
 - **Custody.** Hooks block writes outside each role's write scope, block QM, Crew, and Shipwright from reading `CAPTAIN.md` and the session transcript, hold local commits to Boatswain, and keep outbound actions in the human-facing main session. Custody hooks bind the role agents. The human-facing main loop stays unrestricted; Captain's discipline is instructional, by design.
@@ -374,7 +395,7 @@ The skills remain canonical and sufficient on their own. Every plugin artifact c
 
 ## Related approaches
 
-Shipshape overlaps with spec-driven development tools, memory-bank workflows, and agent-team systems, but makes different tradeoffs.
+Shipshape overlaps with spec-driven development tools, memory-bank workflows, and agent-team systems, but makes different tradeoffs. These tools mostly define the spec format and the change lifecycle. Shipshape also ships the verification doctrine, traceability, and custody that make the spec binding, which is why its instruction set carries more than a format.
 
 | Approach | Common pattern | Shipshape difference |
 |---|---|---|
