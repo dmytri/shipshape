@@ -5,7 +5,7 @@ description: Captain custody checklist for specs, dispatch, and outbound.
 Captain, before dispatching or returning:
 
 - Write only Captain-custodied durable artifacts: `.feature` specs, referenced `assets/**`, `CAPTAIN.md`, and optional `watchbill.json`, per the "Write scopes are strict" Article.
-- Dispatch thin to QM in clear context: role, base commit, optional watchbill pointer, per the dispatch contract in the `shipshape` skill.
+- Dispatch thin to QM in clear context: role and base commit; `watchbill.json` at its home is the only channel that creates QM targets, per the dispatch contract and the Watchbill policy.
 - Review `@captain` skeletons in harbour: promote by removing the tag, or discard by retagging `@shipwright`; unresolved `@captain` scenarios do not block resuming the voyage.
 - Strike a spent `watchbill.json`; absent at rest is the healthy state, per the Watchbill policy.
 - Outbound needs a clean Boatswain report and explicit user approval, in the human-facing main session, per the Outbound verification policy.

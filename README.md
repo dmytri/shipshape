@@ -59,7 +59,7 @@ The plugin carries the same six skills and adds mechanical enforcement. Plugin i
 
 2. Tell Captain the product behaviour you want.
 
-3. Captain writes or updates `.feature` specs and, when useful, `watchbill.json`.
+3. Captain writes or updates `.feature` specs and writes the `watchbill.json` entry with each edit.
 
 4. Clear the agent context, or use a runtime that clears context automatically.
 
@@ -69,7 +69,7 @@ The plugin carries the same six skills and adds mechanical enforcement. Plugin i
    /qm
    ```
 
-6. QM derives verification from durable repository artifacts and dispatches Crew against failing targets.
+6. QM reads the watchbill, verifies its ordered scope, and dispatches Crew against failing targets.
 
 7. Boatswain performs hygiene, verification recheck, and local commit custody.
 
@@ -87,10 +87,10 @@ sequenceDiagram
 
     User->>Captain: Describe product intent
     Captain->>Captain: Write .feature specs, watchbill.json
+    Captain->>Boatswain: Pre-clean a dirty deck
+    Boatswain->>Captain: Stale artifacts flagged
     Note over Captain,QM: Context clears
-    QM->>QM: Run verification discovery
-    QM->>Boatswain: Pre-clean scan
-    Boatswain->>QM: Stale artifacts flagged
+    QM->>QM: Read watchbill.json, run its scope
     QM->>Crew: Dispatch failing target
     Crew->>Crew: Smallest production change
     Crew->>QM: Target pass
@@ -113,7 +113,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent. QM starts from clean context and reads only durable repository artifacts. Discovery chat, rationale, and abandoned ideas never reach tests or implementation.
 
-Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist. Passing checks are evidence, not proof. QM's standing discovery is static and executes nothing; execution is spent on focused runs, ordered enumeration sweeps, and full regressions. The full regression runs at voyage and harbour pivots, not as the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
+Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist; the watchbill scopes what is verified. Passing checks are evidence, not proof. Execution is spent on focused runs, ordered enumeration sweeps, and full regressions. The full regression runs at voyage and harbour pivots, not as the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
 
 Verification works best when production code exposes narrow behaviour seams. Shipshape discourages hidden product behaviour in global state, constructors, static initialization, and service locators. Seams serve real verification. They never replace normal-path real coverage with mocks, fakes, or test-only branches.
 
@@ -245,7 +245,7 @@ Boatswain flags stale artifacts, cleans non-code cruft, reruns configured verifi
 
 ## Watchbill
 
-`watchbill.json` lets Captain focus QM and Crew on a selected order of verification-discoverable scenarios. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing. It is also the channel that points QM at implemented scenarios: QM's own discovery lists only undefined and unimplemented steps.
+`watchbill.json` is the verification scope order: Captain limits what QM verifies, and verification output over that scope creates the worklist. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing. It is the only channel that creates QM targets; a scenario the scope missed waits for the next full regression, pre-outbound or harbour.
 
 Example:
 
@@ -303,7 +303,7 @@ export async function payWithSavedCard(checkout, savedCard) {
 - A seam must not contain behaviour outside its related step contracts. Extra behaviour is missing specification, misplaced code, or dead code.
 - Do not trace production code to features or scenarios. Scenario coverage is derived through Cucumber's scenario-to-step mapping.
 
-Trace annotations explain why production seams exist. They do not create work, replace verification discovery, or define product intent.
+Trace annotations explain why production seams exist. They do not create work, replace verification, or define product intent.
 
 ## Perturbation
 
@@ -352,11 +352,11 @@ Plain agent coding often traps product intent in chat. Memory-bank workflows pre
 Shipshape answers those failure modes with a small, current-state workflow:
 
 - Product behaviour lives in `.feature` specs.
-- Work comes from undefined, unimplemented, or failing verification.
+- Work comes from failing verification over the watchbill's scope.
 - Roles have strict custody over specs, verification, implementation, and hygiene.
 - Context is cleared between Captain and Quartermaster.
 - Boatswain flags stale production artifacts and cleans non-code cruft.
-- `watchbill.json` selects and orders discovered work only. It does not create work.
+- `watchbill.json` scopes and orders what QM verifies. It does not create work.
 
 Disposable does not mean careless. Code and tests must justify their existence against current executable behaviour. Humans edit code at any time. Shipshape has no backlog, no task list, and no agent memory of planned work. Agents derive the next action from current verification state. If you fix a bug by hand, QM sees it pass and moves on. If you break something, QM flags it. There is no stale plan to reconcile.
 
@@ -370,7 +370,7 @@ The authoritative surface stays small:
 - `AGENTS.md` is the human-facing agent entry document.
 - `RIGGING.md` holds project tooling values such as stack, directories, commands, and the perturbation statement.
 - `CAPTAIN.md`, if present, contains Captain-only non-binding notes.
-- `watchbill.json` selects and orders verification-discovered work only.
+- `watchbill.json` scopes and orders what QM verifies.
 - `@planks(...)` annotations explain why production seams exist. They do not define product intent.
 - Git history preserves history. Current files describe current design.
 

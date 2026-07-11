@@ -139,9 +139,10 @@ case "$role" in
     [ -n "$scant" ] && in_dirs "$rel" "$scant" && deny "Scantlings are Captain-custodied."
     ;;
   boatswain)
-    # skills/boatswain/SKILL.md: "MAY read CAPTAIN.md ...; MUST NOT edit it."
+    # skills/boatswain/SKILL.md: "Captain trims their own notes; Boatswain
+    # MUST NOT read or edit CAPTAIN.md."
     case "$base" in
-      CAPTAIN.md) deny "Boatswain MAY read Captain notes and MUST NOT edit them." ;;
+      CAPTAIN.md) deny "Captain trims their own notes; Boatswain MUST NOT edit them." ;;
     esac
     ;;
   shipwright)

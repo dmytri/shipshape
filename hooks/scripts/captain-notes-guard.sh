@@ -1,12 +1,11 @@
 #!/bin/sh
 # Shipshape Captain-notes read guard. PreToolUse guard for Read/Grep/Glob.
 #
-# Enforces the CAPTAIN.md access rule: skills/qm/SKILL.md "MUST NOT read
-# CAPTAIN.md", and the Captain-notes access rule that Boatswain MAY read the
-# file while Quartermaster, Crew Mate, and Shipwright MUST NOT. Mechanizes
-# the Context bulkhead Article for direct reads and for searches that name the
-# file; a broad search that surfaces the file without naming it stays with
-# skill discipline. Doctrine lives in the skills; this script adds none.
+# Enforces the CAPTAIN.md access rule from the Captain skill: Captain writes
+# and trims the notes, and no other role reads them. Mechanizes the Context
+# bulkhead Article for direct reads and for searches that name the file; a
+# broad search that surfaces the file without naming it stays with skill
+# discipline. Doctrine lives in the skills; this script adds none.
 #
 # Role identity: the runtime names the running agent in the hook payload
 # as agent_type, such as "shipshape:crew". Payloads with no shipshape
@@ -20,13 +19,13 @@ role=$(printf '%s' "$payload" | sed -n 's/.*"agent_type":[[:space:]]*"shipshape:
 [ -z "$role" ] && exit 0
 
 case "$role" in
-  qm|crew|shipwright) : ;;
+  qm|crew|boatswain|shipwright) : ;;
   *) exit 0 ;;
 esac
 
 case "$payload" in
   *CAPTAIN.md*)
-    echo "Shipshape custody: $role MUST NOT read CAPTAIN.md. Captain-only non-binding notes; Boatswain MAY read them, QM, Crew, and Shipwright derive everything from durable artifacts. (Article: Context bulkhead.)" >&2
+    echo "Shipshape custody: $role MUST NOT read CAPTAIN.md. Captain-only non-binding notes; no role but Captain reads them. Derive everything from durable artifacts. (Article: Context bulkhead.)" >&2
     exit 2
     ;;
 esac

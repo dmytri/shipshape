@@ -2,11 +2,10 @@
 # Shipshape feature quality gate. PostToolUse hook for Edit/Write/MultiEdit.
 #
 # Enforces the scenario-writing agreement from skills/shipshape/SKILL.md and
-# the Boatswain hygiene check from skills/boatswain/SKILL.md: "Touched
-# .feature files: concrete, executable, current, not padded", "Bare # comments
-# in .feature files ... crosses the Context bulkhead by construction", and
-# "Prefer available hygiene tools from project configuration, including
-# gplint when present." Doctrine lives in the skills; this script adds none.
+# the Captain skill's write-time lint duty: "Lint authored specs and assets
+# at write time", and "Bare # comments in .feature files ... crosses the
+# Context bulkhead by construction". Doctrine lives in the skills; this
+# script adds none.
 
 payload=$(cat)
 file_path=$(printf '%s' "$payload" | sed -n 's/.*"file_path":[[:space:]]*"\([^"]*\)".*/\1/p')

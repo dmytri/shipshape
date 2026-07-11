@@ -3,10 +3,10 @@
 #
 # Enforces commit and outbound custody from the skills: Boatswain holds
 # local commit custody (skills/boatswain/SKILL.md: "Commit locally in
-# post-implementation mode only"; "Outbound is Captain-only. Do not push,
-# tag, publish, release, or deploy.") and outbound requires explicit user
-# approval through Captain (skills/captain/SKILL.md). Doctrine lives in the
-# skills; this script adds none.
+# the post-implementation job only"; "Outbound is Captain-only. Do not
+# push, tag, publish, release, or deploy.") and outbound requires explicit
+# user approval through Captain (skills/captain/SKILL.md). Doctrine lives
+# in the skills; this script adds none.
 #
 # Role identity: the runtime names the running agent in the hook payload
 # as agent_type, such as "shipshape:crew". Payloads with no shipshape
@@ -35,9 +35,9 @@ command=$(printf '%s' "$payload" | sed "s/\\\\\"/$esc/g" | sed -n 's/.*"command"
 norm=" $(printf '%s' "$command" | tr -s '[:space:]' ' ') "
 
 case "$role" in
-  qm|crew|shipwright)
+  qm|crew|boatswain|shipwright)
     case "$command" in
-      *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. Boatswain MAY read it; QM, Crew, and Shipwright derive everything from durable artifacts." ;;
+      *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. No role but Captain reads it; derive everything from durable artifacts." ;;
     esac
     # The session transcript is discarded conversation context, never
     # product intent (Role transitions: "an internal role MUST NOT mine

@@ -28,7 +28,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - If the approach fails after focused verification and one correction, two edit-and-run cycles in total, stop and report. If the test or spec seems wrong, or the harness itself appears at fault, stop and report; do not contort production code to satisfy a broken harness.
 - If the changed seam now contains behaviour outside its `@planks(...)` steps, stop and report to QM.
 - MUST add or update `@planks(...)` annotations on every changed production seam, per the Planking agreement's form, using the exact Gherkin step text from the failing target.
-- The dispatch states solo or parallel. In a parallel dispatch, Crew works only their assigned target in the isolated workspace QM provided. If a required edit reaches beyond the target's directly related production files, report the overreach instead of editing; Boatswain reconciles parallel work at merge.
+- The dispatch states solo or parallel. In a parallel dispatch, Crew works only their assigned target and shares the deck with other mates. If a required edit reaches beyond the target's directly related production files, report the overreach instead of editing.
 
 ## Opening
 

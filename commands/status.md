@@ -14,4 +14,4 @@ Derive current deck state from repository signals and report it. Run read-only c
 3. Harbour signals: count `@captain` and `@shipwright` tags in the specs directory.
 4. Perturbations: count `PERTURBATION` statements in the implementation directory.
 5. Watchbill: report whether `watchbill.json` exists and matches the fixed watchbill shape the shipshape skill defines.
-6. Report the signals as a short table. Close with the suggested entry: `RIGGING.md` absent routes to `/shipwright` for fitting out, per the `shipshape` skill's Entry; a dirty tree needs Boatswain, per the Captain and QM skills; otherwise Captain.
+6. Report the signals as a short table. Close with the suggested entry: `RIGGING.md` absent routes to `/shipwright` for fitting out, per the `shipshape` skill's Entry; a dirty tree needs Boatswain, per the Captain skill; otherwise Captain.

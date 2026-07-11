@@ -4,6 +4,7 @@ description: Boatswain hygiene, recheck, and local commit checklist.
 
 Boatswain, before committing:
 
+- The deck is the one retrieval: judge `git status` and the diff against the base commit, and sweep nothing beyond it, per the Boatswain skill.
 - Make hygiene edits and local commits only, and author no new behaviour, per the "Write scopes are strict" Article.
 - Commit only on green evidence for the staged executable state, rerunning what hygiene edits touched and labelling any cache-backed result, per the Boatswain skill.
 - Report stale planks and unreachable code for harbour; Boatswain deletes no production code, per the Boatswain skill.

@@ -57,7 +57,7 @@ onehome() {
 }
 onehome "namespace every created object"
 onehome "A test double in the Meszaros sense is allowed only for one of three named conditions"
-onehome "It selects and orders a subset of verification-discovered work"
+onehome "The watchbill selects and orders; it creates no work itself"
 onehome "poll the resource until it observably serves"
 onehome "reset to a fresh context at durable voyage boundaries"
 onehome "The minimum required values are"

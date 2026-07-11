@@ -109,15 +109,15 @@ check "main loop push unrestricted" bash-custody.sh "{\"cwd\":\"$work/proj\",\"t
 # captain-notes-guard
 check "qm blocked from reading CAPTAIN.md" captain-notes-guard.sh "$(p "shipshape:qm" "$work/proj/CAPTAIN.md")" 2
 check "crew blocked from grepping CAPTAIN.md" captain-notes-guard.sh "$(p "shipshape:crew" "$work/proj/CAPTAIN.md")" 2
-check "boatswain may read CAPTAIN.md" captain-notes-guard.sh "$(p "shipshape:boatswain" "$work/proj/CAPTAIN.md")" 0
+check "boatswain blocked from reading CAPTAIN.md" captain-notes-guard.sh "$(p "shipshape:boatswain" "$work/proj/CAPTAIN.md")" 2
 check "foreign agent reads unrestricted" captain-notes-guard.sh "$(p "Explore" "$work/proj/CAPTAIN.md")" 0
 check "main loop reads unrestricted" captain-notes-guard.sh "{\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/proj/CAPTAIN.md\"}}" 0
 check "qm other reads unaffected" captain-notes-guard.sh "$(p "shipshape:qm" "$work/proj/features/pay.feature")" 0
 check "crew blocked from cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:crew" "cat CAPTAIN.md")" 2
-check "boatswain may cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:boatswain" "cat CAPTAIN.md")" 0
+check "boatswain blocked from cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:boatswain" "cat CAPTAIN.md")" 2
 check "qm blocked from reading transcript" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2
 check "qm benign command allowed" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\"}}" 0
-check "boatswain may read transcript" bash-custody.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 0
+check "boatswain blocked from transcript" bash-custody.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2
 
 # captain-reset-nudge (PostToolUse; nudge fires on stdout, blocks nothing)
 nudge() {
@@ -225,7 +225,7 @@ check "git tag creation still blocked" bash-custody.sh "$(b "shipshape:boatswain
 
 # captain-notes-guard blocks a Read of the transcript file itself.
 check "qm blocked from reading transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 2
-check "boatswain may read transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 0
+check "boatswain blocked from transcript file" captain-notes-guard.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"file_path\":\"$work/t-dirty.jsonl\"}}" 2
 
 # reset-nudge reads only the command, not the tool output.
 nudge "push in tool output does not fire nudge" "{\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"git status\"},\"tool_response\":{\"stdout\":\"use git push to publish\"}}" "silent"

@@ -8,7 +8,7 @@ Shipwright, before reporting harbour complete:
 - Plank every production seam in scope, and write `@captain`-tagged skeletons for unspecified behaviour, per the "Every production seam is planked" Article.
 - Remove only `@shipwright`-condemned scenarios and the code their steps plank, reverting when the suite reddens, per the Shipwright skill.
 - Derive `RIGGING.md` to the Rigging shape, and prove every derived methodology check red once with a planted violation before writing it.
-- Run every configured tier, cheapest first, as a full regression through the `coverage` command, and record weather in the wake, per the Shipwright skill.
-- Run the verification-economy audit over the full regression, assess the five lenses per scenario, and report each finding with its lens; routing is Captain's per the Harbour flow.
+- Run harbour's one full regression at entry, every configured tier cheapest first through the `coverage` command, and record weather in the wake; prove condemnation removals by scoped runs, per the Shipwright skill.
+- Run the verification-economy audit over the entry regression's weather, assess the five lenses per scenario, and report each finding with its lens; routing is Captain's per the Harbour flow.
 
 Doctrine lives in `skills/shipwright/SKILL.md`; when this rule and the skill disagree, the skill wins.

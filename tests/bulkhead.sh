@@ -50,9 +50,10 @@ if [ $? -eq 2 ]; then pass=$((pass + 1)); else fail=$((fail + 1)); echo "FAIL: f
 # leak path: internal role reads the session transcript off disk
 leak "transcript read leak blocked (qm)" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"cat $work/t.jsonl\"}" 2
 leak "transcript read leak blocked (crew)" bash-custody.sh "shipshape:crew" "Bash" "{\"command\":\"wc -l $work/t.jsonl\"}" 2
+# leak path: Boatswain reads Captain notes or the transcript
+leak "boatswain notes read blocked" captain-notes-guard.sh "shipshape:boatswain" "Read" "{\"file_path\":\"$work/proj/CAPTAIN.md\"}" 2
+leak "boatswain transcript read blocked" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"cat $work/t.jsonl\"}" 2
 # legitimate paths stay open
-leak "boatswain read stays open" captain-notes-guard.sh "shipshape:boatswain" "Read" "{\"file_path\":\"$work/proj/CAPTAIN.md\"}" 0
-leak "boatswain transcript read stays open" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"cat $work/t.jsonl\"}" 0
 leak "thin dispatch stays open" dispatch-guard.sh "shipshape:qm" "Task" "{\"subagent_type\":\"shipshape:crew\",\"prompt\":\"Target: f.feature:X. Failure: expected Y.\"}" 0
 
 echo "pass: $pass fail: $fail"
