@@ -94,7 +94,7 @@ Verification runs in tiers; the Tier tags table at the end of this skill defines
 - Yesterday's weather: observed run data the wake carries as the next run's starting prior; the Verification agreement carries the use.
 - Rigging: the project configuration files that `RIGGING.md` documents; the Project configuration section carries the shapes.
 - Full regression: a run of every configured tier at a voyage or harbour pivot, in contrast to the focused inner loop.
-- Role-advanced work: the edits the current role made in the current session; the Working tree policy carries the custody rules.
+- Role-advanced work: the edits the voyage's roles made since the base commit, in contrast to operator edits; the Working tree policy carries the custody rules.
 - Craft: worked technique and judgment guidance, in contrast to binding behaviour. Agreements and policies carry craft for roles; asset bodies carry craft for humans.
 
 ### Tags
@@ -136,6 +136,7 @@ These are shared Shipshape declarations. Cite an Article by its title. Two group
    - Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user.
    - QM MAY strike an entry from `## Known false-failure modes` in `RIGGING.md` after engineering the failure mode out.
    - During harbour only, Shipwright MAY create and refit `AGENTS.md` and `RIGGING.md`, append the Shipshape README block, write the derived search-exclusion artifact, and remove `@shipwright`-condemned scenarios and the code their steps plank, per the Shipwright skill.
+   - During harbour only, Shipwright MAY also remove reference-confirmed unreachable code, and plant a temporary violation, with any scratch `watchbill.json` its proof needs, where plant and scratch leave the tree with the planted-red proof, per the Shipwright skill.
 9. **Every production seam is planked.** Planks are the behaviour-bearing production code required by Gherkin step contracts. Every production seam MUST have at least one `@planks(...)` annotation, and MUST NOT contain behaviour outside its related step contracts. The Planking agreement carries the annotation mechanics; the "Current design only" Article carries the judgment on unplanked seams.
 
 ## Scenario-writing agreement
@@ -270,6 +271,7 @@ Form:
 - Use exact current Gherkin step text. Include the Gherkin keyword. Normalize `And` and `But` to the inherited `Given`, `When`, or `Then`.
 - Hoist annotations to the smallest stable seam that owns the behaviour. Do not annotate individual lines, expressions, branches, or helper fragments. A plank in a line comment or on an in-body fragment is malformed; hoist it to the seam declaration.
 - A seam MAY carry Planks for several steps. A step MAY be carried by several seams. Not every step requires Planks: setup and assertion steps often use only verification support.
+- Where several steps could carry the plank, prefer a behaviour-bearing step over a data-bearing one. A plank bound to example data goes stale with every data edit.
 
 Judging:
 
@@ -314,8 +316,9 @@ Captain to QM always requires clean context. A window-isolated subagent or a fre
 | QM to Crew | target scenario reference, observed failure evidence, solo or parallel marker; for a perturbation target, also the perturbed seam location |
 | QM to Boatswain | post-implementation job, base commit, advanced target references |
 | Captain to Boatswain | job, base commit |
+| Captain to Shipwright | role, base commit, optional scope |
 
-A perturbation's seam location is observed evidence from the failure output, not a seam hint. QM reads `watchbill.json` at the project root: the file is the channel, so the dispatch carries no pointer. A Captain dispatch to Boatswain names pre-clean for a dirty deck or post-implementation for harbour custody, per the Boatswain skill. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
+When the project root is not the session's working directory, every dispatch also names the project root. A perturbation's seam location is observed evidence from the failure output, not a seam hint. QM reads `watchbill.json` at the project root: the file is the channel, so the dispatch carries no pointer. A Captain dispatch to Boatswain names pre-clean for a dirty deck or post-implementation for harbour custody, per the Boatswain skill. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
 
 **Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives. Three cases, by vector:
 
@@ -385,9 +388,9 @@ Do not create extra binding Shipshape artifact types such as constitution, proje
 
 ### Watchbill policy
 
-`watchbill.json` is the verification scope order and the only channel that creates QM targets: Captain limits what is verified, and verification output over that scope creates the worklist. The watchbill selects and orders; it creates no work itself. Captain writes fixed-shape `watchbill.json` as intent lands: a new or edited scenario's entry is written with the edit, a tier tag enumerates a tier's failing set, and a perturbation's planked scenarios enter at plant time per the Perturbation policy. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. Absent at rest is the healthy state: QM dispatched with no watchbill reports the deck at rest. A scenario the scope missed waits for the next full regression, pre-outbound or harbour, per the Verification policy.
+`watchbill.json` is the verification scope order and the only channel that creates QM targets: Captain limits what is verified, and verification output over that scope creates the worklist. The watchbill selects and orders; it creates no work itself. Captain writes fixed-shape `watchbill.json` as intent lands: a new or edited scenario's entry is written with the edit, a tier tag enumerates a tier's failing set, and a perturbation's planked scenarios enter at plant time per the Perturbation policy. If `watchbill.json` and verification disagree, verification wins. A spent watchbill is struck: when its scenarios are verified, Captain removes the file. The strike is work in flight per the Working tree policy: Boatswain stages it with the next custody commit. Absent at rest is the healthy state: QM dispatched with no watchbill reports the deck at rest. A scenario the scope missed waits for the next full regression, pre-outbound or harbour, per the Verification policy.
 
-`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag from the Tier tags table, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. A tier-tag watch is the sanctioned full-tier exception: QM runs that tier as a directed watch, distinct from focused confirmation. A tier-tag watch is one enumeration sweep, spent once its red list is dispatched to focused targets; it does not stand as an order to rerun the tier after every fix. When tier-tag watches cover several tiers, order them cheapest tier first; a red tier's dispatches complete before a costlier tier runs. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
+`watchbill.json` contains only ordered watch objects named `watch1`, `watch2`, and onward. Each watch contains only `scenarios`, an array of references in `<spec>.feature:<Scenario Name>` form or a tier tag defined under `## Tiers` in `RIGGING.md`, with no prose, metadata, or hidden context. A scenario reference is repo-root-relative and includes the specs directory. A tier tag directs QM to run that tier unfiltered, at normal concurrency, rather than through the per-scenario `focused` command; a `focused` reference cannot reproduce a defect that only manifests under real multi-scenario concurrency. A tier-tag watch is the sanctioned full-tier exception: QM runs that tier as a directed watch, distinct from focused confirmation. A tier-tag watch is one enumeration sweep, spent once its red list is dispatched to focused targets; it does not stand as an order to rerun the tier after every fix. When tier-tag watches cover several tiers, order them cheapest tier first; a red tier's dispatches complete before a costlier tier runs. QM processes all watches in order unless verification, product intent, environment, or tooling blocks.
 
 ### Verification policy
 
@@ -429,4 +432,4 @@ Generated build and verification output is the ship's wake, such as coverage rep
 | `@logic` | Pure local tests, no external accounts. Fast, deterministic, safe. | Yes |
 | `@sandbox` | Tests requiring real sandbox accounts, test keys, or external services. | No |
 
-Projects MAY define additional opt-in tiers. Each tier has its own tag and policy in `RIGGING.md`.
+Projects MAY define additional opt-in tiers. Each tier has its own tag and policy in `RIGGING.md`. An untagged scenario belongs to the default tier. Captain assigns a tier tag with the promotion or the spec edit when the scenario belongs outside the default tier.

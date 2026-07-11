@@ -55,7 +55,7 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
 
 ## Harbour review
 
-1. Shipwright returns `@captain`-tagged scenario skeletons, `@planks(...)` annotations, and findings. Review each skeleton with the user: promote by removing the tag, or discard by retagging `@captain` to `@shipwright`. A `@shipwright` scenario is a removal work order: Shipwright removes the code its planked steps trace to, then deletes the scenario.
+1. Shipwright returns `@captain`-tagged scenario skeletons, `@planks(...)` annotations, and findings. Review each skeleton with the user: promote by removing the tag, adding a tier tag when the scenario belongs outside the default tier, or discard by retagging `@captain` to `@shipwright`. A `@shipwright` scenario is a removal work order: Shipwright removes the code its planked steps trace to, then deletes the scenario.
 2. If any scenario was retagged `@shipwright`, re-invoke Shipwright in the same harbour to process the condemnations; review retags are harbour-scoped edits and pass the harbour-entry guard. A `@shipwright` scenario left unprocessed at harbour exit waits for the next harbour.
 3. Act on each verification-economy finding by kind, per the Harbour flow routing. Where the runtime lets Shipwright speak with the user, interrogate the cost outliers with Shipwright directly.
 4. Load Boatswain for harbour custody: the post-implementation job over the harbour-scoped edits, per the Dispatch contract.

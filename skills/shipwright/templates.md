@@ -30,7 +30,7 @@ Procedure lives in the skills. Every role reads this on open.
 
 - discover: `<derived or none>`
 - focused: `<derived command with {scenario}>`
-- broad: `<derived or none>`
+- broad: `<derived enumeration sweep, without stop-on-first-failure, or none>`
 - coverage: `<derived or none>`
 - step-usage: `<derived or none>`
 - plank-inventory: `<derived or none>`
