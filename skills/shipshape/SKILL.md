@@ -47,6 +47,7 @@ Shipshape Controlled English is the register for durable artifacts and skill tex
 - Use Canadian spelling, controlled common vocabulary, precise technical terms, short sentences, explicit subjects, and a neutral professional register.
 - Use **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** as defined by RFC 2119 and RFC 8174.
 - Use defined nautical terms of art as controlled vocabulary. Keep the surrounding register plain and professional. The Terms of art section defines the vocabulary.
+- Use established technical terms with their established meaning; the familiar term carries the rule. Where no established term fits, define a term of art whose name no established meaning contests.
 - Avoid colloquial idiom, regional assumptions, marketing hyperbole, unclear metaphor, and vague claims.
 - Preserve technical identifiers, file paths, commands, schema keys, tags, and quoted literals unless the quoted text is prose being specified.
 - Use only characters from a US 101-key keyboard. No em dashes, smart quotes, or other non-ASCII punctuation.
@@ -101,8 +102,8 @@ Verification runs in tiers; the Tier tags table at the end of this skill defines
 | Tag | Marks | Rules live in |
 |---|---|---|
 | `@logic`, `@sandbox` | Verification tiers | Tier tags |
-| `@property` | A cross-cutting invariant scenario | Scenario-writing agreement, Verification policy |
-| `@exceptional-double` | A justified double | Verification agreement |
+| `@invariant` | A cross-cutting invariant scenario | Scenario-writing agreement, Verification policy |
+| `@exceptional-double` | A justified test double | Verification agreement |
 | `@captain` | A non-binding scenario skeleton awaiting Captain review | Harbour flow, Shipwright skill |
 | `@shipwright` | A condemned scenario, a harbour removal work order | Harbour flow, role skills |
 
@@ -143,7 +144,7 @@ Shipshape uses specification by example: each scenario is a concrete example tha
 
 Feature file:
 
-- Lives under the specs directory from `RIGGING.md`: one `Feature` per file, named in kebab-case after the behaviour, unless project policy differs. Use stable domain vocabulary.
+- Lives under the specs directory from `RIGGING.md`: one `Feature` per file, named in kebab-case after the behaviour, unless project policy differs. Use stable domain vocabulary, the domain's ubiquitous language.
 - Indent with 2 spaces. Scenarios SHOULD be separated by one blank line. A scenario's steps MUST be contiguous.
 
 Each scenario:
@@ -170,7 +171,7 @@ Data:
 What can be a scenario:
 
 - Testability, not subject, decides. Product behaviour, harness conformance, agent behaviour, runtime enforcement, performance budgets, authorization, and accessibility can all be scenarios when falsifiable, and become discoverable when they fail.
-- Tag a cross-cutting invariant `@property`.
+- Tag a cross-cutting invariant `@invariant`.
 - Content behaviour can be a scenario, but only the seam you own. When a third-party generator renders the content, that seam is invoking and configuring it correctly; assert that it runs and produces the expected output. The asset carries the copy and the generator owns its rendering.
 - A scantling can be referenced by a scenario per the Scantling agreement; the scenario asserts conformance or, for a proof, attests a clean discharge.
 
@@ -256,7 +257,7 @@ Teardown:
 Proof:
 
 - Green means the real thing happened. Assert the artifact only the real path can produce: the live reply, the served response, the persisted record, the package installed from the registry. An assertion a double could satisfy proves the harness, not the behaviour.
-- A double is allowed only for one of three named conditions: a specific condition the real environment genuinely cannot produce on demand; internal composition or wiring with no independent external verifier, per the Scantling agreement's scantling-or-double clause; or a real dependency that the subject under test only calls into, where the subject is a layer above it, the dependency's real behaviour is covered for real in another tier, and every canned response is a golden capture recorded from the real dependency and re-verified against it on a stated cadence such as harbour. A hand-authored canned response is the forbidden fake; only a golden capture, refreshed on its stated cadence, stands. Mark and justify every double inline with `@exceptional-double`, naming which condition applies. It MUST never replace normal-path real coverage.
+- A test double in the Meszaros sense is allowed only for one of three named conditions: a specific condition the real environment genuinely cannot produce on demand; internal composition or wiring with no independent external verifier, per the Scantling agreement's scantling-or-double clause; or a real dependency that the subject under test only calls into, where the subject is a layer above it, the dependency's real behaviour is covered for real in another tier, and every canned response is a golden capture recorded from the real dependency and re-verified against it on a stated cadence such as harbour. A hand-authored canned response is the forbidden fake; only a golden capture, refreshed on its stated cadence, stands. Mark and justify every double inline with `@exceptional-double`, naming which condition applies. It MUST never replace normal-path real coverage.
 - A recurring non-product failure is a harness defect. Engineer it out with a readiness gate, an isolation fix, or a reclaim at suite start, then strike its entry from `## Known false-failure modes` in `RIGGING.md`. An empty section is the healthy state.
 
 ## Planking agreement
@@ -402,7 +403,7 @@ Within a voyage a fix is proven by its own target's focused run, not a tier reru
 
 Fitting out verifies credentials for every configured tier, raising a Captain blocker to provision what fails, so every configured tier is runnable by construction once fitting out completes. Run each configured tier whenever the work calls for it. A tier run that fails to authenticate is evidence that fitting out is incomplete: report a Captain blocker with the failure output.
 
-Methodology rules can be self-enforcing. A `@property` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable. A derived methodology check is proven by a negative test: plant a violation, confirm the check reddens, remove the violation. A check that has never been red is unproven.
+Methodology rules can be self-enforcing. An `@invariant` scenario MAY scan verification support code for forbidden doubles, making the real-by-default rule executable and its violations discoverable. A derived methodology check is proven by a negative test: plant a violation, confirm the check reddens, remove the violation. A check that has never been red is unproven.
 
 ### Perturbation policy
 

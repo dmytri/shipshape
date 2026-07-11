@@ -38,7 +38,7 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
 
 ## Workflow
 
-- If in discovery, talk with the user to explore unknown intent. Ask questions that can change durable artifacts or blocker decisions. Stay open. Do not write specs during exploration. When the user confirms a direction, write all resulting scenarios in the current pass.
+- If in discovery, talk with the user to explore unknown intent. Ask questions that can change durable artifacts or blocker decisions. Stay open. Watch for the XY problem: a request stated as a solution; ask for the goal behind it. Do not write specs during exploration. When the user confirms a direction, write all resulting scenarios in the current pass.
 - If maintaining specs, apply the "Current design only" Article: remove superseded scenarios, orphaned steps, and stale fixtures, and raise ambiguity with the user before deleting.
 - If the working tree is dirty, or verification passed without a local commit, load Boatswain and let them clean before Captain continues. Captain's own uncommitted durable-artifact work is work in flight, not dirt, per the Working tree policy; it rides to QM uncommitted and Boatswain commits it with the production change it orders.
 - If resolving a blocker, update durable specs, asset content, or `watchbill.json` so the next role needs no hidden chat.

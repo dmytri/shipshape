@@ -19,13 +19,15 @@ Most spec-driven tools define what a spec looks like. Shipshape defines what mak
 A spec governs only while something reddens when it is violated. Without that, spec-driven development is document-driven development: progress becomes checked boxes, and the spec's authority is social rather than mechanical. So Shipshape ships the whole loop, not only the spec format:
 
 - Scenarios give behaviour a falsifiable form.
-- Verification doctrine keeps the green honest: real by default, every double justified and named, every methodology check proven by a planted red.
+- Verification doctrine keeps the green honest: real by default, every test double justified and named, every methodology check proven by a planted red.
 - Planks trace every production seam to the steps that require it, so spec and code cannot drift apart silently.
 - Verification economy keeps the loop cheap enough to run on every change. An expensive truth procedure gets rationed, and a rationed truth procedure stops governing.
 - Fitting out brings an existing codebase under the same discipline, seam by seam.
 - Role custody and the context bulkhead keep discovery chat out of implementation, so the spec stays the single source of intent.
 
 This scope matters more with agents than with humans. An agent is an optimizer pointed at green: when a mock, a weakened assertion, or a vacuous check satisfies the target, the spec holds while the product does not. A human team backfills missing discipline from its engineering culture. An agent has no ambient culture; the discipline is in the harness or it is nowhere.
+
+The position has prior art. Peter Naur's Programming as Theory Building holds that a program is a theory its programmers carry, and that the program dies when the theory leaves with them. A replaceable agent carries nothing between sessions, so the theory cannot live in any head: it lives in durable artifacts or it dies with every context clear. Goodhart's Law names the other pressure: a measure that becomes a target stops measuring, which is why the doctrine treats green as evidence, never proof.
 
 Shipshape spends what agents have in surplus to protect what they cannot be trusted to conserve. Inference, repo-wide upkeep, and re-derivation from durable artifacts are cheap for an agent, so the design uses them freely: planks key on human-readable step text, roles re-derive state instead of remembering it, and Shipwright infers latent structure for Captain to ratify. Honest green, clean context, and current design are what agents cannot be trusted to conserve, so those are guarded by mechanism.
 
@@ -376,6 +378,8 @@ If asset or catalog content must be protected as behaviour, specify that behavio
 
 The mechanisms check each other. Perturbation audits what planks claim, the context bulkhead keeps perturbation free of rationale, scantlings give the spec a channel for structure that scenarios express badly, the negative-test gate proves every check can redden, and verification economy keeps the loop cheap enough to run on every change. Each mechanism's exposed edge is another mechanism's job.
 
+The vocabulary works with model training, not against it. An established term keeps its established meaning, such as Gherkin and the Meszaros test-double taxonomy, so the trained concept carries the rule. A coined term of art, such as plank, scantling, or watchbill, claims a name no established software meaning contests. A term that fights its trained meaning misleads every fresh context that reads it.
+
 Shipshape is not an IDE, a memory bank, a backlog format, a task-list generator, a project constitution, a code generator, or a replacement for Cucumber. Partial adoption is a non-goal: the workflow is adopted whole, fitted out by Shipwright, not mixed piecemeal into an existing process.
 
 ## Enforcement and portability
@@ -408,7 +412,7 @@ Shipshape combines four ideas: role custody, context isolation, verification as 
 
 Related systems include [Kiro](https://kiro.dev), [Spec Kit](https://github.com/github/spec-kit), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Tessl](https://tessl.io), [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD), [Superpowers](https://github.com/obra/superpowers), [Paperclip](https://paperclip.ing), [Fusion](https://runfusion.ai), companies.sh, [Gastown](https://github.com/gastownhall/gastown), and similar systems.
 
-For background, see Birgitta Bockeler's article on SDD tools on Martin Fowler's site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
+For background, see Birgitta Bockeler's article on SDD tools on Martin Fowler's site: [Exploring Gen AI: Spec-Driven Development Tools](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html). For the vocabulary stance, see [Semantic Anchors](https://llm-coding.github.io/Semantic-Anchors/), a catalog of established terms that activate well-defined concepts in models.
 
 ## Maturity
 

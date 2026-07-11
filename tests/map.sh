@@ -28,7 +28,7 @@ need() {
 # `RIGGING.md`. It still names the durable artifacts, tags, and trace
 # annotation, and every name it uses resolves to a skill.
 for n in ".feature" "assets/**" "AGENTS.md" "RIGGING.md" "CAPTAIN.md" "watchbill.json"; do need "$n"; done
-for n in "@captain" "@shipwright" "@property" "@exceptional-double" "@logic" "@sandbox"; do need "$n"; done
+for n in "@captain" "@shipwright" "@invariant" "@exceptional-double" "@logic" "@sandbox"; do need "$n"; done
 for n in "@planks(" ; do need "$n"; done
 
 # Non-normative check: the map must carry no requirement language, in any
