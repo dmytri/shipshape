@@ -36,6 +36,7 @@ Procedure lives in the skills. Every role reads this on open.
 - plank-inventory: `<derived or none>`
 - typecheck: `<derived or none>`
 - lint: `<derived or none>`
+- conformance: `<derived scantling check, or none>`
 
 ## Perturbation
 
