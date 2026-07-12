@@ -49,6 +49,7 @@ Procedure lives in the skills. Every role reads this on open.
 - sandbox: <derived or none>
 - policy: <tier tag and its credentials or provisioning policy, one line per tier>
 - weather: <wake path for the weather record, or none>
+- runrecord: <git-ignored wake path for the voyage run record, or none>
 
 ## Dependencies
 
