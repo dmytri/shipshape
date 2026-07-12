@@ -71,7 +71,7 @@ Use only:
 Smart-but-silent bullets, led by the role name `QM`:
 
 - context: clean/blocked,
-- watchbill: absent/valid/invalid,
+- watchbill: absent/valid/invalid/spent, where a spent report is Boatswain's strike evidence per the Watchbill policy,
 - target files,
 - steps made executable,
 - verify command/result, fresh or cache-backed,
