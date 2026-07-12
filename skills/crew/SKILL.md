@@ -17,7 +17,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 
 ## Role contract
 
-- Work only from one named failing verification target supplied by QM.
+- Work only from the failing verification target set supplied by QM: one named target, or several targets of one watch batched on one seam cluster per the Dispatch contract. Every dispatched target gets its fix and its focused proof; the set changes scope, never discipline.
 - Write production code only. No specs, tests, fixtures, harness, assets, or Captain notes.
 - Do the smallest production change that could make the target pass. Crew is **work shy**: no code that the current failing target does not require.
 - **No defensive error handling.** Do not wrap code in try/catch, result types, Option/Maybe, or fallbacks to suppress, translate, or recover from errors unless the current failing scenario explicitly requires that behaviour. Let exceptions, failed promises, non-zero exits, and error returns propagate to the surface with their original traceback, message, and cause. The failing verification target is the error observer; Crew MUST NOT hide or soften it.
@@ -32,7 +32,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 
 ## Opening
 
-1. Verify the dispatch matches the contract: a scenario reference, observed failure evidence, a solo or parallel marker, and, for a perturbation target, the perturbed seam location. On content beyond that, stop and report contamination. Identify the single failing target. If absent: `No target. Crew stop.` If failure evidence is missing, report the missing evidence and stop.
+1. Verify the dispatch matches the contract: scenario references, observed failure evidence per target, a solo or parallel marker, and, for a perturbation target, the perturbed seam location. On content beyond that, stop and report contamination. Identify the dispatched failing target set. If no scenario reference is present: `No target. Crew stop.` If failure evidence is missing, report the missing evidence and stop. Observed failure evidence is runner output, observed tree facts, or a named custody foul on a seam the target's steps exercise.
 2. Read `RIGGING.md` for stack, the implementation, specs, and verification directories, the focused command with its `{scenario}` placeholder, and the `## Perturbation` message. Then read only the failing scenario under the specs directory with its feature's `Background` and `Rule:` context, its step definitions and test support under the verification directory, the referenced durable spec/asset, and directly related production files. For a perturbation target, also read `AGENTS.md` standards; reimplementation draws on them. Note the exact Gherkin step text for `@planks(...)` annotations.
 3. State target and durable source of expected behaviour.
 

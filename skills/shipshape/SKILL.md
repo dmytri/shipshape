@@ -111,7 +111,7 @@ Verification runs in tiers; the Tier tags table at the end of this skill defines
 
 | Tag | Created by | Ignored by | Resolved by | Blocks voyage resume |
 |---|---|---|---|---|
-| `@captain` | Shipwright, from code inspection | QM and every derived verification command | Captain review: promote by removing the tag, or discard by retagging `@shipwright` | No |
+| `@captain` | Shipwright, from code inspection | QM and every derived verification command | Captain review: promote by removing the tag, discard by retagging `@shipwright`, or supersede by strengthening an existing binding scenario to carry the finding and deleting the skeleton | No |
 | `@shipwright` | Captain retag at review, or Boatswain mark at sea | QM and every derived verification command | Shipwright in harbour: remove the code its steps plank, then the scenario | Yes |
 
 ## Articles of Agreement
@@ -316,7 +316,7 @@ Captain to QM always requires clean context. A window-isolated subagent or a fre
 | Dispatch | Carries |
 |---|---|
 | Captain to QM | role, base commit |
-| QM to Crew | target scenario reference, observed failure evidence, solo or parallel marker; for a perturbation target, also the perturbed seam location |
+| QM to Crew | target scenario references: one target, or several targets of one watch whose fixes land on one seam cluster; observed failure evidence per target; solo or parallel marker; for a perturbation target, also the perturbed seam location |
 | QM to Boatswain | post-implementation job, base commit, advanced target references |
 | Captain to Boatswain | job, base commit |
 | Captain to Shipwright | role, base commit, optional scope |
@@ -428,7 +428,7 @@ Outbound is any action that places durable state where a party outside the voyag
 
 Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact. The wake MAY carry yesterday's weather: observed run data such as tier wall-clock time, green worker counts, and pressure signals, read by the next run as a starting prior for concurrency per the Verification agreement. During a harbour full regression, the wake MAY also carry per-scenario duration, read by Shipwright for the harbour verification-economy audit per the Shipwright skill.
 
-The wake MAY also carry the voyage run record, at the `runrecord` path from `RIGGING.md`. After a fresh green verification run, the running role appends one line: targets, command, result, and the deck-state hash. The deck-state hash is the working state's tree digest from the one canonical command, identical on every stack:
+The wake MAY also carry the voyage run record, at the `runrecord` path from `RIGGING.md`. After a fresh green verification run, the running role appends one line: one JSON object with exactly the keys `targets`, `command`, `result`, and `hash`, where `hash` is the deck-state hash. A reader treats an entry that does not parse to that shape as void, exactly like a hash mismatch. The deck-state hash is the working state's tree digest from the one canonical command, identical on every stack:
 
 ```bash
 GIT_INDEX_FILE="$(mktemp)" bash -c 'git read-tree HEAD && git add -A . && git write-tree'
