@@ -280,6 +280,7 @@ Judging:
 - List planks with the `plank-inventory` command from `RIGGING.md` when defined. Also scan for bare `@planks` tokens across the implementation paths, because a token outside a docblock on a declaration is a malformed plank the docblock reader cannot see.
 - Cross-reference each plank's step text against the `step-usage` command output. A plank whose step text appears nowhere in usage points to a deleted or renamed step and is stale. Stale and malformed planks are corrected, never trusted.
 - A missing annotation on a touched seam is unfinished Crew work and routes to Crew for redispatch. Plank drift beyond the current diff defers to harbour, per the Blocker policy.
+- A plank whose step text survives while its seam no longer serves that step is behaviour-stale and invisible to the step-text join. Harbour's coverage triage is the net; a role observing one reports it rather than trusting the join.
 
 Selection:
 
