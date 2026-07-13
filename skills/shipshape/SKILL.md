@@ -333,6 +333,8 @@ When the project root is not the session's working directory, every dispatch als
 
 A role hand-off carries a final report and any blockers. The report travels by the transition mechanism, not by a separate file. When a role spawns the next role as a subagent, the report is the subagent's return value to the caller. When a role assumes the next role, or uses an inheriting subagent, the report stays in shared context. Shipshape does not persist role reports to disk.
 
+A role's turn ends only in its final report. A role never ends its turn waiting: not on a background command, a notification, a timer, or another agent. Work in flight at report time is either consumed before the report or named in it as a blocker. A verification run whose output the role has not read is not evidence and counts as never run.
+
 The Captain to QM boundary is different. Context clears there, so no report crosses it. QM derives everything from durable artifacts by design. The durable artifacts are the hand-off at that boundary. The bulkhead is one-directional, Captain to QM only. Blocker returns to Captain are ordinary hand-offs. "Read the preceding role's blockers first" applies to the transitions that do not cross the bulkhead: Captain to Shipwright, Shipwright to Captain, QM to Crew, Crew to QM, QM to Boatswain, Boatswain to QM, QM to Captain, and Boatswain to Captain.
 
 A blocker that must reach Captain is delivered before any context clear: the role returns to Captain, or encodes the change into a durable artifact. If QM sees no blocker, the deck is clean, not lost.
