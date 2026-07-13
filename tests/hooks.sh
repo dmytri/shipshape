@@ -115,6 +115,13 @@ check "main loop reads unrestricted" captain-notes-guard.sh "{\"cwd\":\"$work/pr
 check "qm other reads unaffected" captain-notes-guard.sh "$(p "shipshape:qm" "$work/proj/features/pay.feature")" 0
 check "crew blocked from cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:crew" "cat CAPTAIN.md")" 2
 check "boatswain blocked from cat CAPTAIN.md" bash-custody.sh "$(b "shipshape:boatswain" "cat CAPTAIN.md")" 2
+check "boatswain allowed staging CAPTAIN.md by path" bash-custody.sh "$(b "shipshape:boatswain" "git add -- CAPTAIN.md")" 0
+check "boatswain allowed :!CAPTAIN.md exclusion" bash-custody.sh "$(b "shipshape:boatswain" "git diff c5cad19 -- . ':!CAPTAIN.md'")" 0
+check "boatswain add-then-cat still blocked" bash-custody.sh "$(b "shipshape:boatswain" "git add -- CAPTAIN.md && cat CAPTAIN.md")" 2
+check "qm blocked from staging CAPTAIN.md" bash-custody.sh "$(b "shipshape:qm" "git add -- CAPTAIN.md")" 2
+check "captain allowed notes-only commit" bash-custody.sh "$(b "shipshape:captain" "git commit -m notes -- CAPTAIN.md")" 0
+check "captain blocked from general commit" bash-custody.sh "$(b "shipshape:captain" "git commit -m x")" 2
+check "captain notes commit cannot ride a push" bash-custody.sh "$(b "shipshape:captain" "git commit -m notes -- CAPTAIN.md && git push")" 2
 check "qm blocked from reading transcript" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2
 check "qm benign command allowed" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\"}}" 0
 check "boatswain blocked from transcript" bash-custody.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2

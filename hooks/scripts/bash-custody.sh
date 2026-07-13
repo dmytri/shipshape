@@ -36,7 +36,15 @@ norm=" $(printf '%s' "$command" | tr -s '[:space:]' ' ') "
 
 case "$role" in
   qm|crew|boatswain|shipwright)
-    case "$command" in
+    # Boatswain custody permits exactly two content-blind forms
+    # (skills/boatswain/SKILL.md): staging by path, git add -- CAPTAIN.md,
+    # and the :!CAPTAIN.md pathspec exclusion in deck retrieval. Strip
+    # those, then any remaining mention is a read and is denied.
+    notecheck="$norm"
+    if [ "$role" = "boatswain" ]; then
+      notecheck=$(printf '%s' "$norm" | sed "s/['\"]*:(exclude)CAPTAIN\.md['\"]*//g; s/['\"]*:!CAPTAIN\.md['\"]*//g; s/git add -- CAPTAIN\.md//g; s/git add CAPTAIN\.md//g")
+    fi
+    case "$notecheck" in
       *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. No role but Captain reads it; derive everything from durable artifacts." ;;
     esac
     # The session transcript is discarded conversation context, never
@@ -88,7 +96,19 @@ for sub in $gitsubs; do
       esac
       ;;
     commit)
-      [ "$role" = "boatswain" ] || deny "Boatswain holds local commit custody."
+      case "$role" in
+        boatswain) : ;;
+        captain)
+          # Captain commits notes alone, pathspec-limited
+          # (skills/captain/SKILL.md): git commit -m <msg> -- CAPTAIN.md
+          # commits only the notes whatever else is staged.
+          case "$norm" in
+            *" -- CAPTAIN.md"*) : ;;
+            *) deny "Boatswain holds local commit custody. Captain commits notes alone: git commit -m <msg> -- CAPTAIN.md." ;;
+          esac
+          ;;
+        *) deny "Boatswain holds local commit custody." ;;
+      esac
       ;;
   esac
 done
