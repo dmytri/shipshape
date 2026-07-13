@@ -119,6 +119,14 @@ check "boatswain allowed staging CAPTAIN.md by path" bash-custody.sh "$(b "ships
 check "boatswain allowed :!CAPTAIN.md exclusion" bash-custody.sh "$(b "shipshape:boatswain" "git diff c5cad19 -- . ':!CAPTAIN.md'")" 0
 check "boatswain add-then-cat still blocked" bash-custody.sh "$(b "shipshape:boatswain" "git add -- CAPTAIN.md && cat CAPTAIN.md")" 2
 check "qm blocked from staging CAPTAIN.md" bash-custody.sh "$(b "shipshape:qm" "git add -- CAPTAIN.md")" 2
+check "boatswain quoted label mention allowed" bash-custody.sh "$(b "shipshape:boatswain" "echo \\\"--- has CAPTAIN.md? ---\\\" && git status")" 0
+check "boatswain commit message naming notes allowed" bash-custody.sh "$(b "shipshape:boatswain" "git commit -m 'voyage custody; Captain notes CAPTAIN.md staged content-blind'")" 0
+check "boatswain metadata stat allowed" bash-custody.sh "$(b "shipshape:boatswain" "ls -la CAPTAIN.md 2>&1")" 0
+check "boatswain -C staging form allowed" bash-custody.sh "$(b "shipshape:boatswain" "git -C /tmp/proj add -- CAPTAIN.md")" 0
+check "boatswain quoted lone path still read-blocked" bash-custody.sh "$(b "shipshape:boatswain" "cat 'CAPTAIN.md'")" 2
+check "boatswain removal blocked" bash-custody.sh "$(b "shipshape:boatswain" "rm CAPTAIN.md")" 2
+check "crew quoted mention allowed" bash-custody.sh "$(b "shipshape:crew" "echo \\\"CAPTAIN.md is Captain-only\\\"")" 0
+check "crew redirect into notes blocked" bash-custody.sh "$(b "shipshape:crew" "echo note >> CAPTAIN.md")" 2
 check "captain allowed notes-only commit" bash-custody.sh "$(b "shipshape:captain" "git commit -m notes -- CAPTAIN.md")" 0
 check "captain blocked from general commit" bash-custody.sh "$(b "shipshape:captain" "git commit -m x")" 2
 check "captain notes commit cannot ride a push" bash-custody.sh "$(b "shipshape:captain" "git commit -m notes -- CAPTAIN.md && git push")" 2

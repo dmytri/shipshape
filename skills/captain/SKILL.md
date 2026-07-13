@@ -48,7 +48,49 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
 - If Boatswain reports passing verification, clean working tree, and local commit, summarize and offer outbound options. If no discovered work remains, also offer a full regression across all tiers, run through a fresh QM cycle. Direct it through the dispatch contract's legal channel: write `watchbill.json` whose watches are the configured tier tags, one watch per tier, ordered cheapest tier first, and dispatch QM; a tier-tag watch orders an unfiltered tier run per the Watchbill policy. The check runs each tier's own command, uninstrumented; coverage serves only Shipwright's code-to-spec discovery, and this is a QM cycle, not a harbour entry.
 - Outbound actions such as push, PR, publish, release, and deploy require a clean Boatswain report and explicit user approval, nothing else. Credentials and environment are assumed fitted, never pre-checked, per the Verification policy: run the outbound command, and an observed authentication failure is a fitting-out blocker resolved by refit. Outbound runs in the human-facing main session per the Outbound verification policy; a Captain spawned as a subagent reports outbound options and performs none.
 - **Fitting out:** Shipwright derives `RIGGING.md` and `AGENTS.md` from the repository during harbour. If Shipwright raises a rigging blocker for a required value it cannot derive, discover the missing tooling value with the user and write it into `RIGGING.md`. If Shipwright raises a blocker for missing tooling, such as an uninitialized project or a package manager not installed, install what is needed. If Shipwright blocks on a repository with no commits, the initial commit is the operator's: request it from the user and hold fitting out until it lands. Harness-level setup is Captain's responsibility during harbour preparation. Crew does not install tooling.
-- **Greenfield fast path:** On a repository with no production code and no `RIGGING.md`, Captain MAY bootstrap without a fitting-out session, per the Shipwright skill's fast-path rule: discover the five required values and the toolchain with the user in the same conversation as product intent, install the harness, write minimal `RIGGING.md` under the write-scope exception, then author specs and the watchbill and dispatch QM. The first voyage sails without methodology checks; the first harbour completes fitting out before its inventory.
+- **Greenfield fast path:** On a repository with no production code and no `RIGGING.md`, Captain MAY bootstrap without a fitting-out session, per the Shipwright skill's fast-path rule: discover the five required values and the toolchain with the user in the same conversation as product intent, install the harness, write minimal `RIGGING.md` under the write-scope exception, then author specs and the watchbill and dispatch QM. The first voyage sails without methodology checks; the first harbour completes fitting out before its inventory. Minimal means exactly this shape, with the five required values populated, the fixed perturbation message, dependency policy `locked`, and literally `none` in every other slot; no wrapper scripts, no config files beyond the harness install:
+
+  ```markdown
+  # Rigging
+  ## Stack
+  - language: JavaScript
+  - runtime: none
+  - packageManager: none
+  ## Directories
+  - implementation: src
+  - specs: features
+  - verification: none
+  - assets: none
+  - scantlings: none
+  ## Commands
+  - discover: none
+  - focused: `ref="{scenario}"; npx cucumber-js "${ref%%:*}" --name "^${ref#*:}$" --tags "not @captain and not @shipwright"`
+  - broad: none
+  - coverage: none
+  - step-usage: none
+  - plank-inventory: none
+  - typecheck: none
+  - lint: none
+  - conformance: none
+  ## Perturbation
+  - message: `PERTURBATION: consider current durable context; remove when fixed`
+  - perturb: `throw new Error("PERTURBATION: consider current durable context; remove when fixed");`
+  ## Tiers
+  - default: none
+  - sandbox: none
+  - policy: none
+  - weather: none
+  - runrecord: none
+  ## Dependencies
+  - policy: locked
+  - dependency: none
+  ## Outbound
+  - outbound: none
+  ## Known false-failure modes
+  - mode: none
+  ```
+
+  The populated values above are one stack's derivation; yours come from the user conversation. The `none` slots are the rule.
 - **Dependencies:** Dependency selection is a product decision. When a dependency is needed, research options with the user, confirm the selection, and write it into `RIGGING.md` under `## Dependencies`. Write only the dependency name. Do not pin a version unless the scenario or the dependency policy requires it. Captain does not install dependencies. Crew reads the confirmed selection from `RIGGING.md` and installs it.
 - **Harbour:** If onboarding an existing codebase or between releases, invoke Shipwright. Enter harbour on a clean working tree: route uncommitted voyage work through Boatswain custody first. Pending outbound MAY wait through harbour: harbour work rides the next outbound, with the harbour full regression as its proof per the Verification policy. When Shipwright returns, run the Harbour review below.
 - If Boatswain flags behaviour in a planked seam that does not match its related steps, decide: update the spec, or flag for Shipwright to remove during harbour. Do not leave code that does not match its spec.
@@ -75,6 +117,8 @@ End with:
 - outbound options offered/approved if relevant,
 - open questions,
 - next role and whether context MUST clear before QM.
+
+A report claim that names an observable contract (a command shape, an output format, an endpoint) is tree-verified before the report states it: run the named form once and let the tree answer.
 
 
 ## Templates
