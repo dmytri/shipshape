@@ -31,7 +31,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 
 When loaded bare via `/shipshape`, this skill routes to the correct role. The routing depends on the project state.
 
-1. Look for `RIGGING.md` at the project root. If absent, the project is not fitted out. Route to `/shipwright` for fitting out and harbour inventory.
+1. Look for `RIGGING.md` at the project root. If absent, the project is not fitted out. Route to `/shipwright` for fitting out and harbour inventory. On a greenfield repository with product intent already in hand, Captain MAY instead bootstrap by the fast path per the Shipwright skill's Fitting out section.
 2. If `RIGGING.md` is present, the project is fitted out. Route to `/captain` for normal spec-driven work. A dirty working tree does not change the route: Captain loads Boatswain to clean before continuing, per the Captain skill.
 3. Load the chosen role's `SKILL.md`. The role skill inherits these shared Articles and policies.
 
@@ -133,7 +133,7 @@ These are shared Shipshape declarations. Cite an Article by its title. Two group
 8. **Write scopes are strict.** Captain writes specs, assets, `CAPTAIN.md`, and optional `watchbill.json`; QM writes verification, fixtures, step definitions, and test support; Crew writes production code only; Boatswain writes hygiene edits and commits, not new behaviour; Shipwright writes `@captain`-tagged scenario skeletons under the specs directory from `RIGGING.md` and `@planks(...)` trace annotations on production seams. The write-scope exceptions, one per line:
    - Boatswain MAY mark a scenario `@shipwright` to condemn it.
    - Captain MAY add a perturbation to production code, per the Perturbation policy.
-   - Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user.
+   - Captain MAY write a tooling value into `RIGGING.md` when resolving a rigging or dependency blocker with the user, and MAY write the minimal required values on a greenfield fast-path bootstrap, per the Shipwright skill.
    - Captain MAY add a rule entry to the verification-conformance scantling when routing a verification-debt finding, per the Harbour flow.
    - QM MAY strike an entry from `## Known false-failure modes` in `RIGGING.md` after engineering the failure mode out.
    - Boatswain MAY strike a spent `watchbill.json` with the custody commit, per the Watchbill policy.
@@ -384,6 +384,8 @@ Humans edit at any time. A role owns only the edits it makes and leaves every ot
 `assets/**` are human-owned product material under Captain custody during Shipshape work. The human operator owns product decisions and content. Captain MAY edit assets to capture approved product material, examples, fixtures, screenshots, pages, copy, media, or other support material.
 
 Assets MAY be referenced by scenarios or verification. Assets MUST NOT define Shipshape workflow, hidden requirements, backlog, rationale, project memory, or agent instructions. Only `.feature` specs and verification output create agent work. Product-facing content SHOULD live in assets or project-approved content catalogs. Content consumed by a build or generator, such as static-site pages, templates rendered as content, and data files, is product material under this policy, not production code. If asset content or exact catalog content must be protected as behaviour, Captain specifies that behaviour in a `.feature` scenario. Guaranteed behaviour promotes to a `.feature` scenario; the asset body carries craft only.
+
+A user-supplied asset is the user's stated intent end to end. When Captain classifies any part of it as out of scope, non-binding, or otherwise excluded from the derived specs, that exclusion is an open question, not a decision. Captain MUST NOT dispatch QM on work derived from that asset while an exclusion stands unconfirmed: the gate holds until the user confirms the exclusion or the sections enter the specs. Record each pending exclusion as a named question in the final report and in `CAPTAIN.md` until the user rules.
 
 ### Artifact authority policy
 
