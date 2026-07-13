@@ -113,6 +113,14 @@ case "$role" in
     # decidable here, so those paths stay open. Verification carries no
     # such exception, so a verification directory derived from RIGGING.md
     # is denied.
+    #
+    # Artifact kind outranks directory: a .feature file is a Captain spec
+    # wherever it sits, exactly as the qm and crew branches below hold. A
+    # verification value MAY contain the specs directory, as in a
+    # Cucumber-conventional layout whose step definitions live under
+    # features/, so a directory check alone would deny the Captain their
+    # own spec.
+    case "$base" in *.feature) exit 0 ;; esac
     [ -n "$verif" ] && in_dirs "$rel" "$verif" && deny "MUST NOT write production code or verification, except for the perturbation rule below."
     ;;
   qm)
@@ -151,6 +159,11 @@ case "$role" in
     case "$base" in
       CAPTAIN.md|watchbill.json) deny "Shipwright never changes Captain-custodied working artifacts." ;;
     esac
+    # Artifact kind outranks directory, as in the captain branch above:
+    # Shipwright writes @captain scenario skeletons under the specs
+    # directory, and a verification value that contains the specs directory
+    # MUST NOT deny them.
+    case "$base" in *.feature) exit 0 ;; esac
     [ -n "$verif" ] && in_dirs "$rel" "$verif" && deny "Shipwright never changes verification."
     [ -n "$assets" ] && in_dirs "$rel" "$assets" && deny "Shipwright never changes assets."
     [ -n "$scant" ] && in_dirs "$rel" "$scant" && deny "Shipwright never authors a project-owned scantling."

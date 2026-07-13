@@ -22,7 +22,7 @@ Procedure lives in the skills. Every role reads this on open.
 
 - implementation: <every directory that can hold a planked seam, one path per line, key repeated; `*` matches one path segment>
 - specs: <one path per line>
-- verification: <one path per line, or none>
+- verification: <narrowest directories holding verification support, never a parent of the specs directory, one path per line, or none>
 - assets: <one path per line, or none>
 - scantlings: <machine-readable contract files in place, one path per line, or none>
 
