@@ -295,7 +295,7 @@ Selection:
 
 - The planks of a touched seam select its recheck. Join the seam's plank patterns through `step-usage` to the scenarios that bind them, and run that focused set. When attribution inside a file is unclear, take every plank in the file.
 - A touched production hunk with no plank to follow is plank drift, judged per this agreement; static discovery and the derived `typecheck` and `lint` gates stand as its proof meanwhile.
-- Verification support code carries no planks, so the plank join does not reach it. It executes inside every scenario whose steps route through it, and its blast radius is the tier it serves, never the spec file the change was declared beside: a touched support hunk selects that tier's enumeration sweep. A support edit that changes behaviour loads, imports, typechecks, and lints exactly as the old one did, so the static gates pass it through and the sweep is the only check that reaches it.
+- Verification support code carries no planks, so the plank join does not reach it. It executes inside every scenario whose steps route through it, and its blast radius is the tier it serves, never the spec file the change was declared beside: a touched support hunk selects that tier's enumeration sweep. A focused run over a subset of that tier does not cover it, and neither does a green the caller carried from one: the scenarios such a run never reached are exactly where a support edit does its damage. A support edit that changes behaviour loads, imports, typechecks, and lints exactly as the old one did, so the static gates pass it through and the sweep is the only check that reaches it.
 
 Limits:
 
