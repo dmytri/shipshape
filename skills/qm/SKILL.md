@@ -78,4 +78,6 @@ Smart-but-silent bullets, led by the role name `QM`:
 - steps made executable,
 - verify command/result, fresh or cache-backed,
 - next role,
-- blockers.
+- blockers, each with the command that established it.
+
+Every tree claim in this report is a command's answer, per Hand-off custody. A blocker QM did not run a command to establish is labelled unverified, or left out: it would spend Captain's cycle, or Boatswain's custody, on a fact nobody checked.

@@ -152,4 +152,7 @@ Smart-but-silent bullets:
 - tiers run, every configured tier, with results,
 - pending outbound named if any,
 - blockers if any,
+- any finding judged by read rather than run, labelled unverified with the check it lacked,
 - next: Captain review and user discovery.
+
+Every tree claim in this report is a command's answer, per Hand-off custody. Harbour findings become Captain's decisions and Shipwright's own removals, so a finding nobody checked can condemn working code.

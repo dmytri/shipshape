@@ -53,12 +53,14 @@ Called after Crew finishes and verification passes. Post-implementation also ser
 
 Each check reads the same way: when the condition is observed, act and route as stated.
 
+A check is discharged by running the command that answers it, per the Verification policy's check-precedence rule. Boatswain runs that command and reports it with its result. A check Boatswain judged by reading the diff is an opinion, not a check: report it as unverified and name the command or derived check that would have answered it. Reading a plank and finding it well-formed is not a plank-form check; `plank-inventory` joined against `step-usage` is. This is the rule that keeps custody from passing a fault it never looked at.
+
 - When a touched production seam has no `@planks(...)` annotation: in post-implementation, unfinished Crew work, report foul deck to the caller; the redispatch runs through QM, who carries the seam's related scenario reference, derived through `step-usage`, with the custody foul as the observed failure evidence. The foul survives a lost caller: a fresh QM re-derives it from the same touched seam and missing plank, per the QM skill, so no report channel is owed across a context clear. In pre-clean, flag it to Captain. An unplanked seam beyond the diff is harbour work. Boatswain does not delete production code; Shipwright handles removal during harbour.
 - When the diff removes a `PERTURBATION` statement, or the caller's hand-off reports a perturbation removed: verify the seam complies with current durable context: feature `Rule:` prose, `AGENTS.md` standards, `RIGGING.md` values, and available lint. A plant rides uncommitted, so the removal can leave no hunk in the diff; judge from the hand-off evidence and the seam source. A statement-only removal is sound when the Crew hand-off carries the seam audit and the seam reads compliant. A removal with no audit evidence is a foul deck: report it to the caller for Crew redispatch.
 - When a `PERTURBATION` statement stands in the diff: name it in the report. A standing token with green verification is the stale-green alarm; the quiescence check and the harbour full regression are the nets, per the Perturbation policy.
 - When a changed-file-adjacent artifact carries old requirements or unnecessary maintenance burden: flag it stale. Adjacent means files in the same directory as changed code that no current spec references; import-graph staleness is harbour work.
 - When a step definition, test, fixture, or support file in the diff is orphaned: flag it. Prefer the `step-usage` command from `RIGGING.md` to detect orphaned step definitions; it resolves Cucumber Expressions and regular expressions that plain text search cannot match, and a step definition with zero usage is orphaned. Fall back to grepping Gherkin step text across all `.feature` files only when the runner has no usage report. Grep test and fixture references against current specs and step definitions the same way.
-- When a plank in the diff is stale or malformed per the Planking agreement: report it and related stale artifacts in the hand-off; plank drift defers to harbour per the Blocker policy. Judge with the `plank-inventory` and `step-usage` commands per that agreement.
+- When a plank in the diff is stale or malformed per the Planking agreement: report it and related stale artifacts in the hand-off; plank drift defers to harbour per the Blocker policy. Run `plank-inventory` and `step-usage` and join their output: every `@planks` string is one of the reported step-definition patterns, and every `@planks-provisional` reference names a scenario that still carries `@captain`. Where the project derives the plank rules into its conformance rule set, run the `conformance` command instead and report its result. State the commands and what they returned; a plank read by eye is unchecked.
 - When a generated coverage report is in the diff: use it for hygiene only, never as product intent or a planning artifact. It is transient.
 
 ## Verification and custody
@@ -83,9 +85,12 @@ Smart-but-silent bullets:
 
 - `All shipshape.` or `Deck foul: ...`,
 - job,
-- hygiene done,
+- hygiene done, each check with the command it ran and what that command returned,
 - cruft cleaned, stale flagged,
 - verify command/result,
 - commit hash/message if any,
 - tree status,
-- next role/blocker.
+- next role/blocker,
+- any claim judged by read rather than run, labelled unverified with the check it lacked.
+
+Every tree claim in this report is a command's answer, per Hand-off custody. Custody that passes a fault it never looked at is worse than no custody.

@@ -118,7 +118,7 @@ End with:
 - open questions,
 - next role and whether context MUST clear before QM.
 
-A report claim that names an observable contract (a command shape, an output format, an endpoint) is tree-verified before the report states it: run the named form once and let the tree answer.
+Every tree claim in this report is a command's answer, per Hand-off custody. A claim that names an observable contract, such as a command shape, an output format, or an endpoint, is run once before the report states it. The user acts on this report, so an unbacked claim here spends their trust, not just a role's turn.
 
 
 ## Templates

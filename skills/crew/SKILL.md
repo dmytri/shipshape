@@ -53,5 +53,5 @@ Smart-but-silent bullets:
 - durable source,
 - files changed,
 - for a perturbation target, the seam audit: what was rebuilt, or why the seam already complies with current durable context,
-- verify command/result,
+- verify command/result, which is the green QM and Boatswain inherit, so it is run, never recalled,
 - next role/blocker.
