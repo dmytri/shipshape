@@ -289,7 +289,7 @@ Judging:
 - The trace runs seam to plank to step definition to scenarios, and the runner owns the last hop: `step-usage` reports each pattern with the scenarios that bind it.
 - Cross-reference each `@planks` string against the `step-usage` patterns by exact string match. A plank matching no current pattern is stale or malformed: its step definition was deleted or renamed.
 - Cross-reference each `@planks-provisional` reference against the `@captain` scenarios in the specs. One naming a `@captain` scenario conforms and waits; one naming a promoted scenario is red and owes its pattern; one naming no current scenario is stale.
-- Stale and malformed planks are corrected, never trusted. A missing annotation on a touched seam is unfinished Crew work and routes to Crew for redispatch. Plank drift beyond the current diff defers to harbour, per the Blocker policy.
+- Stale and malformed planks are corrected, never trusted. On a touched seam in the role-advanced diff, a plank that is missing, stale, or malformed is the same fault, unfinished Crew work, and routes to Crew for redispatch: the role that wrote the seam this voyage is the role that corrects it, while the seam is still in hand. A malformed plank is the more dangerous of the two, because it reads as coverage the seam does not have. Only plank drift beyond the current diff defers to harbour, per the Blocker policy: harbour is where a fault no current role owns goes, never where a fault this voyage introduced is parked.
 - A plank whose pattern survives while its seam no longer serves that step is behaviour-stale and invisible to the pattern join. Harbour's coverage triage is the net; a role observing one reports it rather than trusting the join.
 
 Selection:
