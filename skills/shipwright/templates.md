@@ -61,10 +61,6 @@ Procedure lives in the skills. Every role reads this on open.
 - outbound: <target name, or none>
 - ship: `<derived command>`
 - verify: `<derived live-artifact check>`
-
-## Known false-failure modes
-
-- mode: <derived note, one line per note, or none>
 ````
 
 For JavaScript and TypeScript, derive this perturbation value:

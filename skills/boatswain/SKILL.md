@@ -28,7 +28,7 @@ Foul example: `Deck foul: touched seam src/payments.ts lacks @planks. Crew redis
 - Lint code and configuration in the diff with the project's available hygiene tools. Boatswain owns code-hygiene tool config and MAY tune it; the lint of Captain-authored specs and assets is Captain's, run at write time. Flag style violations as blockers. No exceptions for convention drift.
 - Maintain the rigging. The project configuration files that `RIGGING.md` documents are the ship's rigging. When tooling or lint configuration in scope is drifted or incoherent: tune it as hygiene. Captain selects dependencies and Crew installs them; Boatswain flags dependency faults and does not change dependencies.
 - Undefined steps are never a custody failure. A scenario whose steps are undefined has never been verified: it is QM work waiting on the watchbill, and custody proceeds without it, in every job.
-- If plank relationship is ambiguous, raise Captain blocker with exact evidence.
+- A plank on a touched seam has two dispositions and no third. It joins a current step-definition pattern, or it is malformed and routes to Crew for redispatch, per the Planking agreement. Uncertainty is not a third disposition: a plank whose relationship to a step cannot be established is a plank that does not join, and the join is run, never eyeballed. Raise a Captain blocker only where the finding indicts the spec rather than the change, per Crew's contract above.
 - Outbound is Captain-only. Do not push, tag, publish, release, or deploy.
 
 ## Jobs
@@ -43,32 +43,54 @@ Called after Crew finishes and verification passes. Post-implementation also ser
 
 ## Opening
 
-1. Read `RIGGING.md` for project tooling values.
-2. Verify the dispatch against the Boatswain row of the Dispatch contract; on content beyond it, report contamination per the Contamination protocol and await a fresh dispatch.
-3. Read preceding role blockers first, if any.
-4. Retrieve the deck: `git status`, `git diff` against the dispatched base commit, HEAD when none was dispatched per the dispatch contract, and recent log. The deck is Boatswain's one retrieval; the diff and untracked files are the whole worklist. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain naming the operator's initial commit as the ask, per the Shipwright skill's harbour guard.
-5. Identify the job: pre-clean or post-implementation. The dispatch names the job per the Dispatch contract; the self-select heuristics in Jobs apply only without a dispatch.
+1. Verify the dispatch against the Boatswain row of the Dispatch contract; on content beyond it, report contamination per the Contamination protocol and await a fresh dispatch. Read preceding role blockers, if any. This needs no retrieval: the dispatch is already in hand.
+
+2. **Retrieve the rigging and the deck. One pass, before anything else.** Run:
+
+   ```sh
+   cat RIGGING.md && git status && git diff <base> -- . ':!CAPTAIN.md' && git log -n 5
+   ```
+
+   `<base>` is the dispatched base commit, HEAD when none was dispatched per the dispatch contract. Nothing here depends on anything else here, so it is one run.
+
+   The `:!CAPTAIN.md` exclusion is part of the command, not an optional refinement. Captain's notes are content-blind to Boatswain, per the Role contract: a deck diff that omits the exclusion pulls their content into context and breaches the bulkhead. `git status` names the path without opening it, which is a metadata stat and passes.
+
+   This output is the deck and the rigging together. The diff and untracked files are the whole worklist; `RIGGING.md` carries every command name the later steps substitute. Every step below reads from this output. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain naming the operator's initial commit as the ask, per the Shipwright skill's harbour guard.
+
+3. From that output alone, settle: the job, pre-clean or post-implementation, which the dispatch names per the Dispatch contract, the self-select heuristics in Jobs applying only without a dispatch; the touched seams; and, when a voyage run record exists at the `runrecord` path, the deck-state hash, computed once here per the Wake policy.
 
 ## Hygiene checks
 
-Each check reads the same way: when the condition is observed, act and route as stated.
+**One evidence run answers every check in this section. Run it now**, substituting each command verbatim from the `RIGGING.md` already in hand:
 
-A check is discharged by running the command that answers it, per the Verification policy's check-precedence rule. Boatswain runs that command and reports it with its result. A check Boatswain judged by reading the diff is an opinion, not a check: report it as unverified and name the command or derived check that would have answered it. Reading a plank and finding it well-formed is not a plank-form check; `plank-inventory` joined against `step-usage` is. This is the rule that keeps custody from passing a fault it never looked at.
+```sh
+<plank-inventory> && <step-usage> && <typecheck> && <lint>
+```
+
+Where the project derives the plank rules into its conformance rule set, `<conformance>` replaces `<plank-inventory>` in that line. An underivable command reads `none` in `RIGGING.md`: drop it from the line and say so in the report.
+
+None of these commands depends on another's result, and none depends on the deck, so they are one run and not four. Their combined output, joined against the deck already retrieved, answers every check below. **Judge the checks against that output. Do not run a command per check.**
+
+A check is discharged by running the command that answers it, per the Verification policy's check-precedence rule. Boatswain reports each check with the command that answered it and what that command returned. A check Boatswain judged by reading the diff is an opinion, not a check: report it as unverified and name the command or derived check that would have answered it. Reading a plank and finding it well-formed is not a plank-form check; `plank-inventory` joined against `step-usage` is. This is the rule that keeps custody from passing a fault it never looked at.
+
+Judge each of the following against the run above:
 
 - When a touched production seam has no `@planks(...)` annotation: in post-implementation, unfinished Crew work, report foul deck to the caller; the redispatch runs through QM, who carries the seam's related scenario reference, derived through `step-usage`, with the custody foul as the observed failure evidence. The foul survives a lost caller: a fresh QM re-derives it from the same touched seam and missing plank, per the QM skill, so no report channel is owed across a context clear. In pre-clean, flag it to Captain. An unplanked seam beyond the diff is harbour work. Boatswain does not delete production code; Shipwright handles removal during harbour.
 - When the diff removes a `PERTURBATION` statement, or the caller's hand-off reports a perturbation removed: verify the seam complies with current durable context: feature `Rule:` prose, `AGENTS.md` standards, `RIGGING.md` values, and available lint. A plant rides uncommitted, so the removal can leave no hunk in the diff; judge from the hand-off evidence and the seam source. A statement-only removal is sound when the Crew hand-off carries the seam audit and the seam reads compliant. A removal with no audit evidence is a foul deck: report it to the caller for Crew redispatch.
 - When a `PERTURBATION` statement stands in the diff: name it in the report. A standing token with green verification is the stale-green alarm; the quiescence check and the harbour full regression are the nets, per the Perturbation policy.
 - When a changed-file-adjacent artifact carries old requirements or unnecessary maintenance burden: flag it stale. Adjacent means files in the same directory as changed code that no current spec references; import-graph staleness is harbour work.
-- When a step definition, test, fixture, or support file in the diff is orphaned: flag it. Prefer the `step-usage` command from `RIGGING.md` to detect orphaned step definitions; it resolves Cucumber Expressions and regular expressions that plain text search cannot match, and a step definition with zero usage is orphaned. Fall back to grepping Gherkin step text across all `.feature` files only when the runner has no usage report. Grep test and fixture references against current specs and step definitions the same way.
-- When a plank on a touched seam is stale or malformed: unfinished Crew work, exactly as a missing one is. Report foul deck to the caller for Crew redispatch; do not commit and do not defer it to harbour. Crew wrote that seam this voyage and corrects it while the seam is in hand, and a malformed plank is the more dangerous fault, because it reads as coverage the seam does not have. Only plank drift beyond the diff defers to harbour, per the Blocker policy. Run `plank-inventory` and `step-usage` and join their output: every `@planks` string is one of the reported step-definition patterns, and every `@planks-provisional` reference names a scenario that still carries `@captain`. Where the project derives the plank rules into its conformance rule set, run the `conformance` command instead and report its result. State the commands and what they returned; a plank read by eye is unchecked.
+- When a step definition, test, fixture, or support file in the diff is orphaned: flag it. The evidence run already answers this: a step definition `step-usage` reports with zero usage is orphaned, and that report resolves Cucumber Expressions and regular expressions that plain text search cannot match. Only where the runner has no usage report, and `step-usage` therefore reads `none`, fall back to grepping Gherkin step text across all `.feature` files; grep test and fixture references against current specs and step definitions the same way, in one run with the rest of that fallback.
+- When a plank on a touched seam is stale or malformed: unfinished Crew work, exactly as a missing one is. Report foul deck to the caller for Crew redispatch; do not commit and do not defer it to harbour. Crew wrote that seam this voyage and corrects it while the seam is in hand, and a malformed plank is the more dangerous fault, because it reads as coverage the seam does not have. Only plank drift beyond the diff defers to harbour, per the Blocker policy. The join is already in the evidence run: every `@planks` string is one of the step-definition patterns `step-usage` reported, and every `@planks-provisional` reference names a scenario that still carries `@captain`. State the commands and what they returned; a plank read by eye is unchecked.
 - When a generated coverage report is in the diff: use it for hygiene only, never as product intent or a planning artifact. It is transient.
 
 ## Verification and custody
 
 - Run the minimal shape the custody step needs, per the Verification policy's run shapes, with the tag exclusions per the Rigging read contract. Targeted evidence serves custody; a full tier run is a full regression at a pivot, not a custody habit. Prefer fresh results; label cache-backed results.
-- If the verification recheck fails: do not commit. Rule out entries under `## Known false-failure modes` in `RIGGING.md`, rerun once for a suspected flake, and otherwise report `Deck foul` with the failing target to the caller.
+- If the verification recheck fails: do not commit. Report `Deck foul` with the failing target to the caller. A failure that is not the product's is a harness defect, per the Verification agreement: it routes for repair, never for a rerun.
 - Stage intended changes only: role-advanced hunks, the voyage's durable artifacts in flight, and Boatswain's own hygiene edits. Separate role-advanced hunks from unrelated operator edits within an in-scope file; when authorship is undecidable from the diff and the dispatch, leave the hunk unstaged and name it in the report. Leave unrelated operator work in the working tree for Captain to handle.
-- Recheck selection is a lookup, not a judgment. Staged hunks select the recheck; the watchbill is not a recheck selector. When a voyage run record exists at the `runrecord` path from `RIGGING.md`, compute the deck-state hash once at deck retrieval, per the Wake policy. Per staged hunk, exactly one row applies:
+- **The recheck is the one run that depends on what came before, so it earns its own pass.** It follows the planks to a scenario set, and the planks are only known once the evidence run above is judged. Select first, then run the whole selected set in one go; a scenario per turn is one selection paid many times.
+
+  Recheck selection is a lookup, not a judgment. Staged hunks select the recheck; the watchbill is not a recheck selector. The deck-state hash is the one computed in the Opening. Per staged hunk, exactly one row applies:
   - The caller's hand-off, or a run-record entry whose deck-state hash equals the current deck, carries a fresh focused green covering the hunk: inherit it as commit evidence; run nothing.
   - An executable hunk has no carried evidence, or the diff contradicts the hand-off: follow its planks to the focused scenario set per the Planking agreement's selection rule and run that set fresh.
   - A non-executable hunk, support edits, deletions, or configuration: static discovery plus the derived `typecheck` and `lint` gates stand as its proof; they redden on a broken load or import.

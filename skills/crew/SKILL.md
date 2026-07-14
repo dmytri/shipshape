@@ -34,8 +34,11 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 ## Opening
 
 1. Verify the dispatch matches the contract: scenario references, observed failure evidence per target, a solo or parallel marker, and, for a perturbation target, the perturbed seam location. On content beyond that, stop and report contamination. Identify the dispatched failing target set. If no scenario reference is present: `No target. Crew stop.` If failure evidence is missing, report the missing evidence and stop. Observed failure evidence is runner output, observed tree facts, or a named custody foul on a seam the target's steps exercise.
-2. Read `RIGGING.md` for stack, the implementation, specs, and verification directories, the focused command with its `{scenario}` placeholder, and the `## Perturbation` message. Then read only the failing scenario under the specs directory with its feature's `Background` and `Rule:` context, its step definitions and test support under the verification directory, the referenced durable spec/asset, and directly related production files. For a perturbation target, also read `AGENTS.md` standards; reimplementation draws on them. Note each step definition's pattern string, with its keyword: that pattern is the `@planks(...)` text.
-3. State target and durable source of expected behaviour.
+2. **First pass, one retrieval.** The dispatch's scenario references are repo-root-relative and already carry the specs directory, so the feature files are in hand without reading anything to find them. Retrieve together: `RIGGING.md`, for stack, the implementation, specs, and verification directories, the focused command with its `{scenario}` placeholder, and the `## Perturbation` message; every dispatched target's feature file, with its `Background` and `Rule:` context; and, for a perturbation target, `AGENTS.md` standards, which reimplementation draws on. Nothing in this set depends on another member of it.
+
+3. **Second pass, one retrieval.** The first pass names the steps and the directories, so this one is what genuinely depends on it: the step definitions and test support under the verification directory, the referenced durable spec or asset, and the directly related production files. Read only these. Note each step definition's pattern string, with its keyword: that pattern is the `@planks(...)` text.
+
+4. State target and durable source of expected behaviour.
 
 ## Work loop
 

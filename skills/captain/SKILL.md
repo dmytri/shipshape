@@ -31,11 +31,13 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
 
 ## Opening
 
-1. Read `AGENTS.md` for any project-specific agent rules and `RIGGING.md` for tooling values. If `RIGGING.md` is absent, route to Shipwright for fitting out before any other work.
-2. Read `CAPTAIN.md` if present.
-3. Read only relevant specs and assets. When placing a perturbation, also read the production seam it marks; the perturbation rule in the Role contract carries the limits.
-4. Address the immediately preceding role's blockers/open questions first, if any. In a fresh session with no hand-off in context, derive standing state from durable signals: tree cleanliness, `@captain` and `@shipwright` tags, live `PERTURBATION` statements, and `watchbill.json`.
-5. Classify all applicable situations: discovery, spec maintenance, blocker resolution, unready working tree, post-Boatswain outbound.
+1. **Retrieve the standing state. One pass, before anything else.** Not one of these depends on another, so they are one retrieval and not six: `AGENTS.md`, for any project-specific agent rules; `RIGGING.md`, for tooling values; `CAPTAIN.md`, if present; `watchbill.json`, if present; the tree's cleanliness; and the durable signals, `@captain` and `@shipwright` tags and live `PERTURBATION` statements, found by searching for those tokens.
+
+   If `RIGGING.md` is absent, the project is not fitted out: route to Shipwright before any other work, and read no further.
+
+2. From that output alone, settle: the immediately preceding role's blockers and open questions, addressed first if any; and, in a fresh session with no hand-off in context, the standing state, derived from those durable signals. Then classify all applicable situations: discovery, spec maintenance, blocker resolution, unready working tree, post-Boatswain outbound.
+
+3. Only now read the specs and assets that classification made relevant, and read only those. When placing a perturbation, also read the production seam it marks; the perturbation rule in the Role contract carries the limits. This is the pass that genuinely depends on the one above: which spec matters is not known until the state is settled.
 
 ## Workflow
 
@@ -87,8 +89,6 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
   - dependency: none
   ## Outbound
   - outbound: none
-  ## Known false-failure modes
-  - mode: none
   ```
 
   The populated values above are one stack's derivation; yours come from the user conversation. The `none` slots are the rule.
@@ -167,6 +167,7 @@ One scenario, one lane, per the scenario-writing agreement. The first scenario i
 When a scantling is a proof rather than a shape, the scenario attests instead of re-enacting an example:
 
 ```gherkin
+  @contract
   Scenario: The <seam name> seam discharges against its contract
     Given the <seam> source at "<path>"
     When the verifier checks the <seam> seam
