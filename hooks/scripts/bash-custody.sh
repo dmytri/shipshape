@@ -40,12 +40,27 @@ case "$role" in
     # inside a quoted string - an echoed label, a commit message - is
     # prose. A lone quoted path is unwrapped first so quoting cannot
     # hide a read, then every remaining quoted segment drops out. For
-    # Boatswain the two content-blind staging forms (with git's global
-    # flags) and bare metadata stats strip too; whatever still names
-    # the file opens, searches, edits, or removes it, and is denied.
+    # Boatswain the content-blind staging and exclusion forms and bare
+    # metadata stats strip too; whatever still names the file opens,
+    # searches, edits, or removes it, and is denied.
     notecheck=$(printf '%s' "$norm" | sed "s/[\"']CAPTAIN\\.md[\"']/CAPTAIN.md/g; s/'[^']*'//g; s/\"[^\"]*\"//g")
     if [ "$role" = "boatswain" ]; then
-      notecheck=$(printf '%s' "$notecheck" | sed 's/:(exclude)CAPTAIN\.md//g; s/:!CAPTAIN\.md//g; s/git \(-C [^ ]* \)*add \(-- \)*CAPTAIN\.md//g; s/ls \(-[^ ]* \)*CAPTAIN\.md//g; s/stat \(-[^ ]* \)*CAPTAIN\.md//g; s/test -[a-z] CAPTAIN\.md//g')
+      notecheck=$(printf '%s' "$notecheck" | sed 's/:(exclude)CAPTAIN\.md//g; s/:!CAPTAIN\.md//g; s/ls \(-[^ ]* \)*CAPTAIN\.md//g; s/stat \(-[^ ]* \)*CAPTAIN\.md//g; s/test -[a-z] CAPTAIN\.md//g')
+      # Staging is not reading, and the path MAY ride among the other
+      # paths of one git add pathspec list, so batching stays legal.
+      # Split the command on its separators and strip the path only
+      # inside a staging segment: a read elsewhere in the same compound
+      # command keeps its CAPTAIN.md and is denied below.
+      notecheck=$(printf '%s' "$notecheck" | awk '{
+        n = split($0, seg, /[;&|]+/)
+        out = ""
+        for (i = 1; i <= n; i++) {
+          s = seg[i]
+          if (s ~ /(^|[ \/])git( +-[Cc] +[^ ]+)* +add( |$)/) gsub(/CAPTAIN\.md/, "", s)
+          out = out " " s
+        }
+        print out
+      }')
     fi
     case "$notecheck" in
       *CAPTAIN.md*) deny "CAPTAIN.md is Captain-only. No role but Captain reads it; derive everything from durable artifacts." ;;

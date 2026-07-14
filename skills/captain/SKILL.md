@@ -45,10 +45,11 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
 - If resolving a blocker, update durable specs, asset content, or `watchbill.json` so the next role needs no hidden chat.
 - If the blocker is a rigging or tooling configuration problem, a missing or malformed `RIGGING.md` value, route to Shipwright to refit it. `RIGGING.md` is Shipwright's to derive. Discover a value with the user only when Shipwright reports it cannot derive it.
 - The watchbill is the only channel that creates QM targets, per the Watchbill policy. Write valid `watchbill.json` with watch objects and scenario references only; watch objects are ordering groups, not approval gates. A new or edited scenario reaches QM only through the watchbill: write the entry with the edit.
-- If Boatswain reports passing verification, clean working tree, and local commit, summarize and offer outbound options. If no discovered work remains, also offer a full regression across all tiers, run through a fresh QM cycle. Direct it through the dispatch contract's legal channel: write `watchbill.json` whose watches are the configured tier tags, one watch per tier, ordered cheapest tier first, and dispatch QM; a tier-tag watch orders an unfiltered tier run per the Watchbill policy. The check runs each tier's own command, uninstrumented; coverage serves only Shipwright's code-to-spec discovery, and this is a QM cycle, not a harbour entry.
+- When QM reports a spent watchbill with its targets green, dispatch Boatswain for post-implementation custody, carrying the job, the base commit, and QM's advanced target references per the Dispatch contract. The QM to Boatswain hand-off is flat, per Hand-off custody: custody is Captain's to dispatch, never QM's to wait on.
+- If Boatswain reports passing verification, clean working tree, and local commit, summarize and offer outbound options. Outbound ships on the voyage's own focused and enumeration evidence. Captain never orders a full regression: it is a harbour action and harbour is its only trigger, per the Verification policy. Where a whole sweep before shipping is wanted, the route is harbour, which pairs the run with coverage triage and the economy audit; offer harbour, not a bare rerun.
 - Outbound actions such as push, PR, publish, release, and deploy require a clean Boatswain report and explicit user approval, nothing else. Credentials and environment are assumed fitted, never pre-checked, per the Verification policy: run the outbound command, and an observed authentication failure is a fitting-out blocker resolved by refit. Outbound runs in the human-facing main session per the Outbound verification policy; a Captain spawned as a subagent reports outbound options and performs none.
 - **Fitting out:** Shipwright derives `RIGGING.md` and `AGENTS.md` from the repository during harbour. If Shipwright raises a rigging blocker for a required value it cannot derive, discover the missing tooling value with the user and write it into `RIGGING.md`. If Shipwright raises a blocker for missing tooling, such as an uninitialized project or a package manager not installed, install what is needed. If Shipwright blocks on a repository with no commits, the initial commit is the operator's: request it from the user and hold fitting out until it lands. Harness-level setup is Captain's responsibility during harbour preparation. Crew does not install tooling.
-- **Greenfield fast path:** On a repository with no production code and no `RIGGING.md`, Captain MAY bootstrap without a fitting-out session, per the Shipwright skill's fast-path rule: discover the five required values and the toolchain with the user in the same conversation as product intent, install the harness, write minimal `RIGGING.md` under the write-scope exception, then author specs and the watchbill and dispatch QM. The first voyage sails without methodology checks; the first harbour completes fitting out before its inventory. Voyage 1 verifies at the cheapest tier sufficient to observe the specified behaviour; a real-browser tier is adopted only when the user names it or a specified behaviour cannot be observed below it, and then as a named decision recorded in `RIGGING.md`. Minimal means exactly this shape, with the five required values populated, the fixed perturbation message, dependency policy `locked`, and literally `none` in every other slot; no wrapper scripts, no config files beyond the harness install:
+- **Greenfield fast path:** On a repository with no production code and no `RIGGING.md`, Captain MAY bootstrap without a fitting-out session, per the Shipwright skill's fast-path rule: discover the five required values and the toolchain with the user in the same conversation as product intent, install the harness, write minimal `RIGGING.md` under the write-scope exception, then author specs and the watchbill and dispatch QM. The first voyage sails without methodology checks; the first harbour completes fitting out before its inventory. Voyage 1 verifies at the cheapest tier sufficient to observe the specified behaviour; a real-browser tier is adopted only when the user names it or a specified behaviour cannot be observed below it, and then as a named decision recorded in `RIGGING.md`. Minimal means exactly this shape, with the five required values populated, the fixed perturbation message, dependency policy `locked`, and literally `none` in every other slot; no wrapper scripts, no config files beyond the harness install. A value the user states in the bootstrap conversation, such as the runtime or the package manager, is a discovered value and populates its own slot: `none` marks a slot no value was named for, and writing `none` over what the user just said discards the discovery the fast path exists to capture:
 
   ```markdown
   # Rigging
@@ -102,7 +103,7 @@ Captain context is disposable. Product intent lives in durable artifacts; Captai
 2. If any scenario was retagged `@shipwright`, re-invoke Shipwright in the same harbour to process the condemnations; review retags are harbour-scoped edits and pass the harbour-entry guard. A `@shipwright` scenario left unprocessed at harbour exit waits for the next harbour.
 3. Act on each verification-economy finding by kind, per the Harbour flow routing. Where the runtime lets Shipwright speak with the user, interrogate the cost outliers with Shipwright directly.
 4. Load Boatswain for harbour custody: the post-implementation job over the harbour-scoped edits, per the Dispatch contract.
-5. Offer outbound options per the Outbound verification policy. When outbound immediately follows harbour, the harbour regression serves as the pre-outbound proof only when nothing executable changed after it, per the Verification policy.
+5. Offer outbound options per the Outbound verification policy. Harbour's own full regression is the proof the harbour work rides out on.
 6. Resume the voyage only when the harbour inventory is complete: no `@shipwright`-condemned scenarios or code remain and Shipwright's full regression is green. Unresolved `@captain` scenarios do not block resuming; QM ignores them and Boatswain protects their code. Derive harbour state from durable signals such as tree cleanliness, `@shipwright` flags, and unresolved `@captain` scenarios. While the inventory is incomplete, hold at harbour and open no new feature voyage. Opening a feature voyage means dispatching QM on product targets: once the inventory is complete, author new specs and the watchbill in this same review pass, before custody commits, per the Working tree policy's work-in-flight rule; waiting for the custody commit buys nothing and costs a cycle. When the inventory is complete, clear context and hand off to QM.
 
 ## Final report
@@ -113,7 +114,6 @@ End with:
 - decisions captured,
 - `watchbill.json` status if relevant,
 - deck status if relevant,
-- full-suite all-tier run offered if no discovered work remains,
 - outbound options offered/approved if relevant,
 - open questions,
 - next role and whether context MUST clear before QM.
@@ -154,10 +154,15 @@ Feature: <feature name>
     Given <initial state>
     When <action>
     Then <observable result>
-    And the response conforms to the "<schema name>" schema in "<scantling path>"
+
+  @contract
+  Scenario: <the same output satisfies its mechanical shape>
+    Given <initial state>
+    When <action>
+    Then the response conforms to the "<schema name>" schema in "<scantling path>"
 ```
 
-The final `And` is optional. Use it only when a scantling specifies the mechanical shape, and drop it otherwise. `Background:` and `Rule:` are also optional: include `Background` only for genuinely shared starting state, and `Rule:` only for durable context worth carrying, per the scenario-writing agreement.
+One scenario, one lane, per the scenario-writing agreement. The first scenario is the product's behaviour and carries no tag. The `@contract` scenario is the attestation, written only where a scantling specifies the mechanical shape, and dropped otherwise; it never rides as a trailing `And` on the behaviour scenario, because a reader of that mixed form cannot tell which half is the user's intent. `Background:` and `Rule:` are also optional: include `Background` only for genuinely shared starting state, and `Rule:` only for durable context worth carrying.
 
 When a scantling is a proof rather than a shape, the scenario attests instead of re-enacting an example:
 

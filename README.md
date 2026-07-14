@@ -113,7 +113,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 
 The most important boundary is Captain to QM. Captain may use human conversation to discover intent. QM starts from clean context and reads only durable repository artifacts. Discovery chat, rationale, and abandoned ideas never reach tests or implementation.
 
-Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist; the watchbill scopes what is verified. Passing checks are evidence, not proof. Execution is spent on focused runs, ordered enumeration sweeps, and full regressions. The full regression runs at voyage and harbour pivots, not as the default inner loop. Reports distinguish fresh results from cache-backed results. When no discovered work remains, Captain offers to run the entire test suite across all tiers.
+Progress is not a checked box in markdown. Progress is fewer undefined, unimplemented, or failing verification targets. Verification discovers the worklist; the watchbill scopes what is verified. Passing checks are evidence, not proof. Execution is spent on focused runs and ordered enumeration sweeps. The full regression is a harbour action, and harbour is its only trigger: it is the one pivot that pairs a whole-suite run with coverage triage and the verification-economy audit. Outbound ships on the evidence the voyage already produced. Reports distinguish fresh results from cache-backed results.
 
 Verification works best when production code exposes narrow behaviour seams. Shipshape discourages hidden product behaviour in global state, constructors, static initialization, and service locators. Seams serve real verification. They never replace normal-path real coverage with mocks, fakes, or test-only branches.
 
@@ -245,7 +245,7 @@ Boatswain flags stale artifacts, cleans non-code cruft, reruns configured verifi
 
 ## Watchbill
 
-`watchbill.json` is the verification scope order: Captain limits what QM verifies, and verification output over that scope creates the worklist. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing. It is the only channel that creates QM targets; a scenario the scope missed waits for the next full regression, pre-outbound or harbour.
+`watchbill.json` is the verification scope order: Captain limits what QM verifies, and verification output over that scope creates the worklist. It does not create work. Verification still decides what is undefined, unimplemented, failing, or passing. It is the only channel that creates QM targets; a scenario the scope missed waits for the next harbour full regression.
 
 Example:
 

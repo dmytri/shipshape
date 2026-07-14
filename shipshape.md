@@ -16,7 +16,7 @@ Shipshape is a context-isolated, spec-driven workflow for coding agents. Start w
 - Durable: `.feature` specs, `assets/**`, `CAPTAIN.md`, `watchbill.json`, `RIGGING.md`
 - Disposable: verification support, step definitions, production code
 - Trace: `@planks(...)` annotations on seams link code to spec
-- Tags: `@captain` (skeleton), `@shipwright` (condemned), `@invariant` (cross-cutting invariant), `@exceptional-double` (justified test double), `@logic`/`@sandbox` (tiers)
+- Tags: `@captain` (skeleton), `@shipwright` (condemned), `@contract` (product's mechanical shape), `@conformance` (project's own method), `@exceptional-double` (justified test double), `@logic`/`@sandbox` (tiers)
 
 **Entry:**
 - `RIGGING.md` absent: `/shipwright` fits out

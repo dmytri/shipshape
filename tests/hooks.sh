@@ -150,6 +150,11 @@ check "boatswain quoted label mention allowed" bash-custody.sh "$(b "shipshape:b
 check "boatswain commit message naming notes allowed" bash-custody.sh "$(b "shipshape:boatswain" "git commit -m 'voyage custody; Captain notes CAPTAIN.md staged content-blind'")" 0
 check "boatswain metadata stat allowed" bash-custody.sh "$(b "shipshape:boatswain" "ls -la CAPTAIN.md 2>&1")" 0
 check "boatswain -C staging form allowed" bash-custody.sh "$(b "shipshape:boatswain" "git -C /tmp/proj add -- CAPTAIN.md")" 0
+check "boatswain multi-path staging allowed" bash-custody.sh "$(b "shipshape:boatswain" "git add -- src/pay.js features/pay.feature CAPTAIN.md")" 0
+check "boatswain multi-path staging with flags allowed" bash-custody.sh "$(b "shipshape:boatswain" "git -C /tmp/proj add -A -- src CAPTAIN.md")" 0
+check "boatswain multi-path staging then read blocked" bash-custody.sh "$(b "shipshape:boatswain" "git add -- src CAPTAIN.md ; cat CAPTAIN.md")" 2
+check "boatswain multi-path staging then pipe read blocked" bash-custody.sh "$(b "shipshape:boatswain" "git add -- src CAPTAIN.md | grep -c . CAPTAIN.md")" 2
+check "qm multi-path staging blocked" bash-custody.sh "$(b "shipshape:qm" "git add -- src CAPTAIN.md")" 2
 check "boatswain quoted lone path still read-blocked" bash-custody.sh "$(b "shipshape:boatswain" "cat 'CAPTAIN.md'")" 2
 check "boatswain removal blocked" bash-custody.sh "$(b "shipshape:boatswain" "rm CAPTAIN.md")" 2
 check "crew quoted mention allowed" bash-custody.sh "$(b "shipshape:crew" "echo \\\"CAPTAIN.md is Captain-only\\\"")" 0
