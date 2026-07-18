@@ -162,6 +162,20 @@ check "crew redirect into notes blocked" bash-custody.sh "$(b "shipshape:crew" "
 check "captain allowed notes-only commit" bash-custody.sh "$(b "shipshape:captain" "git commit -m notes -- CAPTAIN.md")" 0
 check "captain blocked from general commit" bash-custody.sh "$(b "shipshape:captain" "git commit -m x")" 2
 check "captain notes commit cannot ride a push" bash-custody.sh "$(b "shipshape:captain" "git commit -m notes -- CAPTAIN.md && git push")" 2
+
+# Initial commit: an unborn HEAD is Captain's own bootstrap action
+# (skills/captain/SKILL.md); a born HEAD keeps Boatswain custody, and
+# a cwd outside any work tree keeps the deny.
+git init -q "$work/unborn"
+git init -q "$work/born"
+git -C "$work/born" -c user.email=t@t.test -c user.name=t commit -q --allow-empty -m init
+bg() {
+  printf '{"agent_type":"%s","cwd":"%s","tool_input":{"command":"%s"}}' "$1" "$2" "$3"
+}
+check "captain allowed initial commit on unborn HEAD" bash-custody.sh "$(bg "shipshape:captain" "$work/unborn" "git commit -m 'initial state'")" 0
+check "captain blocked from general commit on born HEAD" bash-custody.sh "$(bg "shipshape:captain" "$work/born" "git commit -m x")" 2
+check "crew still blocked from commit on unborn HEAD" bash-custody.sh "$(bg "shipshape:crew" "$work/unborn" "git commit -m x")" 2
+check "captain initial commit cannot ride a push" bash-custody.sh "$(bg "shipshape:captain" "$work/unborn" "git commit -m init && git push")" 2
 check "qm blocked from reading transcript" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2
 check "qm benign command allowed" bash-custody.sh "{\"agent_type\":\"shipshape:qm\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"ls src\"}}" 0
 check "boatswain blocked from transcript" bash-custody.sh "{\"agent_type\":\"shipshape:boatswain\",\"transcript_path\":\"$work/t-dirty.jsonl\",\"cwd\":\"$work/proj\",\"tool_input\":{\"command\":\"cat $work/t-dirty.jsonl\"}}" 2

@@ -55,7 +55,7 @@ Called after Crew finishes and verification passes. Post-implementation also ser
 
    The `:!CAPTAIN.md` exclusion is part of the command, not an optional refinement. Captain's notes are content-blind to Boatswain, per the Role contract: a deck diff that omits the exclusion pulls their content into context and breaches the bulkhead. `git status` names the path without opening it, which is a metadata stat and passes.
 
-   This output is the deck and the rigging together. The diff and untracked files are the whole worklist; `RIGGING.md` carries every command name the later steps substitute. Every step below reads from this output. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain naming the operator's initial commit as the ask, per the Shipwright skill's harbour guard.
+   This output is the deck and the rigging together. The diff and untracked files are the whole worklist; `RIGGING.md` carries every command name the later steps substitute. Every step below reads from this output. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain, whose own bootstrap action the initial commit is, per the Captain skill.
 
 3. From that output alone, settle: the job, pre-clean or post-implementation, which the dispatch names per the Dispatch contract, the self-select heuristics in Jobs applying only without a dispatch; the touched seams; and, when a voyage run record exists at the `runrecord` path, the deck-state hash, computed once here per the Wake policy.
 

@@ -152,10 +152,22 @@ for sub in $gitsubs; do
         captain)
           # Captain commits notes alone, pathspec-limited
           # (skills/captain/SKILL.md): git commit -m <msg> -- CAPTAIN.md
-          # commits only the notes whatever else is staged.
+          # commits only the notes whatever else is staged. On a
+          # repository with no commits the initial commit is Captain's
+          # own bootstrap action (skills/captain/SKILL.md): an unborn
+          # HEAD carries no role-advanced work for custody to protect.
+          # The cwd is read from the payload, not the command, so it
+          # cannot be spoofed; outside a work tree the deny stands.
           case "$norm" in
             *" -- CAPTAIN.md"*) : ;;
-            *) deny "Boatswain holds local commit custody. Captain commits notes alone: git commit -m <msg> -- CAPTAIN.md." ;;
+            *)
+              cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
+              if [ -n "$cwd" ] && git -C "$cwd" rev-parse --is-inside-work-tree >/dev/null 2>&1 && ! git -C "$cwd" rev-parse -q --verify HEAD >/dev/null 2>&1; then
+                :
+              else
+                deny "Boatswain holds local commit custody. Captain commits notes alone: git commit -m <msg> -- CAPTAIN.md."
+              fi
+              ;;
           esac
           ;;
         *) deny "Boatswain holds local commit custody." ;;
