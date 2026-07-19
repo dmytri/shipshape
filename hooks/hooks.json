@@ -83,6 +83,10 @@
           {
             "type": "command",
             "command": "\"${PLUGIN_ROOT}/hooks/scripts/planks-check.sh\""
+          },
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/hooks/scripts/background-custody.sh\""
           }
         ]
       }

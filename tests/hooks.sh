@@ -362,6 +362,44 @@ case "$out" in
   *) fail=$((fail + 1)); echo "FAIL: session-orient counts exact @captain tags" ;;
 esac
 
+# background-custody: blocks a stop holding unconsumed backgrounded output,
+# and only that. An Agent child is NOT the fault: its report resumes the
+# caller, per Hand-off custody, so a turn ending on one self-heals.
+bg() {
+  name="$1" body="$2" want="$3" sha="${4:-false}"
+  printf '%s' "$body" > "$work/bg.jsonl"
+  printf '{"agent_type":"shipshape:qm","transcript_path":"%s","stop_hook_active":%s}' "$work/bg.jsonl" "$sha" \
+    | "$scripts/background-custody.sh" >/dev/null 2>&1
+  got=$?
+  if [ "$got" -eq "$want" ]; then pass=$((pass + 1)); else
+    fail=$((fail + 1)); echo "FAIL: background-custody $name: want $want, got $got"; fi
+}
+
+LAUNCH='{"type":"user","message":{"content":[{"type":"tool_result","content":"Command did not complete within its 120s timeout and was moved to the background (ID: bx1). Output is being written to: /t/tasks/bx1.output"}]}}'
+READIT='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"file_path":"/t/tasks/bx1.output"}}]}}'
+CATIT='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"cat /t/tasks/bx1.output"}}]}}'
+AGENTC='{"type":"user","message":{"content":[{"type":"tool_result","content":"Async agent launched successfully.\nagentId: a99 (internal ID - do not mention to user.)"}]}}'
+
+bg "unconsumed background blocks the stop" "$LAUNCH" 2
+bg "output read in-turn passes" "$LAUNCH
+$READIT" 0
+bg "output cat in-turn passes" "$LAUNCH
+$CATIT" 0
+bg "live Agent child is not the fault" "$AGENTC" 0
+bg "nothing backgrounded passes" '{"type":"assistant","message":{"content":[]}}' 0
+bg "re-entrancy: nudges once, never traps" "$LAUNCH" 0 "true"
+
+# a foreign agent is out of custody's reach
+printf '%s' "$LAUNCH" > "$work/bg.jsonl"
+printf '{"agent_type":"general-purpose","transcript_path":"%s"}' "$work/bg.jsonl" \
+  | "$scripts/background-custody.sh" >/dev/null 2>&1
+[ $? -eq 0 ] && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: background-custody ignores foreign agent"; }
+
+# every hook script named in hooks.json exists and is executable
+for h in $(grep -o 'hooks/scripts/[a-z-]*\.sh' "$repo/hooks/hooks.json" | sort -u); do
+  [ -x "$repo/$h" ] && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: $h missing or not executable"; }
+done
+
 # frozen sentinel: in the Captain template, in no other hook script, absent from every deny message
 grep -q "STOP. Captain's notes" "$repo/skills/captain/SKILL.md" && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: sentinel present in Captain template"; }
 stray=$(grep -rl "STOP. Captain's notes" "$repo/hooks" | grep -v dispatch-guard.sh)
