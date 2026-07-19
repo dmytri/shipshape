@@ -54,7 +54,7 @@ Procedure lives in the skills. Every role reads this on open.
 ## Dependencies
 
 - policy: <derived or locked>
-- dependency: <selected name, one line per name, or none>
+- dependency: <one line per selected or installed name; none only where nothing is installed>
 
 ## Outbound
 
