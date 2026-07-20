@@ -48,14 +48,14 @@ Called after Crew finishes and verification passes. Post-implementation also ser
 2. **Retrieve the rigging and the deck. One pass, before anything else.** Run:
 
    ```sh
-   cat RIGGING.md && git status && git diff <base> -- . ':!CAPTAIN.md' && git log -n 5
+   cat RIGGING.md AGENTS.md && git status && git diff <base> -- . ':!CAPTAIN.md' && git log -n 5
    ```
 
    `<base>` is the dispatched base commit, HEAD when none was dispatched per the dispatch contract. Nothing here depends on anything else here, so it is one run.
 
    The `:!CAPTAIN.md` exclusion is part of the command, not an optional refinement. Captain's notes are content-blind to Boatswain, per the Role contract: a deck diff that omits the exclusion pulls their content into context and breaches the bulkhead. `git status` names the path without opening it, which is a metadata stat and passes.
 
-   This output is the deck and the rigging together. The diff and untracked files are the whole worklist; `RIGGING.md` carries every command name the later steps substitute. Every step below reads from this output. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain, whose own bootstrap action the initial commit is, per the Captain skill.
+   This output is the deck and the rigging together. The diff and untracked files are the whole worklist; `RIGGING.md` carries every command name the later steps substitute, and `AGENTS.md` carries the project standards a removed perturbation is judged against, so the one pass holds every artifact the steps below cite rather than leaving one to a runtime that may or may not supply it. Every step below reads from this output. A repository with no commits has no base to diff against, so hunk custody has no footing: stop and report to Captain, whose own bootstrap action the initial commit is, per the Captain skill.
 
 3. From that output alone, settle: the job, pre-clean or post-implementation, which the dispatch names per the Dispatch contract, the self-select heuristics in Jobs applying only without a dispatch; the touched seams; and, when a voyage run record exists at the `runrecord` path, the deck-state hash, computed once here per the Transient output policy.
 
