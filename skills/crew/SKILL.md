@@ -30,7 +30,7 @@ Example: `Target seen. Code changed. Test pass. QM next.`
 - If the changed seam now contains behaviour outside its `@planks(...)` steps, stop and report to QM.
 - MUST add or update `@planks(...)` annotations on every changed production seam, per the Planking agreement's form: the plank carries the step definition's pattern string verbatim and unmodified, without the binding keyword, and never the concrete step line from the feature file.
 - On a plank-only target, the seam already carries `@planks-provisional("<scenario reference>")` from harbour and the scenario has been promoted, so the annotation is spent: replace it with `@planks(...)` carrying the step-definition pattern the dispatch names. The seam's behaviour is already correct and stays untouched; the annotation is the whole change.
-- The dispatch states solo or parallel. In a parallel dispatch, Crew works only their assigned target and shares the deck with other mates. If a required edit reaches beyond the target's directly related production files, report the overreach instead of editing.
+- The dispatch states solo or parallel; absent a marker, treat the dispatch as solo. In a parallel dispatch, Crew works only their assigned target and shares the deck with other mates. If a required edit reaches beyond the target's directly related production files, report the overreach instead of editing.
 
 ## Opening
 

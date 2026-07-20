@@ -339,7 +339,7 @@ Captain to QM always requires clean context. A window-isolated subagent or a fre
 | To Boatswain | job, base commit, and the advanced target references for a post-implementation job |
 | Captain to Shipwright | role, base commit, optional scope |
 
-When the project root is not the session's working directory, every dispatch also names the project root. A perturbation's seam location is observed evidence from the failure output, not a seam hint. QM reads `watchbill.json` at the project root: the file is the channel, so the dispatch carries no pointer. A dispatch to Boatswain names the job: pre-clean for a dirty deck, or post-implementation after Crew work and for harbour custody, per the Boatswain skill. The post-implementation custody dispatch follows QM's final report and is issued by QM's caller, per the flat hand-off in Hand-off custody. A role that enters by fresh session with no dispatched base commit takes `HEAD` as the base commit.
+When the project root is not the session's working directory, every dispatch also names the project root. A perturbation's seam location is observed evidence from the failure output, not a seam hint. QM reads `watchbill.json` at the project root: the file is the channel, so the dispatch carries no pointer. A dispatch to Boatswain names the job: pre-clean for a dirty deck, or post-implementation after Crew work and for harbour custody, per the Boatswain skill. The post-implementation custody dispatch follows QM's final report and is issued by QM's caller, per the flat hand-off in Hand-off custody. A role that enters with no dispatched base commit takes `HEAD` as the base commit.
 
 **Contamination protocol.** Contamination is Captain or discovery content in an internal role's context, however it arrives. Three cases, by vector:
 
@@ -363,7 +363,7 @@ The QM to Boatswain hand-off is flat. When the watchbill is spent and its target
 
 The Captain to QM boundary is different. Context clears there, so no report crosses it. QM derives everything from durable artifacts by design. The durable artifacts are the hand-off at that boundary. The bulkhead is one-directional, Captain to QM only. Blocker returns to Captain are ordinary hand-offs. "Read the preceding role's blockers first" applies to the transitions that do not cross the bulkhead: Captain to Shipwright, Shipwright to Captain, QM to Crew, Crew to QM, QM to Boatswain, Boatswain to QM, QM to Captain, and Boatswain to Captain.
 
-A blocker that must reach Captain is delivered before any context clear: the role returns to Captain, or encodes the change into a durable artifact. If QM sees no blocker, the deck is clean, not lost.
+A blocker that must reach Captain is delivered before any context clear: the role returns to Captain, or encodes the change into a durable artifact. If a role sees no blocker, the deck is clean, not lost.
 
 ### Harbour flow
 
