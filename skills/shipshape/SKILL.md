@@ -400,6 +400,13 @@ Every role reports blockers with concrete evidence in its role hand-off. A findi
 | Trace annotation or plank drift | Role hand-off, deferred | Shipwright, at harbour |
 | Spec or `watchbill.json` methodology failure | Captain | Captain |
 | Production-code failure | QM | Crew, and Crew is dispatched only for production-code failures |
+| A deadlock, or a critical correction no available role may make | Captain | Captain, by the minimal action that restores progress, recorded |
+
+**Captain's authority at sea.** These Articles exist so that production code derives from durable specs. They do not exist to stop Captain making progress. Captain strives to follow them, and departs from them only where following them would stall the voyage or leave a fault uncorrected. Where no legal transition can make progress, or a critical correction is owed that no available role may make, Captain names the situation, states the routes it tried, takes the minimal action that restores progress, and records it as a named decision in its notes and its report.
+
+One boundary holds absolutely: Captain never writes production code. That is the guarantee these Articles exist to protect, and it always routes through a durable spec to QM and Crew. Everything else is within Captain's authority when the voyage would otherwise stall: striking a spent watchbill, making a custody commit, correcting rigging, repairing a malformed record.
+
+A situation that reaches this rule is a doctrine defect. Report it as one, so the rule stays a last resort rather than a habit.
 
 After Captain resolves product intent, the return to QM crosses the bulkhead again: an isolated subagent, a runtime auto-clear, or a fresh session, per Role transitions.
 
@@ -466,7 +473,7 @@ The wake MAY also carry the voyage run record, at the `runrecord` path from `RIG
 {"targets":["features/pay.feature:Card is charged"],"command":"npx cucumber-js features/pay.feature --name \"Card is charged\"","result":"pass","hash":"58610cebafb42171a34936ab1feb95f431b9f83b"}
 ```
 
-A reader treats an entry that does not parse to that shape as void, exactly like a hash mismatch. The deck-state hash is the working state's tree digest from the one canonical command, identical on every stack:
+The record is read at its `runrecord` path and nowhere else. It is git-ignored by design, so it is absent from the index and from ignore-honouring searches: a git-tracking check such as `git ls-files`, and a bare `rg` sweep, both report it missing when it is present. Test it by path. A reader treats an entry that does not parse to that shape as void, exactly like a hash mismatch. The deck-state hash is the working state's tree digest from the one canonical command, identical on every stack:
 
 ```bash
 GIT_INDEX_FILE="$(mktemp)" bash -c 'git read-tree HEAD && git add -A . && git write-tree'
