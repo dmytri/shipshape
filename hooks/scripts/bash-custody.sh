@@ -98,6 +98,40 @@ case "$role" in
     if [ -n "$searchfault" ]; then
       deny "That search can surface the Captain-only notes through $searchfault. Use \`rg <pattern>\`, \`rg -t md <pattern>\`, or \`rg --hidden <pattern>\`, which honour the ignore artifact."
     fi
+
+    # Same result-set custody, git's readers. A diff or a history read prints the
+    # content of every changed file: it reads no ignore artifact, and it names
+    # nothing, so the notecheck above cannot see it either. Roles genuinely need
+    # the role-advanced diff, so guard the form rather than the command: a
+    # pathspec excluding the notes passes, an unscoped read does not. `--stat`,
+    # `--name-only` and `--name-status` print no content and stay allowed.
+    gitfault=$(printf '%s' "$norm" | awk '{
+      for (i = 1; i <= NF; i++) {
+        t = $i
+        sub(/^["'\'']/, "", t); sub(/["'\'']+$/, "", t)
+        if (t != "git" && t !~ /\/git$/) continue
+        scmd = ""; patch = 0; content = 0; excluded = 0; nofile = 0
+        for (j = i + 1; j <= NF; j++) {
+          a = $j
+          if (a ~ /^[;&|]/) break
+          sub(/^["'\'']/, "", a); sub(/["'\'']+$/, "", a)
+          if (a == "-C" || a == "-c") { j++; continue }
+          if (scmd == "" && a !~ /^-/) { scmd = a; continue }
+          if (a == "-p" || a == "--patch" || a == "-u") patch = 1
+          if (a == "--stat" || a == "--name-only" || a == "--name-status" ||
+              a == "--numstat" || a == "--shortstat" || a == "--quiet") nofile = 1
+          if (a ~ /CAPTAIN\.md$/ && a ~ /^:(\(exclude\)|!)/) excluded = 1
+        }
+        if (scmd == "diff" || scmd == "show") content = 1
+        if ((scmd == "log" || scmd == "stash") && patch) content = 1
+        if (content && !nofile && !excluded) {
+          print scmd; exit
+        }
+      }
+    }')
+    if [ -n "$gitfault" ]; then
+      deny "\`git $gitfault\` prints the content of every changed file, including the Captain-only notes, and names nothing for this guard to catch. Carry the exclusion in the command: \`git diff <base> -- . ':!CAPTAIN.md'\`, the same pathspec on \`git show\`, \`git log -p\` and \`git stash show -p\`, or a content-free form such as \`--stat\` or \`--name-only\`."
+    fi
     # The session transcript is discarded conversation context, never
     # product intent (Role transitions: "an internal role MUST NOT mine
     # it"). Block a command that names the transcript file. The path is

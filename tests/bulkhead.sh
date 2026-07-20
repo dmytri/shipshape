@@ -54,6 +54,22 @@ leak "transcript read leak blocked (crew)" bash-custody.sh "shipshape:crew" "Bas
 leak "boatswain notes read blocked" captain-notes-guard.sh "shipshape:boatswain" "Read" "{\"file_path\":\"$work/proj/CAPTAIN.md\"}" 2
 leak "boatswain transcript read blocked" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"cat $work/t.jsonl\"}" 2
 # legitimate paths stay open
+# leak path: git's content-dumping readers. A diff or history read prints the content of
+# every changed file, reads no ignore artifact, and NAMES nothing, so neither the notecheck
+# nor the search branch can see it. Found in real use by a consuming project, 2026-07-20.
+leak "unscoped git diff blocked" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"git diff\"}" 2
+leak "git diff against a base blocked" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"git diff 5058b35\"}" 2
+leak "git show blocked" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"git show HEAD\"}" 2
+leak "git log -p blocked" bash-custody.sh "shipshape:crew" "Bash" "{\"command\":\"git log -p\"}" 2
+leak "git stash show -p blocked" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"git stash show -p\"}" 2
+# the guarded forms roles genuinely need stay open: the exclusion pathspec, and the
+# content-free summaries. Guard the form, never the command.
+leak "excluded git diff stays open" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"git diff 5058b35 -- . ':!CAPTAIN.md'\"}" 0
+leak "git diff --stat stays open" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"git diff --stat\"}" 0
+leak "git diff --name-only stays open" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"git diff --name-only\"}" 0
+leak "git log --oneline stays open" bash-custody.sh "shipshape:qm" "Bash" "{\"command\":\"git log --oneline -5\"}" 0
+leak "opening retrieval with exclusion stays open" bash-custody.sh "shipshape:boatswain" "Bash" "{\"command\":\"cat RIGGING.md && git status && git diff 5058b35 -- . ':!CAPTAIN.md' && git log -n 5\"}" 0
+
 leak "thin dispatch stays open" dispatch-guard.sh "shipshape:qm" "Task" "{\"subagent_type\":\"shipshape:crew\",\"prompt\":\"Target: f.feature:X. Failure: expected Y.\"}" 0
 
 echo "pass: $pass fail: $fail"
