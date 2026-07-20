@@ -214,7 +214,7 @@ Attestation:
 Adoption:
 
 - Prove a newly referenced scantling red once: plant a violation, confirm the conformance step reddens, remove the plant, per the Verification policy's planted-red rule.
-- Plant at the cheapest legal layer: a violating fixture or example is QM verification support; a constraint only a production violation can redden, such as an import boundary, waits for Shipwright's harbour plant exception, and reports name it unproven until it has been red.
+- Plant at the cheapest legal layer: a violating fixture or example is QM verification support; a constraint only a production violation can redden, such as an import boundary, waits for Shipwright's harbour plant exception. The deferring report names it unproven and carries it as a harbour item; the next harbour plants it. Nothing records a proof across voyages, and a green run looks the same proven or not, so the obligation lives in the deferral that can see it rather than in every later report that cannot.
 
 Scantling or double:
 
