@@ -45,8 +45,14 @@ transcript=$(printf '%s' "$payload" | sed -n 's/.*"transcript_path":[[:space:]]*
 # parent through the task-notification, so a turn ending on a live Agent
 # child self-heals (observed 2026-07-19 tw13) and is not this fault.
 #
-# Consumption is any later line naming that id: a Read of the output
-# file, a cat/tail of it, or the completion notification itself.
+# Consumption is any later line naming that output PATH: a Read of the
+# output file, a cat/tail of it, or the completion notification itself.
+# The path, not the bare id: a role that ends its turn saying "waiting for
+# background task <id>" names the id and consumes nothing, and matching the
+# bare id let exactly that stop through (pilot #7 2026-07-21, QM stalled on
+# its own suite run and this guard passed it - the guard was defeated by the
+# one sentence that describes the fault). Every real consumption names the
+# path; prose about waiting does not.
 unconsumed=$(awk '
   /moved to the background|running in background|is being written to/ {
     s = $0
@@ -59,7 +65,7 @@ unconsumed=$(awk '
   }
   {
     for (tok in launched) {
-      if (launched[tok] < NR && index($0, tok)) delete launched[tok]
+      if (launched[tok] < NR && index($0, "tasks/" tok ".output")) delete launched[tok]
     }
   }
   END {
