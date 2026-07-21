@@ -366,9 +366,10 @@ esac
 # and only that. An Agent child is NOT the fault: its report resumes the
 # caller, per Hand-off custody, so a turn ending on one self-heals.
 bg() {
-  name="$1" body="$2" want="$3" sha="${4:-false}"
+  name="$1" body="$2" want="$3" sha="${4:-false}" bgt="${5:-[]}"
   printf '%s' "$body" > "$work/bg.jsonl"
-  printf '{"agent_type":"shipshape:qm","transcript_path":"%s","stop_hook_active":%s}' "$work/bg.jsonl" "$sha" \
+  printf '{"agent_type":"shipshape:qm","transcript_path":"%s","agent_transcript_path":"%s","stop_hook_active":%s,"background_tasks":%s}' \
+    "$work/session.jsonl" "$work/bg.jsonl" "$sha" "$bgt" \
     | "$scripts/background-custody.sh" >/dev/null 2>&1
   got=$?
   if [ "$got" -eq "$want" ]; then pass=$((pass + 1)); else
@@ -389,9 +390,37 @@ bg "live Agent child is not the fault" "$AGENTC" 0
 bg "nothing backgrounded passes" '{"type":"assistant","message":{"content":[]}}' 0
 bg "re-entrancy: nudges once, never traps" "$LAUNCH" 0 "true"
 
+# The session transcript is NOT the input. A sibling's launch quoted into the
+# session file - by an operator mining a transcript, or a role reading a log -
+# must not be read as this agent's own work (live, 2026-07-21: two legs were
+# blocked naming a task neither had launched).
+printf '%s' "$LAUNCH" > "$work/session.jsonl"
+printf '{"type":"assistant","message":{"content":[]}}' > "$work/bg.jsonl"
+printf '{"agent_type":"shipshape:qm","transcript_path":"%s","agent_transcript_path":"%s"}' \
+  "$work/session.jsonl" "$work/bg.jsonl" | "$scripts/background-custody.sh" >/dev/null 2>&1
+[ $? -eq 0 ] && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: background-custody reads the session transcript"; }
+
+# ... and the agent's own transcript still blocks when it is the one at fault.
+printf '%s' '{"type":"assistant","message":{"content":[]}}' > "$work/session.jsonl"
+printf '%s' "$LAUNCH" > "$work/bg.jsonl"
+printf '{"agent_type":"shipshape:qm","transcript_path":"%s","agent_transcript_path":"%s"}' \
+  "$work/session.jsonl" "$work/bg.jsonl" | "$scripts/background-custody.sh" >/dev/null 2>&1
+[ $? -eq 2 ] && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: background-custody misses the agent's own stall"; }
+
+# A read while the task is STILL RUNNING is not consumption: the turn ends
+# holding live work regardless of a mid-flight look at the output file.
+RUNNING='[{"id":"bx1","type":"shell","status":"running","description":"sweep"}]'
+DONE='[{"id":"bx1","type":"shell","status":"completed","description":"sweep"}]'
+CHILD='[{"id":"a99","type":"subagent","status":"running","description":"crew"}]'
+bg "mid-flight read of a running task still blocks" "$LAUNCH
+$READIT" 2 "false" "$RUNNING"
+bg "read of a completed task passes" "$LAUNCH
+$READIT" 0 "false" "$DONE"
+bg "a running Agent child is still not the fault" "$AGENTC" 0 "false" "$CHILD"
+
 # a foreign agent is out of custody's reach
 printf '%s' "$LAUNCH" > "$work/bg.jsonl"
-printf '{"agent_type":"general-purpose","transcript_path":"%s"}' "$work/bg.jsonl" \
+printf '{"agent_type":"general-purpose","agent_transcript_path":"%s"}' "$work/bg.jsonl" \
   | "$scripts/background-custody.sh" >/dev/null 2>&1
 [ $? -eq 0 ] && pass=$((pass + 1)) || { fail=$((fail + 1)); echo "FAIL: background-custody ignores foreign agent"; }
 
