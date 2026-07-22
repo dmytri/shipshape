@@ -93,7 +93,7 @@ Verification runs in tiers; the Tier tags table at the end of this skill defines
 - Wake: generated build and verification output, git-ignored; the Transient output policy carries the rules.
 - Yesterday's weather: observed run data the wake carries as the next run's starting prior; the Verification agreement carries the use.
 - Rigging: the project configuration files that `RIGGING.md` documents; the Project configuration section carries the shapes.
-- Full regression: a run of every configured tier at a voyage or harbour pivot, in contrast to the focused inner loop.
+- Full regression: a run of every configured tier at a harbour pivot, its only trigger, in contrast to the focused inner loop.
 - Role-advanced work: the edits the voyage's roles made since the base commit, in contrast to operator edits; the Working tree policy carries the custody rules.
 - Craft: worked technique and judgment guidance, in contrast to binding behaviour. Agreements and policies carry craft for roles; asset bodies carry craft for humans.
 
@@ -241,12 +241,11 @@ Harmless by design:
 
 - Tests that create or mutate real resources namespace every created object, never modify or delete resources they did not create, use safe or test-mode inputs where relevant, and register idempotent best-effort teardown. Namespaced test-created resources are disposable.
 
-Concurrency:
+Concurrency has two distinct properties, and only one of them is safe by construction:
 
-- Run independent scenarios concurrently. The scenario-writing agreement makes scenarios independent and harmless-by-design namespacing makes their resources disjoint, so concurrency is safe by construction and serial execution of independent work buys nothing.
-- Isolation gates concurrency. Before raising worker count, extend the namespace to every path workers share: temp directories, session and state files, caches, ports, resource names. A target that passes only when re-run serially is not yet fixed.
-- Size concurrency to the tier's binding constraint: local compute for a local tier, the service's real limits for a remote tier. Observe the constraint; a constant guessed on one machine is wrong on the next.
-- Read yesterday's weather. The wake MAY record what each tier's last run observed: wall-clock time, green worker count, and pressure signals such as rate-limit and memory errors. Start from that record and adjust on live pressure. Per-scenario timing is a harbour concern, captured during Shipwright's full regression per the Shipwright skill, not a standing obligation of this at-sea record.
+- **Correctness-safety.** Running independent scenarios concurrently produces correct results by construction: the scenario-writing agreement makes scenarios independent and harmless-by-design namespacing makes their resources disjoint, so concurrent results are as trustworthy as serial ones. Isolation gates this property. Before raising worker count, extend the namespace to every path workers share: temp directories, session and state files, caches, ports, resource names. A target that passes only when re-run serially is not yet fixed.
+- **Resource-safety is NOT safe by construction.** More workers can exhaust the machine's real memory or CPU regardless of how well scenarios are isolated from each other, and a resource exhaustion during a sweep can take down unrelated work sharing the box, not just the run that caused it. Start conservative and raise worker count only on confirmed headroom; a worker count sized to theoretical speedup rather than observed capacity is a guess, and a guess that is wrong fails as an outage, not a graceful slowdown. Size concurrency to the tier's binding constraint: local compute for a local tier, the service's real limits for a remote tier. A constant guessed on one machine is wrong on the next.
+- Read yesterday's weather. The wake MAY record what each tier's last run observed: wall-clock time, green worker count, and pressure signals such as rate-limit and memory errors. Start from that record and adjust on live pressure, never the reverse: reading pressure signals after a run that already exhausted the machine confirms the failure, it does not prevent it. Per-scenario timing is a harbour concern, captured during Shipwright's full regression per the Shipwright skill, not a standing obligation of this at-sea record.
 
 Reuse:
 
@@ -407,13 +406,13 @@ Every role reports blockers with concrete evidence in its role hand-off. A findi
 
 **Captain's authority at sea.** These Articles exist so that production code derives from durable specs. They do not exist to stop Captain making progress. Captain strives to follow them, and departs from them only where following them would stall the voyage or leave a fault uncorrected. Where no legal transition can make progress, or a critical correction is owed that no available role may make, Captain names the situation, states the routes it tried, takes the minimal action that restores progress, and records it as a named decision in its notes and its report.
 
-One boundary holds absolutely: Captain never writes production code. That is the guarantee these Articles exist to protect, and it always routes through a durable spec to QM and Crew. Everything else is within Captain's authority when the voyage would otherwise stall: striking a spent watchbill, making a custody commit, correcting rigging, repairing a malformed record.
+One boundary holds absolutely: outside the Perturbation policy's narrow, named exception, Captain never writes production code. That is the guarantee these Articles exist to protect, and it always routes through a durable spec to QM and Crew. Everything else is within Captain's authority when the voyage would otherwise stall: striking a spent watchbill, making a custody commit, correcting rigging, repairing a malformed record.
 
 A situation that reaches this rule is a doctrine defect. Report it as one, so the rule stays a last resort rather than a habit.
 
 After Captain resolves product intent, the return to QM crosses the bulkhead again: an isolated subagent, a runtime auto-clear, or a fresh session, per Role transitions.
 
-### Working tree
+### Working tree policy
 
 Humans edit at any time. A role owns only the edits it makes and leaves every other working-tree change untouched. A role never treats the tree's existing state as its own work. Read that state with the notes excluded. A diff of the working tree or of history prints the content of every changed file, so a `CAPTAIN.md` the role never named arrives in its context through a command that looks like ordinary deck reading, and the bulkhead is crossed by an act no rule appears to forbid. Carry the exclusion in the command itself, as `git diff <base> -- . ':!CAPTAIN.md'`, and carry the same pathspec on `git show`, `git log -p`, and `git stash show -p`. An unscoped diff of a tree whose notes have moved is an unchecked read, whatever it was reached for. Boatswain stages only role-advanced hunks and leaves unrelated operator work for Captain. Dirt is a change no role in the current voyage owns. Uncommitted durable artifacts that order the current voyage's work, such as Captain's freshly written specs, are work in flight, not dirt: QM reads the artifacts as they stand, and Boatswain stages and commits them together with the role hygiene edits and the production change they order.
 
@@ -466,7 +465,7 @@ A perturbation MUST become a failing verification target. A perturbation whose s
 
 Outbound is any action that places durable state where a party outside the voyage can consume it, such as a pushed branch, a published artifact, or a deployed or updated live service. A local commit and disposable, namespaced, self-cleaning test resources stay inside the voyage and are not outbound. Captain handles outbound decisions such as push, PR, publish, release, and deploy. Outbound runs only in the human-facing main session, where the user's explicit approval is given; a spawned Captain agent reports outbound options, and the main session performs the action. Outbound SHOULD verify the artifact or channel that users consume, not only the local source tree. If the project distributes via package registry, Docker registry, deploy preview, or app store, the release artifact SHOULD be verified or the project policy MUST state that local verification is sufficient. Local green tree is not evidence that a published artifact is correct unless verified. A project MAY ship several distribution targets, such as a package and a separately deployed site. Name every target in `RIGGING.md` under `## Outbound` and verify each; targets deploy independently unless the policy states otherwise.
 
-### Transient output
+### Transient output policy
 
 Generated build and verification output is the ship's wake, such as coverage reports, compiled bundles, and run logs. The wake is git-ignored and stays off the canon layer. It MUST NOT define product intent, create work, or become a durable planning artifact. The wake MAY carry yesterday's weather: observed run data such as tier wall-clock time, green worker counts, and pressure signals, read by the next run as a starting prior for concurrency per the Verification agreement. During a harbour full regression, the wake MAY also carry per-scenario duration, read by Shipwright for the harbour verification-economy audit per the Shipwright skill.
 
