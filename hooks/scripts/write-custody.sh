@@ -59,9 +59,29 @@ normalize() {
 
 cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
 file_path=$(normalize "$file_path")
-rel="$file_path"
-[ -n "$cwd" ] && rel="${file_path#"$(normalize "$cwd")"/}"
 base=$(basename "$file_path")
+
+# The project root is found by walking UP FROM THE FILE BEING WRITTEN, not from
+# the session's cwd. A role's cwd is the session directory, which is not the
+# project root whenever the role works in a tree the session did not start in -
+# a scaffolded project, a second checkout, a monorepo package. Resolving from cwd
+# meant RIGGING.md was not found, every directory value came back empty, no
+# directory check could match, and custody PASSED EVERY WRITE SILENTLY.
+# Live-proven 2026-07-22: four QM legs wrote production code with no deny, while
+# bash-custody kept firing in the same legs because its rules are path-blind, so
+# custody looked alive. A guard that cannot find the project must not conclude
+# that the write is legal.
+root=""
+d=$(dirname "$file_path")
+while [ -n "$d" ] && [ "$d" != "/" ] && [ "$d" != "." ]; do
+  if [ -f "$d/RIGGING.md" ]; then root="$d"; break; fi
+  d=$(dirname "$d")
+done
+[ -z "$root" ] && [ -n "$cwd" ] && [ -f "$cwd/RIGGING.md" ] && root=$(normalize "$cwd")
+[ -z "$root" ] && [ -f "RIGGING.md" ] && root=$(pwd)
+
+rel="$file_path"
+[ -n "$root" ] && rel="${file_path#"$root"/}"
 
 deny() {
   echo "Shipshape custody: $role MUST NOT write $rel. $1 (Article: Write scopes are strict.)" >&2
@@ -71,11 +91,7 @@ deny() {
 # Project directories from RIGGING.md (## Directories). Values are optional;
 # absent values simply narrow what custody can check.
 rigdir=""
-if [ -n "$cwd" ] && [ -f "$cwd/RIGGING.md" ]; then
-  rigdir="$cwd/RIGGING.md"
-elif [ -f "RIGGING.md" ]; then
-  rigdir="RIGGING.md"
-fi
+[ -n "$root" ] && [ -f "$root/RIGGING.md" ] && rigdir="$root/RIGGING.md"
 impl="" specs="" verif="" assets="" scant=""
 if [ -n "$rigdir" ]; then
   impl=$(sed -n 's/^- implementation:[[:space:]]*//p' "$rigdir" | tr -d '`' | sed 's|[[:space:]]*/*$||')

@@ -15,10 +15,19 @@ case "$file_path" in
 esac
 [ -f "$file_path" ] || exit 0
 
-# Apply only inside a Shipshape project.
+# Apply only inside a Shipshape project. Resolved by walking up from the file, not
+# from the session cwd, which is not the project root whenever a role works in a
+# tree the session did not start in - see write-custody.sh for the live proof.
 cwd=$(printf '%s' "$payload" | sed -n 's/.*"cwd":[[:space:]]*"\([^"]*\)".*/\1/p')
 [ -n "$cwd" ] || cwd=$(pwd)
-[ -f "$cwd/RIGGING.md" ] || exit 0
+fq_root=""
+fq_d=$(dirname "$file_path")
+while [ -n "$fq_d" ] && [ "$fq_d" != "/" ] && [ "$fq_d" != "." ]; do
+  if [ -f "$fq_d/RIGGING.md" ]; then fq_root="$fq_d"; break; fi
+  fq_d=$(dirname "$fq_d")
+done
+[ -z "$fq_root" ] && [ -f "$cwd/RIGGING.md" ] && fq_root="$cwd"
+[ -n "$fq_root" ] || exit 0
 
 problems=""
 

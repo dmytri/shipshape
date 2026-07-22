@@ -83,6 +83,12 @@ p() {
 b() {
   printf '{"agent_type":"%s","cwd":"%s","tool_input":{"command":"%s"}}' "$1" "$work/proj" "$2"
 }
+# cwd deliberately elsewhere: the role's session dir is not the project root
+# whenever it works in a tree the session did not start in. Custody must resolve
+# the project from the FILE, and must not fail open when cwd is unrelated.
+pfar() {
+  printf '{"agent_type":"%s","cwd":"%s","tool_input":{"file_path":"%s"}}' "$1" "$work" "$2"
+}
 pm() {
   printf '{"agent_type":"%s","cwd":"%s","tool_input":{"file_path":"%s"}}' "$1" "$work/mono" "$2"
 }
@@ -92,6 +98,15 @@ pc() {
 
 # write-custody
 check "crew blocked from specs" write-custody.sh "$(p "shipshape:crew" "$work/proj/features/pay.feature")" 2
+# cwd-independence: the same verdicts must hold when cwd is NOT the project root.
+# Live-proven fail-open 2026-07-22 - four QM legs wrote production code with no
+# deny because RIGGING.md was resolved from cwd and never found.
+check "qm blocked from src, cwd elsewhere" write-custody.sh "$(pfar "shipshape:qm" "$work/proj/src/pay.ts")" 2
+check "crew allowed in src, cwd elsewhere" write-custody.sh "$(pfar "shipshape:crew" "$work/proj/src/pay.ts")" 0
+check "qm allowed in step defs, cwd elsewhere" write-custody.sh "$(pfar "shipshape:qm" "$work/proj/features/steps/pay.steps.ts")" 0
+check "qm blocked from specs, cwd elsewhere" write-custody.sh "$(pfar "shipshape:qm" "$work/proj/features/pay.feature")" 2
+check "crew blocked from specs, cwd elsewhere" write-custody.sh "$(pfar "shipshape:crew" "$work/proj/features/pay.feature")" 2
+check "no RIGGING anywhere up passes" write-custody.sh "$(pfar "shipshape:qm" "$work/unfitted/x.ts")" 0
 check "crew allowed in src" write-custody.sh "$(p "shipshape:crew" "$work/proj/src/pay.ts")" 0
 check "crew blocked from step defs" write-custody.sh "$(p "shipshape:crew" "$work/proj/features/steps/pay.steps.ts")" 2
 check "crew blocked from RIGGING.md" write-custody.sh "$(p "shipshape:crew" "$work/proj/RIGGING.md")" 2
