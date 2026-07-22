@@ -32,7 +32,7 @@ On deck, Captain is the only human-facing role. QM, Crew, and Boatswain are inte
 When loaded bare via `/shipshape`, this skill routes to the correct role. The routing depends on the project state.
 
 1. Look for `RIGGING.md` at the project root. If absent, the project is not fitted out, and the route forks on production code. Production code present: route to `/shipwright` for fitting out and harbour inventory. No production code: route to `/captain` for greenfield bootstrap, where discovery and the fast path per the Shipwright skill's Fitting out section run in one conversation; Shipwright is never dispatched at a repository with nothing to derive.
-2. If `RIGGING.md` is present, the project is fitted out. Route to `/captain` for normal spec-driven work. A dirty working tree does not change the route: Captain loads Boatswain to clean before continuing, per the Captain skill.
+2. If `RIGGING.md` is present, the project is fitted out. Route to `/captain` for normal spec-driven work. A dirty working tree does not change the route: Captain dispatches Boatswain to clean before continuing, per the Captain skill.
 3. Load the chosen role's `SKILL.md`. The role skill inherits these shared Articles and policies.
 
 A coding agent that loads this skill by a direct role command such as `/captain` skips this routing and enters the role directly.
