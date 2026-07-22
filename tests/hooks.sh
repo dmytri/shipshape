@@ -97,6 +97,15 @@ pc() {
 }
 
 # write-custody
+# busy-wait loop guard: a process-name predicate never terminates when a
+# concurrent session runs the same command, and it outlives the turn.
+check "while pgrep loop denied" bash-custody.sh "$(b "shipshape:qm" "while pgrep -f cucumber-js >/dev/null; do sleep 3; done")" 2
+check "until pgrep loop denied" bash-custody.sh "$(b "shipshape:qm" "until ! pgrep -f suite; do sleep 5; done")" 2
+check "while ps aux loop denied" bash-custody.sh "$(b "shipshape:crew" "while ps aux | grep -q [c]ucumber; do sleep 2; done")" 2
+check "single pgrep read allowed" bash-custody.sh "$(b "shipshape:qm" "pgrep -f cucumber-js")" 0
+check "single ps read allowed" bash-custody.sh "$(b "shipshape:qm" "ps aux | head")" 0
+check "loop without process query allowed" bash-custody.sh "$(b "shipshape:qm" "while read -r l; do echo \$l; done < out.txt")" 0
+check "main loop unguarded by wait rule" bash-custody.sh '{"cwd":"/tmp","tool_input":{"command":"while pgrep -f x; do sleep 1; done"}}' 0
 check "crew blocked from specs" write-custody.sh "$(p "shipshape:crew" "$work/proj/features/pay.feature")" 2
 # cwd-independence: the same verdicts must hold when cwd is NOT the project root.
 # Live-proven fail-open 2026-07-22 - four QM legs wrote production code with no

@@ -132,6 +132,34 @@ case "$role" in
     if [ -n "$gitfault" ]; then
       deny "\`git $gitfault\` prints the content of every changed file, including the Captain-only notes, and names nothing for this guard to catch. Carry the exclusion in the command: \`git diff <base> -- . ':!CAPTAIN.md'\`, the same pathspec on \`git show\`, \`git log -p\` and \`git stash show -p\`, or a content-free form such as \`--stat\` or \`--name-only\`."
     fi
+    # A loop that re-checks a process table is a busy-wait, not a signal, and the
+    # Wait policy names it: it spends the turn to learn what the exit already
+    # reports. It also matches the WRONG process. The predicate is a name, and a
+    # name is not owned: a concurrent session running the same runner keeps it
+    # true forever, so the loop never terminates and outlives the turn that
+    # started it. Live-proven twice in this project - once operator-side, once by
+    # a role whose loop was still spinning against another checkout's suite after
+    # the role had reported and stopped, where no stop guard could reach it
+    # because the turn had ended cleanly.
+    #
+    # Guard the LOOP, not the command: a bare `pgrep` or `ps` that reports once is
+    # a legitimate read and passes. Only a loop whose continuation depends on a
+    # process query is denied.
+    waitfault=$(printf '%s' "$norm" | awk '{
+      loop = 0
+      for (i = 1; i <= NF; i++) {
+        t = $i
+        sub(/^["'"'"']/, "", t); sub(/["'"'"']+$/, "", t)
+        if (t == "while" || t == "until") { loop = 1; continue }
+        if (t == "do" || t == ";") continue
+        if (loop && (t == "pgrep" || t == "ps" || t ~ /\/pgrep$/ || t ~ /\/ps$/)) { print t; exit }
+        if (loop && t == "done") loop = 0
+      }
+    }')
+    if [ -n "$waitfault" ]; then
+      deny "That waits on a process name, which is a busy-wait and not a signal, and a process name is not owned: another session running the same command keeps the condition true and the loop never ends. Wait on the run's own exit, or on its output file read to the summary line. Where the run outlasts the foreground budget, raise the budget with a timeout that covers it."
+    fi
+
     # The session transcript is discarded conversation context, never
     # product intent (Role transitions: "an internal role MUST NOT mine
     # it"). Block a command that names the transcript file. The path is
