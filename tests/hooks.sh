@@ -97,6 +97,18 @@ pc() {
 }
 
 # write-custody
+# Command custody must cover EVERY tool that runs a command. Monitor takes the same
+# `command` field as Bash, so a matcher naming only Bash leaves outbound, the
+# Captain-notes bulkhead and commit custody fully bypassable through it.
+mon=$(grep -o '"matcher": "[^"]*"' "$repo/hooks/hooks.json" | grep -c 'Bash|Monitor')
+if [ "$mon" -ge 1 ]; then
+  pass=$((pass + 1)); printf 'ok   command custody matcher covers Monitor\n'
+else
+  fail=$((fail + 1)); printf 'FAIL command custody matcher does not cover Monitor\n'
+fi
+check "monitor push denied" bash-custody.sh '{"tool_name":"Monitor","agent_type":"shipshape:qm","cwd":"/tmp","tool_input":{"command":"git push origin main"}}' 2
+check "monitor CAPTAIN.md denied" bash-custody.sh '{"tool_name":"Monitor","agent_type":"shipshape:qm","cwd":"/tmp","tool_input":{"command":"cat CAPTAIN.md"}}' 2
+
 # busy-wait loop guard: a process-name predicate never terminates when a
 # concurrent session runs the same command, and it outlives the turn.
 check "while pgrep loop denied" bash-custody.sh "$(b "shipshape:qm" "while pgrep -f cucumber-js >/dev/null; do sleep 3; done")" 2
